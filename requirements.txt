@@ -1,0 +1,31 @@
+# 核心AI组件
+sentence-transformers==2.2.2
+transformers==4.35.0
+chromadb==0.4.15
+torch
+torchvision
+torchaudio
+
+# 文档处理
+PyMuPDF==1.23.8
+arxiv==1.4.8
+requests==2.31.0
+
+# 检索增强
+rank-bm25==0.2.2
+
+# 本地LLM支持
+ollama==0.1.7
+
+# 数据处理
+pandas==2.1.3
+numpy==1.24.3
+
+# 工具
+tqdm==4.66.1
+python-dotenv==1.0.0
+pyyaml==6.0.1
+loguru==0.7.2
+
+# Web界面
+streamlit==1.28.1
