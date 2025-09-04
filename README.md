@@ -23,8 +23,8 @@
 
 1. **克隆项目**
 ```bash
-git clone https://github.com/你的用户名/ai-paper-rag.git
-cd ai-paper-rag
+git clone https://github.com/HaojingTong/academic-rag-system.git
+cd academic-rag-system
 ```
 
 2. **创建虚拟环境**
@@ -252,13 +252,13 @@ print(f'检索耗时: {(time.time() - start)*1000:.1f}ms')
 
 ## 📞 联系方式
 
-- 📧 Email: your.email@example.com
-- 🐛 Issues: [GitHub Issues](https://github.com/你的用户名/ai-paper-rag/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/你的用户名/ai-paper-rag/discussions)
+- 📧 Email: haojing.tong@outlook.com
+- 🐛 Issues: [GitHub Issues](https://github.com/HaojingTONG/academic-rag-system/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/HaojingTONG/academic-rag-system/discussions)
 
 ---
 
 ⭐ **如果这个项目对你有帮助，请给它一个星标！**
 
-[![GitHub stars](https://img.shields.io/github/stars/HaojingTong/ai-paper-rag.svg?style=social&label=Star)](https://github.com/HaojingTong/ai-paper-rag)
-[![GitHub forks](https://img.shields.io/github/forks/HaojingTong/ai-paper-rag.svg?style=social&label=Fork)](https://github.com/HaojingTong/ai-paper-rag/fork)
+[![GitHub stars](https://img.shields.io/github/stars/HaojingTong/academic-rag-system.svg?style=social&label=Star)](https://github.com/HaojingTong/academic-rag-system)
+[![GitHub forks](https://img.shields.io/github/forks/HaojingTong/academic-rag-system.svg?style=social&label=Fork)](https://github.com/HaojingTong/academic-rag-system/fork)
