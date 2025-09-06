@@ -1,0 +1,152 @@
+[
+  {
+    "id": "2102.10934v1",
+    "title": "AI Paper 1",
+    "authors": [
+      "Unknown"
+    ],
+    "abstract": "Abstract for 2102.10934v1.pdf",
+    "published": "2024-01-01",
+    "local_path": "data/raw_papers/2102.10934v1.pdf",
+    "processed_chunks": [
+      {
+        "text": "Title: AI Paper 1\n\nAbstract: Abstract for 2102.10934v1.pdf",
+        "metadata": {
+          "chunk_id": "2102.10934v1_chunk_0",
+          "paper_id": "2102.10934v1",
+          "title": "AI Paper 1",
+          "section_type": "abstract",
+          "word_count": 8,
+          "char_count": 58,
+          "has_formulas": false,
+          "has_code": false,
+          "has_citations": false,
+          "has_numbers": true
+        },
+        "paper_id": "2102.10934v1",
+        "chunk_index": 0
+      }
+    ],
+    "chunk_count": 1
+  },
+  {
+    "id": "2009.14409v1",
+    "title": "AI Paper 2",
+    "authors": [
+      "Unknown"
+    ],
+    "abstract": "Abstract for 2009.14409v1.pdf",
+    "published": "2024-01-01",
+    "local_path": "data/raw_papers/2009.14409v1.pdf",
+    "processed_chunks": [
+      {
+        "text": "Title: AI Paper 2\n\nAbstract: Abstract for 2009.14409v1.pdf",
+        "metadata": {
+          "chunk_id": "2009.14409v1_chunk_0",
+          "paper_id": "2009.14409v1",
+          "title": "AI Paper 2",
+          "section_type": "abstract",
+          "word_count": 8,
+          "char_count": 58,
+          "has_formulas": false,
+          "has_code": false,
+          "has_citations": false,
+          "has_numbers": true
+        },
+        "paper_id": "2009.14409v1",
+        "chunk_index": 0
+      }
+    ],
+    "chunk_count": 1
+  },
+  {
+    "id": "2010.07523v2",
+    "title": "AI Paper 3",
+    "authors": [
+      "Unknown"
+    ],
+    "abstract": "Abstract for 2010.07523v2.pdf",
+    "published": "2024-01-01",
+    "local_path": "data/raw_papers/2010.07523v2.pdf",
+    "processed_chunks": [
+      {
+        "text": "Title: AI Paper 3\n\nAbstract: Abstract for 2010.07523v2.pdf",
+        "metadata": {
+          "chunk_id": "2010.07523v2_chunk_0",
+          "paper_id": "2010.07523v2",
+          "title": "AI Paper 3",
+          "section_type": "abstract",
+          "word_count": 8,
+          "char_count": 58,
+          "has_formulas": false,
+          "has_code": false,
+          "has_citations": false,
+          "has_numbers": true
+        },
+        "paper_id": "2010.07523v2",
+        "chunk_index": 0
+      }
+    ],
+    "chunk_count": 1
+  },
+  {
+    "id": "2410.15198v4",
+    "title": "AI Paper 4",
+    "authors": [
+      "Unknown"
+    ],
+    "abstract": "Abstract for 2410.15198v4.pdf",
+    "published": "2024-01-01",
+    "local_path": "data/raw_papers/2410.15198v4.pdf",
+    "processed_chunks": [
+      {
+        "text": "Title: AI Paper 4\n\nAbstract: Abstract for 2410.15198v4.pdf",
+        "metadata": {
+          "chunk_id": "2410.15198v4_chunk_0",
+          "paper_id": "2410.15198v4",
+          "title": "AI Paper 4",
+          "section_type": "abstract",
+          "word_count": 8,
+          "char_count": 58,
+          "has_formulas": false,
+          "has_code": false,
+          "has_citations": false,
+          "has_numbers": true
+        },
+        "paper_id": "2410.15198v4",
+        "chunk_index": 0
+      }
+    ],
+    "chunk_count": 1
+  },
+  {
+    "id": "2106.07932v4",
+    "title": "AI Paper 5",
+    "authors": [
+      "Unknown"
+    ],
+    "abstract": "Abstract for 2106.07932v4.pdf",
+    "published": "2024-01-01",
+    "local_path": "data/raw_papers/2106.07932v4.pdf",
+    "processed_chunks": [
+      {
+        "text": "Title: AI Paper 5\n\nAbstract: Abstract for 2106.07932v4.pdf",
+        "metadata": {
+          "chunk_id": "2106.07932v4_chunk_0",
+          "paper_id": "2106.07932v4",
+          "title": "AI Paper 5",
+          "section_type": "abstract",
+          "word_count": 8,
+          "char_count": 58,
+          "has_formulas": false,
+          "has_code": false,
+          "has_citations": false,
+          "has_numbers": true
+        },
+        "paper_id": "2106.07932v4",
+        "chunk_index": 0
+      }
+    ],
+    "chunk_count": 1
+  }
+]
