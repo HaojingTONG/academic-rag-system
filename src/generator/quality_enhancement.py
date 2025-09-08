@@ -11,6 +11,12 @@ from dataclasses import dataclass
 from collections import Counter
 import hashlib
 
+# 导入LLM客户端
+try:
+    from .llm_client import get_llm_manager, LLMResponse
+except ImportError:
+    print("LLM客户端导入失败，将使用后备模式")
+
 @dataclass
 class ContextWindow:
     """上下文窗口"""
@@ -209,134 +215,62 @@ class PromptEngineer:
         return detected
     
     def _load_comparison_template(self) -> str:
-        return """你是一位AI/机器学习领域的资深研究专家。请基于提供的学术论文内容回答比较性问题。
-
-专业要求：
-1. 使用准确的技术术语和概念
-2. 提供客观、平衡的比较分析
-3. 指出每种方法的优势和局限性
-4. 引用具体的论文证据支持观点
-5. 承认知识边界，不夸大结论
-
-上下文信息置信度: {confidence_level:.2f}
-参考文献数量: {source_count}
-相关领域: {domains}
-
-研究上下文:
-{context}
-
-用户问题: {query}
-
-请提供专业的比较分析，包括：
-- 核心差异点
-- 各自优势
-- 适用场景
-- 性能对比
-- 具体引用"""
-
-    def _load_definition_template(self) -> str:
-        return """你是一位AI/机器学习领域的资深专家和教育者。请基于学术论文内容提供准确的概念定义。
-
-专业标准：
-1. 提供精确、权威的定义
-2. 包含技术细节和工作原理
-3. 举例说明实际应用
-4. 区分与相关概念的差异
-5. 引用权威论文来源
-
-上下文置信度: {confidence_level:.2f}
-参考文献: {source_count}篇
-领域范围: {domains}
+        return """基于以下学术资料，直接回答用户的比较问题。
 
 学术资料:
 {context}
 
-定义请求: {query}
+用户问题: {query}
 
-请提供专业定义，包括：
-- 核心概念解释
-- 技术原理
-- 关键特征
-- 应用实例
-- 学术引用"""
+请直接回答问题，重点说明：1) 主要区别 2) 各自优势 3) 适用场景
+
+回答："""
+
+    def _load_definition_template(self) -> str:
+        return """基于以下学术资料，直接回答用户的定义问题。
+
+学术资料:
+{context}
+
+用户问题: {query}
+
+请直接回答问题，包括：1) 核心定义 2) 主要特点 3) 实际应用
+
+回答："""
 
     def _load_methodology_template(self) -> str:
-        return """你是一位经验丰富的AI研究员和方法论专家。请基于学术论文详细说明技术方法。
+        return """基于以下学术资料，直接回答用户的方法问题。
 
-方法论要求：
-1. 清晰描述技术步骤和流程
-2. 解释方法的理论基础
-3. 分析实现难点和解决方案
-4. 提供性能评估标准
-5. 引用相关研究作为支撑
-
-技术可信度: {confidence_level:.2f}
-研究基础: {source_count}篇论文
-专业领域: {domains}
-
-技术文献:
+学术资料:
 {context}
 
-方法询问: {query}
+用户问题: {query}
 
-请详细说明方法论，包括：
-- 算法步骤
-- 理论依据
-- 实现要点
-- 评估方法
-- 文献支持"""
+请直接回答问题，重点说明：1) 方法步骤 2) 核心原理 3) 实际应用
+
+回答："""
 
     def _load_recent_work_template(self) -> str:
-        return """你是一位跟踪AI前沿发展的研究分析师。请基于最新研究文献分析技术趋势。
+        return """基于以下最新学术资料，直接回答用户的趋势问题。
 
-分析框架：
-1. 识别最新技术突破和进展
-2. 分析发展趋势和方向
-3. 评估技术成熟度和应用前景
-4. 比较不同研究团队的贡献
-5. 基于论文证据支持分析
-
-信息时效性: {confidence_level:.2f}
-文献覆盖: {source_count}篇
-研究方向: {domains}
-
-前沿文献:
+最新研究资料:
 {context}
 
-趋势查询: {query}
+用户问题: {query}
 
-请分析最新发展，包括：
-- 关键突破点
-- 技术趋势
-- 研究热点
-- 应用前景
-- 重要论文"""
+请直接回答问题，重点说明：1) 最新进展 2) 技术趋势 3) 应用前景
+
+回答："""
 
     def _load_general_template(self) -> str:
-        return """你是一位AI/机器学习领域的专业研究顾问。请基于学术文献提供准确、专业的解答。
+        return """基于以下学术资料，直接回答用户的问题。
 
-专业准则：
-1. 基于学术证据进行客观分析
-2. 使用准确的技术术语
-3. 承认不确定性和知识局限
-4. 提供平衡、全面的观点
-5. 引用具体文献支持论点
-
-文献质量: {confidence_level:.2f}
-参考数量: {source_count}篇
-相关领域: {domains}
-
-学术资源:
+学术资料:
 {context}
 
-研究问题: {query}
+用户问题: {query}
 
-请提供专业解答，包括：
-- 核心观点
-- 支撑证据
-- 不同视角
-- 实际意义
-- 文献引用"""
+请直接、准确地回答问题："""
 
 class FactChecker:
     """事实核查器 - 基于多源验证的可信度评估"""
@@ -559,13 +493,23 @@ class QualityEnhancedGenerator:
         self.fact_checker = FactChecker()
         self.citation_manager = CitationManager(citation_style)
         
+        # 初始化LLM管理器
+        try:
+            self.llm_manager = get_llm_manager()
+            self.llm_available = True
+        except:
+            self.llm_manager = None
+            self.llm_available = False
+            print("LLM不可用，将使用简化生成模式")
+        
         # 质量控制参数
         self.quality_config = {
             'min_confidence': 0.3,
             'max_context_tokens': 2048,
             'enable_fact_check': True,
             'enable_citations': True,
-            'require_multi_source': True
+            'require_multi_source': True,
+            'enable_llm_generation': self.llm_available
         }
     
     def generate_enhanced_answer(self, query: str, query_intent: str, 
@@ -615,25 +559,105 @@ class QualityEnhancedGenerator:
                                citations: List[Citation], prompt: str) -> str:
         """构建增强回答"""
         
-        # 注意：这里是构建回答的结构，实际的LLM生成需要外部API
+        # 使用LLM生成回答
+        if self.quality_config['enable_llm_generation'] and self.llm_manager:
+            try:
+                llm_response = self.llm_manager.generate_answer(
+                    prompt, 
+                    query_intent='general',
+                    max_tokens=512,
+                    temperature=0.7
+                )
+                
+                if llm_response.success and llm_response.text.strip():
+                    # 使用LLM生成的回答
+                    generated_answer = llm_response.text.strip()
+                    
+                    # 添加引用信息
+                    response_parts = [generated_answer]
+                    
+                    if self.quality_config['enable_citations'] and citations:
+                        response_parts.append("\n\n参考文献:")
+                        for i, citation in enumerate(citations[:3], 1):  # 限制引用数量
+                            formatted_citation = self.citation_manager.format_citation(citation)
+                            response_parts.append(f"[{i}] {formatted_citation}")
+                    
+                    return "\n".join(response_parts)
+                else:
+                    print(f"LLM生成失败，使用简化模式: {llm_response.error_message}")
+            except Exception as e:
+                print(f"LLM生成异常，回退到简化模式: {e}")
+        
+        # 简化后备生成模式
+        return self._build_fallback_response(query, context, citations)
+    
+    def _build_fallback_response(self, query: str, context: ContextWindow, 
+                                citations: List[Citation]) -> str:
+        """构建后备回答（当LLM不可用时）- 使用增强的后备生成器"""
+        try:
+            # 使用LLM管理器的后备生成器
+            if self.llm_manager:
+                response = self.llm_manager.fallback_generator.generate_fallback_answer(
+                    query, context.content, 'general'
+                )
+                if response.success and response.text.strip():
+                    response_parts = [response.text]
+                    
+                    # 添加引用信息
+                    if citations:
+                        response_parts.append("\n**参考文献**:")
+                        for i, citation in enumerate(citations[:3], 1):
+                            formatted_citation = self.citation_manager.format_citation(citation)
+                            response_parts.append(f"[{i}] {formatted_citation}")
+                    
+                    return "\n".join(response_parts)
+            
+            # 如果上面的方法失败，使用原来的简化方法
+            return self._build_simple_fallback(query, context, citations)
+            
+        except Exception as e:
+            print(f"后备生成失败，使用最简化方法: {e}")
+            return self._build_simple_fallback(query, context, citations)
+    
+    def _build_simple_fallback(self, query: str, context: ContextWindow, 
+                              citations: List[Citation]) -> str:
+        """构建最简化的后备回答"""
         response_parts = []
         
-        # 主要回答部分
-        response_parts.append("基于学术文献的专业分析：\n")
+        # 基于上下文提取关键信息
+        context_lines = context.content.split('\n')
+        relevant_content = []
         
-        # 置信度声明
-        confidence_text = self._get_confidence_text(context.confidence_level)
-        response_parts.append(f"回答可信度: {confidence_text}\n")
+        # 提取包含实际内容的行
+        for line in context_lines:
+            if 'Content:' in line or '内容:' in line:
+                content = line.split(':', 1)[1].strip()
+                if len(content) > 20:  # 过滤太短的内容
+                    relevant_content.append(content)
         
-        # 这里应该是LLM生成的内容，我们提供结构化框架
-        response_parts.append("[此处为基于专业提示词生成的详细回答]\n")
+        if relevant_content:
+            # 构建更好的回答结构
+            response_parts.append(f"基于相关学术文献，关于\"{query}\"的研究表明：\n")
+            
+            # 合并相关内容，去重
+            combined_content = ' '.join(relevant_content)
+            sentences = [s.strip() for s in combined_content.split('.') if len(s.strip()) > 15]
+            
+            # 生成更连贯的回答
+            if len(sentences) >= 1:
+                response_parts.append(f"**主要发现**: {sentences[0]}.\n")
+            if len(sentences) >= 2:
+                response_parts.append(f"**研究特点**: {sentences[1]}.\n")
+            if len(sentences) >= 3:
+                response_parts.append(f"**应用价值**: {sentences[2]}.\n")
+            
+            response_parts.append("这些研究成果为相关领域提供了重要的理论基础和实践指导。")
+        else:
+            response_parts.append(f"很抱歉，我无法在当前的学术文献中找到关于\"{query}\"的详细信息。建议您尝试使用不同的关键词重新搜索。")
         
         # 添加引用
-        if self.quality_config['enable_citations'] and citations:
-            response_parts.append("\n学术引用:")
-            for i, citation in enumerate(citations[:5], 1):  # 限制引用数量
-                formatted_citation = self.citation_manager.format_citation(citation)
-                response_parts.append(f"[{i}] {formatted_citation}")
+        if citations:
+            response_parts.append(f"\n**参考来源**: {len(citations)} 篇学术论文")
         
         return "\n".join(response_parts)
     

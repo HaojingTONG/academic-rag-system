@@ -5,17 +5,42 @@ from sentence_transformers import SentenceTransformer
 import torch
 
 class VectorStore:
-    def __init__(self, persist_directory="vector_db"):
+    def __init__(self, persist_directory="vector_db", embedding_model=None):
+        """
+        基础向量存储 - 确保嵌入模型一致性
+        
+        Args:
+            persist_directory: 存储目录
+            embedding_model: 嵌入模型名称，如果不提供则使用系统默认
+        """
+        from src.config.embedding_config import SystemEmbeddingConfig
+        
         self.client = chromadb.PersistentClient(path=persist_directory)
         self.collection = self.client.get_or_create_collection(
             name="ai_papers_enhanced",  # 新的collection名称
             metadata={"hnsw:space": "cosine"}
         )
         
+        # 使用系统统一的嵌入模型配置
+        if embedding_model is None:
+            embedding_model = SystemEmbeddingConfig.DEFAULT_MODEL_NAME
+        
+        # 验证嵌入模型一致性
+        if embedding_model != SystemEmbeddingConfig.DEFAULT_MODEL_NAME:
+            print(f"⚠️ 警告: 嵌入模型不一致!")
+            print(f"   系统默认: {SystemEmbeddingConfig.DEFAULT_MODEL_NAME}")
+            print(f"   当前使用: {embedding_model}")
+            print("🚨 这可能导致向量空间不一致!")
+        
         # 初始化嵌入模型
         device = "mps" if torch.backends.mps.is_available() else "cpu"
-        self.encoder = SentenceTransformer("all-MiniLM-L6-v2", device=device)
-        print(f"🔥 增强版向量存储使用设备: {device}")
+        self.encoder = SentenceTransformer(embedding_model, device=device)
+        self.encoder.model_name = embedding_model  # 添加模型名称属性便于验证
+        
+        print(f"🔥 基础向量存储配置:")
+        print(f"   - 嵌入模型: {embedding_model}")
+        print(f"   - 计算设备: {device}")
+        print(f"   - 向量维度: {self.encoder.get_sentence_embedding_dimension()}")
     
     def add_papers(self, papers: List[Dict]):
         """添加论文到向量数据库（保留原有方法兼容性）"""

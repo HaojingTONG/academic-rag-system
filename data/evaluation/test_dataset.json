@@ -1,0 +1,40 @@
+[
+  {
+    "id": "sample_1",
+    "question": "What is the main contribution of the attention mechanism in neural networks?",
+    "contexts": [
+      "The attention mechanism allows neural networks to focus on relevant parts of the input sequence.",
+      "Attention was introduced to solve the bottleneck problem in encoder-decoder architectures.",
+      "The mechanism computes weighted averages of input representations based on relevance scores."
+    ],
+    "ground_truth_answer": "The main contribution of the attention mechanism is allowing neural networks to selectively focus on relevant parts of the input sequence, solving the bottleneck problem in encoder-decoder architectures by computing weighted averages based on relevance scores.",
+    "relevant_contexts": [
+      "The attention mechanism allows neural networks to focus on relevant parts of the input sequence.",
+      "Attention was introduced to solve the bottleneck problem in encoder-decoder architectures.",
+      "The mechanism computes weighted averages of input representations based on relevance scores."
+    ],
+    "difficulty": "medium",
+    "category": "conceptual",
+    "metadata": {}
+  },
+  {
+    "id": "sample_2",
+    "question": "How does the transformer architecture differ from RNN-based models?",
+    "contexts": [
+      "Transformers rely entirely on self-attention mechanisms without recurrence.",
+      "RNNs process sequences step by step, leading to sequential dependencies.",
+      "The transformer architecture enables parallel processing of all sequence positions.",
+      "Self-attention allows direct modeling of dependencies regardless of distance."
+    ],
+    "ground_truth_answer": "The transformer architecture differs from RNN-based models by relying entirely on self-attention mechanisms without recurrence, enabling parallel processing of all sequence positions and direct modeling of long-range dependencies, unlike RNNs which process sequences sequentially.",
+    "relevant_contexts": [
+      "Transformers rely entirely on self-attention mechanisms without recurrence.",
+      "RNNs process sequences step by step, leading to sequential dependencies.",
+      "The transformer architecture enables parallel processing of all sequence positions.",
+      "Self-attention allows direct modeling of dependencies regardless of distance."
+    ],
+    "difficulty": "hard",
+    "category": "comparison",
+    "metadata": {}
+  }
+]

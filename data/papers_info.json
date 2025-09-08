@@ -1,52 +1,1141 @@
 [
   {
-    "id": "2102.10934v1",
-    "title": "AI Paper 1",
+    "id": "1810.04805",
+    "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language\n  Understanding",
+    "abstract": "We introduce a new language representation model called BERT, which stands\nfor Bidirectional Encoder Representations from Transformers. Unlike recent\nlanguage representation models, BERT is designed to pre-train deep\nbidirectional representations from unlabeled text by jointly conditioning on\nboth left and right context in all layers. As a result, the pre-trained BERT\nmodel can be fine-tuned with just one additional output layer to create\nstate-of-the-art models for a wide range of tasks, such as question answering\nand language inference, without substantial task-specific architecture\nmodifications.\n  BERT is conceptually simple and empirically powerful. It obtains new\nstate-of-the-art results on eleven natural language processing tasks, including\npushing the GLUE score to 80.5% (7.7% point absolute improvement), MultiNLI\naccuracy to 86.7% (4.6% absolute improvement), SQuAD v1.1 question answering\nTest F1 to 93.2 (1.5 point absolute improvement) and SQuAD v2.0 Test F1 to 83.1\n(5.1 point absolute improvement).",
     "authors": [
-      "Unknown"
+      "Jacob Devlin",
+      "Ming-Wei Chang",
+      "Kenton Lee",
+      "Kristina Toutanova"
     ],
-    "abstract": "Abstract for 2102.10934v1.pdf",
-    "published": "2024-01-01",
-    "local_path": "data/raw_papers/2102.10934v1.pdf"
+    "published": "2018-10-11",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1810.04805",
+    "source": "arxiv",
+    "quality_score": 2.5,
+    "year": 2018
   },
   {
-    "id": "2009.14409v1",
-    "title": "AI Paper 2",
+    "id": "1512.03385",
+    "title": "Deep Residual Learning for Image Recognition",
+    "abstract": "Deeper neural networks are more difficult to train. We present a residual\nlearning framework to ease the training of networks that are substantially\ndeeper than those used previously. We explicitly reformulate the layers as\nlearning residual functions with reference to the layer inputs, instead of\nlearning unreferenced functions. We provide comprehensive empirical evidence\nshowing that these residual networks are easier to optimize, and can gain\naccuracy from considerably increased depth. On the ImageNet dataset we evaluate\nresidual nets with a depth of up to 152 layers---8x deeper than VGG nets but\nstill having lower complexity. An ensemble of these residual nets achieves\n3.57% error on the ImageNet test set. This result won the 1st place on the\nILSVRC 2015 classification task. We also present analysis on CIFAR-10 with 100\nand 1000 layers.\n  The depth of representations is of central importance for many visual\nrecognition tasks. Solely due to our extremely deep representations, we obtain\na 28% relative improvement on the COCO object detection dataset. Deep residual\nnets are foundations of our submissions to ILSVRC & COCO 2015 competitions,\nwhere we also won the 1st places on the tasks of ImageNet detection, ImageNet\nlocalization, COCO detection, and COCO segmentation.",
     "authors": [
-      "Unknown"
+      "Kaiming He",
+      "Xiangyu Zhang",
+      "Shaoqing Ren",
+      "Jian Sun"
     ],
-    "abstract": "Abstract for 2009.14409v1.pdf",
-    "published": "2024-01-01",
-    "local_path": "data/raw_papers/2009.14409v1.pdf"
+    "published": "2015-12-10",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1512.03385",
+    "source": "arxiv",
+    "quality_score": 2.4,
+    "year": 2015
   },
   {
-    "id": "2010.07523v2",
-    "title": "AI Paper 3",
+    "id": "1706.03762",
+    "title": "Attention Is All You Need",
+    "abstract": "The dominant sequence transduction models are based on complex recurrent or\nconvolutional neural networks in an encoder-decoder configuration. The best\nperforming models also connect the encoder and decoder through an attention\nmechanism. We propose a new simple network architecture, the Transformer, based\nsolely on attention mechanisms, dispensing with recurrence and convolutions\nentirely. Experiments on two machine translation tasks show these models to be\nsuperior in quality while being more parallelizable and requiring significantly\nless time to train. Our model achieves 28.4 BLEU on the WMT 2014\nEnglish-to-German translation task, improving over the existing best results,\nincluding ensembles by over 2 BLEU. On the WMT 2014 English-to-French\ntranslation task, our model establishes a new single-model state-of-the-art\nBLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction\nof the training costs of the best models from the literature. We show that the\nTransformer generalizes well to other tasks by applying it successfully to\nEnglish constituency parsing both with large and limited training data.",
     "authors": [
-      "Unknown"
+      "Ashish Vaswani",
+      "Noam Shazeer",
+      "Niki Parmar",
+      "Jakob Uszkoreit",
+      "Llion Jones",
+      "Aidan N. Gomez",
+      "Lukasz Kaiser",
+      "Illia Polosukhin"
     ],
-    "abstract": "Abstract for 2010.07523v2.pdf",
-    "published": "2024-01-01",
-    "local_path": "data/raw_papers/2010.07523v2.pdf"
+    "published": "2017-06-12",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1706.03762",
+    "source": "arxiv",
+    "quality_score": 2.3,
+    "year": 2017
   },
   {
-    "id": "2410.15198v4",
-    "title": "AI Paper 4",
+    "id": "1506.01497",
+    "title": "Faster R-CNN: Towards Real-Time Object Detection with Region Proposal\n  Networks",
+    "abstract": "State-of-the-art object detection networks depend on region proposal\nalgorithms to hypothesize object locations. Advances like SPPnet and Fast R-CNN\nhave reduced the running time of these detection networks, exposing region\nproposal computation as a bottleneck. In this work, we introduce a Region\nProposal Network (RPN) that shares full-image convolutional features with the\ndetection network, thus enabling nearly cost-free region proposals. An RPN is a\nfully convolutional network that simultaneously predicts object bounds and\nobjectness scores at each position. The RPN is trained end-to-end to generate\nhigh-quality region proposals, which are used by Fast R-CNN for detection. We\nfurther merge RPN and Fast R-CNN into a single network by sharing their\nconvolutional features---using the recently popular terminology of neural\nnetworks with 'attention' mechanisms, the RPN component tells the unified\nnetwork where to look. For the very deep VGG-16 model, our detection system has\na frame rate of 5fps (including all steps) on a GPU, while achieving\nstate-of-the-art object detection accuracy on PASCAL VOC 2007, 2012, and MS\nCOCO datasets with only 300 proposals per image. In ILSVRC and COCO 2015\ncompetitions, Faster R-CNN and RPN are the foundations of the 1st-place winning\nentries in several tracks. Code has been made publicly available.",
     "authors": [
-      "Unknown"
+      "Shaoqing Ren",
+      "Kaiming He",
+      "Ross Girshick",
+      "Jian Sun"
     ],
-    "abstract": "Abstract for 2410.15198v4.pdf",
-    "published": "2024-01-01",
-    "local_path": "data/raw_papers/2410.15198v4.pdf"
+    "published": "2015-06-04",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1506.01497",
+    "source": "arxiv",
+    "quality_score": 2.2,
+    "year": 2015
+  },
+  {
+    "id": "1409.1556",
+    "title": "Very Deep Convolutional Networks for Large-Scale Image Recognition",
+    "abstract": "In this work we investigate the effect of the convolutional network depth on\nits accuracy in the large-scale image recognition setting. Our main\ncontribution is a thorough evaluation of networks of increasing depth using an\narchitecture with very small (3x3) convolution filters, which shows that a\nsignificant improvement on the prior-art configurations can be achieved by\npushing the depth to 16-19 weight layers. These findings were the basis of our\nImageNet Challenge 2014 submission, where our team secured the first and the\nsecond places in the localisation and classification tracks respectively. We\nalso show that our representations generalise well to other datasets, where\nthey achieve state-of-the-art results. We have made our two best-performing\nConvNet models publicly available to facilitate further research on the use of\ndeep visual representations in computer vision.",
+    "authors": [
+      "Karen Simonyan",
+      "Andrew Zisserman"
+    ],
+    "published": "2014-09-04",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1409.1556",
+    "source": "arxiv",
+    "quality_score": 2.2,
+    "year": 2014
+  },
+  {
+    "id": "1412.6980",
+    "title": "Adam: A Method for Stochastic Optimization",
+    "abstract": "We introduce Adam, an algorithm for first-order gradient-based optimization\nof stochastic objective functions, based on adaptive estimates of lower-order\nmoments. The method is straightforward to implement, is computationally\nefficient, has little memory requirements, is invariant to diagonal rescaling\nof the gradients, and is well suited for problems that are large in terms of\ndata and/or parameters. The method is also appropriate for non-stationary\nobjectives and problems with very noisy and/or sparse gradients. The\nhyper-parameters have intuitive interpretations and typically require little\ntuning. Some connections to related algorithms, on which Adam was inspired, are\ndiscussed. We also analyze the theoretical convergence properties of the\nalgorithm and provide a regret bound on the convergence rate that is comparable\nto the best known results under the online convex optimization framework.\nEmpirical results demonstrate that Adam works well in practice and compares\nfavorably to other stochastic optimization methods. Finally, we discuss AdaMax,\na variant of Adam based on the infinity norm.",
+    "authors": [
+      "Diederik P. Kingma",
+      "Jimmy Ba"
+    ],
+    "published": "2014-12-22",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1412.6980",
+    "source": "arxiv",
+    "quality_score": 2.2,
+    "year": 2014
+  },
+  {
+    "id": "1406.2661",
+    "title": "Generative Adversarial Networks",
+    "abstract": "We propose a new framework for estimating generative models via an\nadversarial process, in which we simultaneously train two models: a generative\nmodel G that captures the data distribution, and a discriminative model D that\nestimates the probability that a sample came from the training data rather than\nG. The training procedure for G is to maximize the probability of D making a\nmistake. This framework corresponds to a minimax two-player game. In the space\nof arbitrary functions G and D, a unique solution exists, with G recovering the\ntraining data distribution and D equal to 1/2 everywhere. In the case where G\nand D are defined by multilayer perceptrons, the entire system can be trained\nwith backpropagation. There is no need for any Markov chains or unrolled\napproximate inference networks during either training or generation of samples.\nExperiments demonstrate the potential of the framework through qualitative and\nquantitative evaluation of the generated samples.",
+    "authors": [
+      "Ian J. Goodfellow",
+      "Jean Pouget-Abadie",
+      "Mehdi Mirza",
+      "Bing Xu",
+      "David Warde-Farley",
+      "Sherjil Ozair",
+      "Aaron Courville",
+      "Yoshua Bengio"
+    ],
+    "published": "2014-06-10",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1406.2661",
+    "source": "arxiv",
+    "quality_score": 2.1,
+    "year": 2014
+  },
+  {
+    "id": "1301.3781",
+    "title": "Efficient Estimation of Word Representations in Vector Space",
+    "abstract": "We propose two novel model architectures for computing continuous vector\nrepresentations of words from very large data sets. The quality of these\nrepresentations is measured in a word similarity task, and the results are\ncompared to the previously best performing techniques based on different types\nof neural networks. We observe large improvements in accuracy at much lower\ncomputational cost, i.e. it takes less than a day to learn high quality word\nvectors from a 1.6 billion words data set. Furthermore, we show that these\nvectors provide state-of-the-art performance on our test set for measuring\nsyntactic and semantic word similarities.",
+    "authors": [
+      "Tomas Mikolov",
+      "Kai Chen",
+      "Greg Corrado",
+      "Jeffrey Dean"
+    ],
+    "published": "2013-01-16",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1301.3781",
+    "source": "arxiv",
+    "quality_score": 2.1,
+    "year": 2013
+  },
+  {
+    "id": "1409.0473",
+    "title": "Neural Machine Translation by Jointly Learning to Align and Translate",
+    "abstract": "Neural machine translation is a recently proposed approach to machine\ntranslation. Unlike the traditional statistical machine translation, the neural\nmachine translation aims at building a single neural network that can be\njointly tuned to maximize the translation performance. The models proposed\nrecently for neural machine translation often belong to a family of\nencoder-decoders and consists of an encoder that encodes a source sentence into\na fixed-length vector from which a decoder generates a translation. In this\npaper, we conjecture that the use of a fixed-length vector is a bottleneck in\nimproving the performance of this basic encoder-decoder architecture, and\npropose to extend this by allowing a model to automatically (soft-)search for\nparts of a source sentence that are relevant to predicting a target word,\nwithout having to form these parts as a hard segment explicitly. With this new\napproach, we achieve a translation performance comparable to the existing\nstate-of-the-art phrase-based system on the task of English-to-French\ntranslation. Furthermore, qualitative analysis reveals that the\n(soft-)alignments found by the model agree well with our intuition.",
+    "authors": [
+      "Dzmitry Bahdanau",
+      "Kyunghyun Cho",
+      "Yoshua Bengio"
+    ],
+    "published": "2014-09-01",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1409.0473",
+    "source": "arxiv",
+    "quality_score": 1.9,
+    "year": 2014
+  },
+  {
+    "id": "2005.14165",
+    "title": "Language Models are Few-Shot Learners",
+    "abstract": "Recent work has demonstrated substantial gains on many NLP tasks and\nbenchmarks by pre-training on a large corpus of text followed by fine-tuning on\na specific task. While typically task-agnostic in architecture, this method\nstill requires task-specific fine-tuning datasets of thousands or tens of\nthousands of examples. By contrast, humans can generally perform a new language\ntask from only a few examples or from simple instructions - something which\ncurrent NLP systems still largely struggle to do. Here we show that scaling up\nlanguage models greatly improves task-agnostic, few-shot performance, sometimes\neven reaching competitiveness with prior state-of-the-art fine-tuning\napproaches. Specifically, we train GPT-3, an autoregressive language model with\n175 billion parameters, 10x more than any previous non-sparse language model,\nand test its performance in the few-shot setting. For all tasks, GPT-3 is\napplied without any gradient updates or fine-tuning, with tasks and few-shot\ndemonstrations specified purely via text interaction with the model. GPT-3\nachieves strong performance on many NLP datasets, including translation,\nquestion-answering, and cloze tasks, as well as several tasks that require\non-the-fly reasoning or domain adaptation, such as unscrambling words, using a\nnovel word in a sentence, or performing 3-digit arithmetic. At the same time,\nwe also identify some datasets where GPT-3's few-shot learning still struggles,\nas well as some datasets where GPT-3 faces methodological issues related to\ntraining on large web corpora. Finally, we find that GPT-3 can generate samples\nof news articles which human evaluators have difficulty distinguishing from\narticles written by humans. We discuss broader societal impacts of this finding\nand of GPT-3 in general.",
+    "authors": [
+      "Tom B. Brown",
+      "Benjamin Mann",
+      "Nick Ryder",
+      "Melanie Subbiah",
+      "Jared Kaplan",
+      "Prafulla Dhariwal",
+      "Arvind Neelakantan",
+      "Pranav Shyam",
+      "Girish Sastry",
+      "Amanda Askell",
+      "Sandhini Agarwal",
+      "Ariel Herbert-Voss",
+      "Gretchen Krueger",
+      "Tom Henighan",
+      "Rewon Child",
+      "Aditya Ramesh",
+      "Daniel M. Ziegler",
+      "Jeffrey Wu",
+      "Clemens Winter",
+      "Christopher Hesse",
+      "Mark Chen",
+      "Eric Sigler",
+      "Mateusz Litwin",
+      "Scott Gray",
+      "Benjamin Chess",
+      "Jack Clark",
+      "Christopher Berner",
+      "Sam McCandlish",
+      "Alec Radford",
+      "Ilya Sutskever",
+      "Dario Amodei"
+    ],
+    "published": "2020-05-28",
+    "venue": "",
+    "url": "https://arxiv.org/abs/2005.14165",
+    "source": "arxiv",
+    "quality_score": 1.7,
+    "year": 2020
+  },
+  {
+    "id": "1612.03144",
+    "title": "Feature Pyramid Networks for Object Detection",
+    "abstract": "Feature pyramids are a basic component in recognition systems for detecting\nobjects at different scales. But recent deep learning object detectors have\navoided pyramid representations, in part because they are compute and memory\nintensive. In this paper, we exploit the inherent multi-scale, pyramidal\nhierarchy of deep convolutional networks to construct feature pyramids with\nmarginal extra cost. A top-down architecture with lateral connections is\ndeveloped for building high-level semantic feature maps at all scales. This\narchitecture, called a Feature Pyramid Network (FPN), shows significant\nimprovement as a generic feature extractor in several applications. Using FPN\nin a basic Faster R-CNN system, our method achieves state-of-the-art\nsingle-model results on the COCO detection benchmark without bells and\nwhistles, surpassing all existing single-model entries including those from the\nCOCO 2016 challenge winners. In addition, our method can run at 5 FPS on a GPU\nand thus is a practical and accurate solution to multi-scale object detection.\nCode will be made publicly available.",
+    "authors": [
+      "Tsung-Yi Lin",
+      "Piotr Dollár",
+      "Ross Girshick",
+      "Kaiming He",
+      "Bharath Hariharan",
+      "Serge Belongie"
+    ],
+    "published": "2016-12-09",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1612.03144",
+    "source": "arxiv",
+    "quality_score": 1.7,
+    "year": 2016
+  },
+  {
+    "id": "1207.0580",
+    "title": "Improving neural networks by preventing co-adaptation of feature\n  detectors",
+    "abstract": "When a large feedforward neural network is trained on a small training set,\nit typically performs poorly on held-out test data. This \"overfitting\" is\ngreatly reduced by randomly omitting half of the feature detectors on each\ntraining case. This prevents complex co-adaptations in which a feature detector\nis only helpful in the context of several other specific feature detectors.\nInstead, each neuron learns to detect a feature that is generally helpful for\nproducing the correct answer given the combinatorially large variety of\ninternal contexts in which it must operate. Random \"dropout\" gives big\nimprovements on many benchmark tasks and sets new records for speech and object\nrecognition.",
+    "authors": [
+      "Geoffrey E. Hinton",
+      "Nitish Srivastava",
+      "Alex Krizhevsky",
+      "Ilya Sutskever",
+      "Ruslan R. Salakhutdinov"
+    ],
+    "published": "2012-07-03",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1207.0580",
+    "source": "arxiv",
+    "quality_score": 1.7,
+    "year": 2012
+  },
+  {
+    "id": "1506.02142",
+    "title": "Dropout as a Bayesian Approximation: Representing Model Uncertainty in\n  Deep Learning",
+    "abstract": "Deep learning tools have gained tremendous attention in applied machine\nlearning. However such tools for regression and classification do not capture\nmodel uncertainty. In comparison, Bayesian models offer a mathematically\ngrounded framework to reason about model uncertainty, but usually come with a\nprohibitive computational cost. In this paper we develop a new theoretical\nframework casting dropout training in deep neural networks (NNs) as approximate\nBayesian inference in deep Gaussian processes. A direct result of this theory\ngives us tools to model uncertainty with dropout NNs -- extracting information\nfrom existing models that has been thrown away so far. This mitigates the\nproblem of representing uncertainty in deep learning without sacrificing either\ncomputational complexity or test accuracy. We perform an extensive study of the\nproperties of dropout's uncertainty. Various network architectures and\nnon-linearities are assessed on tasks of regression and classification, using\nMNIST as an example. We show a considerable improvement in predictive\nlog-likelihood and RMSE compared to existing state-of-the-art methods, and\nfinish by using dropout's uncertainty in deep reinforcement learning.",
+    "authors": [
+      "Yarin Gal",
+      "Zoubin Ghahramani"
+    ],
+    "published": "2015-06-06",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1506.02142",
+    "source": "arxiv",
+    "quality_score": 1.6,
+    "year": 2015
+  },
+  {
+    "id": "1409.3215",
+    "title": "Sequence to Sequence Learning with Neural Networks",
+    "abstract": "Deep Neural Networks (DNNs) are powerful models that have achieved excellent\nperformance on difficult learning tasks. Although DNNs work well whenever large\nlabeled training sets are available, they cannot be used to map sequences to\nsequences. In this paper, we present a general end-to-end approach to sequence\nlearning that makes minimal assumptions on the sequence structure. Our method\nuses a multilayered Long Short-Term Memory (LSTM) to map the input sequence to\na vector of a fixed dimensionality, and then another deep LSTM to decode the\ntarget sequence from the vector. Our main result is that on an English to\nFrench translation task from the WMT'14 dataset, the translations produced by\nthe LSTM achieve a BLEU score of 34.8 on the entire test set, where the LSTM's\nBLEU score was penalized on out-of-vocabulary words. Additionally, the LSTM did\nnot have difficulty on long sentences. For comparison, a phrase-based SMT\nsystem achieves a BLEU score of 33.3 on the same dataset. When we used the LSTM\nto rerank the 1000 hypotheses produced by the aforementioned SMT system, its\nBLEU score increases to 36.5, which is close to the previous best result on\nthis task. The LSTM also learned sensible phrase and sentence representations\nthat are sensitive to word order and are relatively invariant to the active and\nthe passive voice. Finally, we found that reversing the order of the words in\nall source sentences (but not target sentences) improved the LSTM's performance\nmarkedly, because doing so introduced many short term dependencies between the\nsource and the target sentence which made the optimization problem easier.",
+    "authors": [
+      "Ilya Sutskever",
+      "Oriol Vinyals",
+      "Quoc V. Le"
+    ],
+    "published": "2014-09-10",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1409.3215",
+    "source": "arxiv",
+    "quality_score": 1.6,
+    "year": 2014
+  },
+  {
+    "id": "1505.04597",
+    "title": "U-Net: Convolutional Networks for Biomedical Image Segmentation",
+    "abstract": "There is large consent that successful training of deep networks requires\nmany thousand annotated training samples. In this paper, we present a network\nand training strategy that relies on the strong use of data augmentation to use\nthe available annotated samples more efficiently. The architecture consists of\na contracting path to capture context and a symmetric expanding path that\nenables precise localization. We show that such a network can be trained\nend-to-end from very few images and outperforms the prior best method (a\nsliding-window convolutional network) on the ISBI challenge for segmentation of\nneuronal structures in electron microscopic stacks. Using the same network\ntrained on transmitted light microscopy images (phase contrast and DIC) we won\nthe ISBI cell tracking challenge 2015 in these categories by a large margin.\nMoreover, the network is fast. Segmentation of a 512x512 image takes less than\na second on a recent GPU. The full implementation (based on Caffe) and the\ntrained networks are available at\nhttp://lmb.informatik.uni-freiburg.de/people/ronneber/u-net .",
+    "authors": [
+      "Olaf Ronneberger",
+      "Philipp Fischer",
+      "Thomas Brox"
+    ],
+    "published": "2015-05-18",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1505.04597",
+    "source": "arxiv",
+    "quality_score": 1.4,
+    "year": 2015
+  },
+  {
+    "id": "1703.10593",
+    "title": "Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial\n  Networks",
+    "abstract": "Image-to-image translation is a class of vision and graphics problems where\nthe goal is to learn the mapping between an input image and an output image\nusing a training set of aligned image pairs. However, for many tasks, paired\ntraining data will not be available. We present an approach for learning to\ntranslate an image from a source domain $X$ to a target domain $Y$ in the\nabsence of paired examples. Our goal is to learn a mapping $G: X \\rightarrow Y$\nsuch that the distribution of images from $G(X)$ is indistinguishable from the\ndistribution $Y$ using an adversarial loss. Because this mapping is highly\nunder-constrained, we couple it with an inverse mapping $F: Y \\rightarrow X$\nand introduce a cycle consistency loss to push $F(G(X)) \\approx X$ (and vice\nversa). Qualitative results are presented on several tasks where paired\ntraining data does not exist, including collection style transfer, object\ntransfiguration, season transfer, photo enhancement, etc. Quantitative\ncomparisons against several prior methods demonstrate the superiority of our\napproach.",
+    "authors": [
+      "Jun-Yan Zhu",
+      "Taesung Park",
+      "Phillip Isola",
+      "Alexei A. Efros"
+    ],
+    "published": "2017-03-30",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1703.10593",
+    "source": "arxiv",
+    "quality_score": 1.2,
+    "year": 2017
+  },
+  {
+    "id": "1910.13461",
+    "title": "BART: Denoising Sequence-to-Sequence Pre-training for Natural Language\n  Generation, Translation, and Comprehension",
+    "abstract": "We present BART, a denoising autoencoder for pretraining sequence-to-sequence\nmodels. BART is trained by (1) corrupting text with an arbitrary noising\nfunction, and (2) learning a model to reconstruct the original text. It uses a\nstandard Tranformer-based neural machine translation architecture which,\ndespite its simplicity, can be seen as generalizing BERT (due to the\nbidirectional encoder), GPT (with the left-to-right decoder), and many other\nmore recent pretraining schemes. We evaluate a number of noising approaches,\nfinding the best performance by both randomly shuffling the order of the\noriginal sentences and using a novel in-filling scheme, where spans of text are\nreplaced with a single mask token. BART is particularly effective when fine\ntuned for text generation but also works well for comprehension tasks. It\nmatches the performance of RoBERTa with comparable training resources on GLUE\nand SQuAD, achieves new state-of-the-art results on a range of abstractive\ndialogue, question answering, and summarization tasks, with gains of up to 6\nROUGE. BART also provides a 1.1 BLEU increase over a back-translation system\nfor machine translation, with only target language pretraining. We also report\nablation experiments that replicate other pretraining schemes within the BART\nframework, to better measure which factors most influence end-task performance.",
+    "authors": [
+      "Mike Lewis",
+      "Yinhan Liu",
+      "Naman Goyal",
+      "Marjan Ghazvininejad",
+      "Abdelrahman Mohamed",
+      "Omer Levy",
+      "Ves Stoyanov",
+      "Luke Zettlemoyer"
+    ],
+    "published": "2019-10-29",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1910.13461",
+    "source": "arxiv",
+    "quality_score": 1.0,
+    "year": 2019
+  },
+  {
+    "id": "1511.06434",
+    "title": "Unsupervised Representation Learning with Deep Convolutional Generative\n  Adversarial Networks",
+    "abstract": "In recent years, supervised learning with convolutional networks (CNNs) has\nseen huge adoption in computer vision applications. Comparatively, unsupervised\nlearning with CNNs has received less attention. In this work we hope to help\nbridge the gap between the success of CNNs for supervised learning and\nunsupervised learning. We introduce a class of CNNs called deep convolutional\ngenerative adversarial networks (DCGANs), that have certain architectural\nconstraints, and demonstrate that they are a strong candidate for unsupervised\nlearning. Training on various image datasets, we show convincing evidence that\nour deep convolutional adversarial pair learns a hierarchy of representations\nfrom object parts to scenes in both the generator and discriminator.\nAdditionally, we use the learned features for novel tasks - demonstrating their\napplicability as general image representations.",
+    "authors": [
+      "Alec Radford",
+      "Luke Metz",
+      "Soumith Chintala"
+    ],
+    "published": "2015-11-19",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1511.06434",
+    "source": "arxiv",
+    "quality_score": 1.1,
+    "year": 2015
+  },
+  {
+    "id": "1503.02531",
+    "title": "Distilling the Knowledge in a Neural Network",
+    "abstract": "A very simple way to improve the performance of almost any machine learning\nalgorithm is to train many different models on the same data and then to\naverage their predictions. Unfortunately, making predictions using a whole\nensemble of models is cumbersome and may be too computationally expensive to\nallow deployment to a large number of users, especially if the individual\nmodels are large neural nets. Caruana and his collaborators have shown that it\nis possible to compress the knowledge in an ensemble into a single model which\nis much easier to deploy and we develop this approach further using a different\ncompression technique. We achieve some surprising results on MNIST and we show\nthat we can significantly improve the acoustic model of a heavily used\ncommercial system by distilling the knowledge in an ensemble of models into a\nsingle model. We also introduce a new type of ensemble composed of one or more\nfull models and many specialist models which learn to distinguish fine-grained\nclasses that the full models confuse. Unlike a mixture of experts, these\nspecialist models can be trained rapidly and in parallel.",
+    "authors": [
+      "Geoffrey Hinton",
+      "Oriol Vinyals",
+      "Jeff Dean"
+    ],
+    "published": "2015-03-09",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1503.02531",
+    "source": "arxiv",
+    "quality_score": 1.1,
+    "year": 2015
+  },
+  {
+    "id": "1312.5602",
+    "title": "Playing Atari with Deep Reinforcement Learning",
+    "abstract": "We present the first deep learning model to successfully learn control\npolicies directly from high-dimensional sensory input using reinforcement\nlearning. The model is a convolutional neural network, trained with a variant\nof Q-learning, whose input is raw pixels and whose output is a value function\nestimating future rewards. We apply our method to seven Atari 2600 games from\nthe Arcade Learning Environment, with no adjustment of the architecture or\nlearning algorithm. We find that it outperforms all previous approaches on six\nof the games and surpasses a human expert on three of them.",
+    "authors": [
+      "Volodymyr Mnih",
+      "Koray Kavukcuoglu",
+      "David Silver",
+      "Alex Graves",
+      "Ioannis Antonoglou",
+      "Daan Wierstra",
+      "Martin Riedmiller"
+    ],
+    "published": "2013-12-19",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1312.5602",
+    "source": "arxiv",
+    "quality_score": 1.1,
+    "year": 2013
+  },
+  {
+    "id": "1502.01852",
+    "title": "Delving Deep into Rectifiers: Surpassing Human-Level Performance on\n  ImageNet Classification",
+    "abstract": "Rectified activation units (rectifiers) are essential for state-of-the-art\nneural networks. In this work, we study rectifier neural networks for image\nclassification from two aspects. First, we propose a Parametric Rectified\nLinear Unit (PReLU) that generalizes the traditional rectified unit. PReLU\nimproves model fitting with nearly zero extra computational cost and little\noverfitting risk. Second, we derive a robust initialization method that\nparticularly considers the rectifier nonlinearities. This method enables us to\ntrain extremely deep rectified models directly from scratch and to investigate\ndeeper or wider network architectures. Based on our PReLU networks\n(PReLU-nets), we achieve 4.94% top-5 test error on the ImageNet 2012\nclassification dataset. This is a 26% relative improvement over the ILSVRC 2014\nwinner (GoogLeNet, 6.66%). To our knowledge, our result is the first to surpass\nhuman-level performance (5.1%, Russakovsky et al.) on this visual recognition\nchallenge.",
+    "authors": [
+      "Kaiming He",
+      "Xiangyu Zhang",
+      "Shaoqing Ren",
+      "Jian Sun"
+    ],
+    "published": "2015-02-06",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1502.01852",
+    "source": "arxiv",
+    "quality_score": 1.0,
+    "year": 2015
+  },
+  {
+    "id": "1508.04025",
+    "title": "Effective Approaches to Attention-based Neural Machine Translation",
+    "abstract": "An attentional mechanism has lately been used to improve neural machine\ntranslation (NMT) by selectively focusing on parts of the source sentence\nduring translation. However, there has been little work exploring useful\narchitectures for attention-based NMT. This paper examines two simple and\neffective classes of attentional mechanism: a global approach which always\nattends to all source words and a local one that only looks at a subset of\nsource words at a time. We demonstrate the effectiveness of both approaches\nover the WMT translation tasks between English and German in both directions.\nWith local attention, we achieve a significant gain of 5.0 BLEU points over\nnon-attentional systems which already incorporate known techniques such as\ndropout. Our ensemble model using different attention architectures has\nestablished a new state-of-the-art result in the WMT'15 English to German\ntranslation task with 25.9 BLEU points, an improvement of 1.0 BLEU points over\nthe existing best system backed by NMT and an n-gram reranker.",
+    "authors": [
+      "Minh-Thang Luong",
+      "Hieu Pham",
+      "Christopher D. Manning"
+    ],
+    "published": "2015-08-17",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1508.04025",
+    "source": "arxiv",
+    "quality_score": 1.0,
+    "year": 2015
+  },
+  {
+    "id": "2002.05709",
+    "title": "A Simple Framework for Contrastive Learning of Visual Representations",
+    "abstract": "This paper presents SimCLR: a simple framework for contrastive learning of\nvisual representations. We simplify recently proposed contrastive\nself-supervised learning algorithms without requiring specialized architectures\nor a memory bank. In order to understand what enables the contrastive\nprediction tasks to learn useful representations, we systematically study the\nmajor components of our framework. We show that (1) composition of data\naugmentations plays a critical role in defining effective predictive tasks, (2)\nintroducing a learnable nonlinear transformation between the representation and\nthe contrastive loss substantially improves the quality of the learned\nrepresentations, and (3) contrastive learning benefits from larger batch sizes\nand more training steps compared to supervised learning. By combining these\nfindings, we are able to considerably outperform previous methods for\nself-supervised and semi-supervised learning on ImageNet. A linear classifier\ntrained on self-supervised representations learned by SimCLR achieves 76.5%\ntop-1 accuracy, which is a 7% relative improvement over previous\nstate-of-the-art, matching the performance of a supervised ResNet-50. When\nfine-tuned on only 1% of the labels, we achieve 85.8% top-5 accuracy,\noutperforming AlexNet with 100X fewer labels.",
+    "authors": [
+      "Ting Chen",
+      "Simon Kornblith",
+      "Mohammad Norouzi",
+      "Geoffrey Hinton"
+    ],
+    "published": "2020-02-13",
+    "venue": "",
+    "url": "https://arxiv.org/abs/2002.05709",
+    "source": "arxiv",
+    "quality_score": 0.8,
+    "year": 2020
+  },
+  {
+    "id": "1312.4400",
+    "title": "Network In Network",
+    "abstract": "We propose a novel deep network structure called \"Network In Network\" (NIN)\nto enhance model discriminability for local patches within the receptive field.\nThe conventional convolutional layer uses linear filters followed by a\nnonlinear activation function to scan the input. Instead, we build micro neural\nnetworks with more complex structures to abstract the data within the receptive\nfield. We instantiate the micro neural network with a multilayer perceptron,\nwhich is a potent function approximator. The feature maps are obtained by\nsliding the micro networks over the input in a similar manner as CNN; they are\nthen fed into the next layer. Deep NIN can be implemented by stacking mutiple\nof the above described structure. With enhanced local modeling via the micro\nnetwork, we are able to utilize global average pooling over feature maps in the\nclassification layer, which is easier to interpret and less prone to\noverfitting than traditional fully connected layers. We demonstrated the\nstate-of-the-art classification performances with NIN on CIFAR-10 and\nCIFAR-100, and reasonable performances on SVHN and MNIST datasets.",
+    "authors": [
+      "Min Lin",
+      "Qiang Chen",
+      "Shuicheng Yan"
+    ],
+    "published": "2013-12-16",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1312.4400",
+    "source": "arxiv",
+    "quality_score": 1.0,
+    "year": 2013
+  },
+  {
+    "id": "1609.02907",
+    "title": "Semi-Supervised Classification with Graph Convolutional Networks",
+    "abstract": "We present a scalable approach for semi-supervised learning on\ngraph-structured data that is based on an efficient variant of convolutional\nneural networks which operate directly on graphs. We motivate the choice of our\nconvolutional architecture via a localized first-order approximation of\nspectral graph convolutions. Our model scales linearly in the number of graph\nedges and learns hidden layer representations that encode both local graph\nstructure and features of nodes. In a number of experiments on citation\nnetworks and on a knowledge graph dataset we demonstrate that our approach\noutperforms related methods by a significant margin.",
+    "authors": [
+      "Thomas N. Kipf",
+      "Max Welling"
+    ],
+    "published": "2016-09-09",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1609.02907",
+    "source": "arxiv",
+    "quality_score": 0.9,
+    "year": 2016
+  },
+  {
+    "id": "1405.0312",
+    "title": "Microsoft COCO: Common Objects in Context",
+    "abstract": "We present a new dataset with the goal of advancing the state-of-the-art in\nobject recognition by placing the question of object recognition in the context\nof the broader question of scene understanding. This is achieved by gathering\nimages of complex everyday scenes containing common objects in their natural\ncontext. Objects are labeled using per-instance segmentations to aid in precise\nobject localization. Our dataset contains photos of 91 objects types that would\nbe easily recognizable by a 4 year old. With a total of 2.5 million labeled\ninstances in 328k images, the creation of our dataset drew upon extensive crowd\nworker involvement via novel user interfaces for category detection, instance\nspotting and instance segmentation. We present a detailed statistical analysis\nof the dataset in comparison to PASCAL, ImageNet, and SUN. Finally, we provide\nbaseline performance analysis for bounding box and segmentation detection\nresults using a Deformable Parts Model.",
+    "authors": [
+      "Tsung-Yi Lin",
+      "Michael Maire",
+      "Serge Belongie",
+      "Lubomir Bourdev",
+      "Ross Girshick",
+      "James Hays",
+      "Pietro Perona",
+      "Deva Ramanan",
+      "C. Lawrence Zitnick",
+      "Piotr Dollár"
+    ],
+    "published": "2014-05-01",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1405.0312",
+    "source": "arxiv",
+    "quality_score": 0.9,
+    "year": 2014
+  },
+  {
+    "id": "1710.10903",
+    "title": "Graph Attention Networks",
+    "abstract": "We present graph attention networks (GATs), novel neural network\narchitectures that operate on graph-structured data, leveraging masked\nself-attentional layers to address the shortcomings of prior methods based on\ngraph convolutions or their approximations. By stacking layers in which nodes\nare able to attend over their neighborhoods' features, we enable (implicitly)\nspecifying different weights to different nodes in a neighborhood, without\nrequiring any kind of costly matrix operation (such as inversion) or depending\non knowing the graph structure upfront. In this way, we address several key\nchallenges of spectral-based graph neural networks simultaneously, and make our\nmodel readily applicable to inductive as well as transductive problems. Our GAT\nmodels have achieved or matched state-of-the-art results across four\nestablished transductive and inductive graph benchmarks: the Cora, Citeseer and\nPubmed citation network datasets, as well as a protein-protein interaction\ndataset (wherein test graphs remain unseen during training).",
+    "authors": [
+      "Petar Veličković",
+      "Guillem Cucurull",
+      "Arantxa Casanova",
+      "Adriana Romero",
+      "Pietro Liò",
+      "Yoshua Bengio"
+    ],
+    "published": "2017-10-30",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1710.10903",
+    "source": "arxiv",
+    "quality_score": 0.8,
+    "year": 2017
+  },
+  {
+    "id": "1602.04938",
+    "title": "\"Why Should I Trust You?\": Explaining the Predictions of Any Classifier",
+    "abstract": "Despite widespread adoption, machine learning models remain mostly black\nboxes. Understanding the reasons behind predictions is, however, quite\nimportant in assessing trust, which is fundamental if one plans to take action\nbased on a prediction, or when choosing whether to deploy a new model. Such\nunderstanding also provides insights into the model, which can be used to\ntransform an untrustworthy model or prediction into a trustworthy one. In this\nwork, we propose LIME, a novel explanation technique that explains the\npredictions of any classifier in an interpretable and faithful manner, by\nlearning an interpretable model locally around the prediction. We also propose\na method to explain models by presenting representative individual predictions\nand their explanations in a non-redundant way, framing the task as a submodular\noptimization problem. We demonstrate the flexibility of these methods by\nexplaining different models for text (e.g. random forests) and image\nclassification (e.g. neural networks). We show the utility of explanations via\nnovel experiments, both simulated and with human subjects, on various scenarios\nthat require trust: deciding if one should trust a prediction, choosing between\nmodels, improving an untrustworthy classifier, and identifying why a classifier\nshould not be trusted.",
+    "authors": [
+      "Marco Tulio Ribeiro",
+      "Sameer Singh",
+      "Carlos Guestrin"
+    ],
+    "published": "2016-02-16",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1602.04938",
+    "source": "arxiv",
+    "quality_score": 0.8,
+    "year": 2016
+  },
+  {
+    "id": "1909.11942",
+    "title": "ALBERT: A Lite BERT for Self-supervised Learning of Language\n  Representations",
+    "abstract": "Increasing model size when pretraining natural language representations often\nresults in improved performance on downstream tasks. However, at some point\nfurther model increases become harder due to GPU/TPU memory limitations and\nlonger training times. To address these problems, we present two\nparameter-reduction techniques to lower memory consumption and increase the\ntraining speed of BERT. Comprehensive empirical evidence shows that our\nproposed methods lead to models that scale much better compared to the original\nBERT. We also use a self-supervised loss that focuses on modeling\ninter-sentence coherence, and show it consistently helps downstream tasks with\nmulti-sentence inputs. As a result, our best model establishes new\nstate-of-the-art results on the GLUE, RACE, and \\squad benchmarks while having\nfewer parameters compared to BERT-large. The code and the pretrained models are\navailable at https://github.com/google-research/ALBERT.",
+    "authors": [
+      "Zhenzhong Lan",
+      "Mingda Chen",
+      "Sebastian Goodman",
+      "Kevin Gimpel",
+      "Piyush Sharma",
+      "Radu Soricut"
+    ],
+    "published": "2019-09-26",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1909.11942",
+    "source": "arxiv",
+    "quality_score": 0.7000000000000001,
+    "year": 2019
+  },
+  {
+    "id": "1905.02850",
+    "title": "Understanding Attention and Generalization in Graph Neural Networks",
+    "abstract": "We aim to better understand attention over nodes in graph neural networks\n(GNNs) and identify factors influencing its effectiveness. We particularly\nfocus on the ability of attention GNNs to generalize to larger, more complex or\nnoisy graphs. Motivated by insights from the work on Graph Isomorphism\nNetworks, we design simple graph reasoning tasks that allow us to study\nattention in a controlled environment. We find that under typical conditions\nthe effect of attention is negligible or even harmful, but under certain\nconditions it provides an exceptional gain in performance of more than 60% in\nsome of our classification tasks. Satisfying these conditions in practice is\nchallenging and often requires optimal initialization or supervised training of\nattention. We propose an alternative recipe and train attention in a\nweakly-supervised fashion that approaches the performance of supervised models,\nand, compared to unsupervised models, improves results on several synthetic as\nwell as real datasets. Source code and datasets are available at\nhttps://github.com/bknyaz/graph_attention_pool.",
+    "authors": [
+      "Boris Knyazev",
+      "Graham W. Taylor",
+      "Mohamed R. Amer"
+    ],
+    "published": "2019-05-08",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1905.02850",
+    "source": "arxiv",
+    "quality_score": 0.7,
+    "year": 2019
+  },
+  {
+    "id": "1509.02971",
+    "title": "Continuous control with deep reinforcement learning",
+    "abstract": "We adapt the ideas underlying the success of Deep Q-Learning to the\ncontinuous action domain. We present an actor-critic, model-free algorithm\nbased on the deterministic policy gradient that can operate over continuous\naction spaces. Using the same learning algorithm, network architecture and\nhyper-parameters, our algorithm robustly solves more than 20 simulated physics\ntasks, including classic problems such as cartpole swing-up, dexterous\nmanipulation, legged locomotion and car driving. Our algorithm is able to find\npolicies whose performance is competitive with those found by a planning\nalgorithm with full access to the dynamics of the domain and its derivatives.\nWe further demonstrate that for many of the tasks the algorithm can learn\npolicies end-to-end: directly from raw pixel inputs.",
+    "authors": [
+      "Timothy P. Lillicrap",
+      "Jonathan J. Hunt",
+      "Alexander Pritzel",
+      "Nicolas Heess",
+      "Tom Erez",
+      "Yuval Tassa",
+      "David Silver",
+      "Daan Wierstra"
+    ],
+    "published": "2015-09-09",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1509.02971",
+    "source": "arxiv",
+    "quality_score": 0.8,
+    "year": 2015
+  },
+  {
+    "id": "1703.03400",
+    "title": "Model-Agnostic Meta-Learning for Fast Adaptation of Deep Networks",
+    "abstract": "We propose an algorithm for meta-learning that is model-agnostic, in the\nsense that it is compatible with any model trained with gradient descent and\napplicable to a variety of different learning problems, including\nclassification, regression, and reinforcement learning. The goal of\nmeta-learning is to train a model on a variety of learning tasks, such that it\ncan solve new learning tasks using only a small number of training samples. In\nour approach, the parameters of the model are explicitly trained such that a\nsmall number of gradient steps with a small amount of training data from a new\ntask will produce good generalization performance on that task. In effect, our\nmethod trains the model to be easy to fine-tune. We demonstrate that this\napproach leads to state-of-the-art performance on two few-shot image\nclassification benchmarks, produces good results on few-shot regression, and\naccelerates fine-tuning for policy gradient reinforcement learning with neural\nnetwork policies.",
+    "authors": [
+      "Chelsea Finn",
+      "Pieter Abbeel",
+      "Sergey Levine"
+    ],
+    "published": "2017-03-09",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1703.03400",
+    "source": "arxiv",
+    "quality_score": 0.7000000000000001,
+    "year": 2017
+  },
+  {
+    "id": "1707.06347",
+    "title": "Proximal Policy Optimization Algorithms",
+    "abstract": "We propose a new family of policy gradient methods for reinforcement\nlearning, which alternate between sampling data through interaction with the\nenvironment, and optimizing a \"surrogate\" objective function using stochastic\ngradient ascent. Whereas standard policy gradient methods perform one gradient\nupdate per data sample, we propose a novel objective function that enables\nmultiple epochs of minibatch updates. The new methods, which we call proximal\npolicy optimization (PPO), have some of the benefits of trust region policy\noptimization (TRPO), but they are much simpler to implement, more general, and\nhave better sample complexity (empirically). Our experiments test PPO on a\ncollection of benchmark tasks, including simulated robotic locomotion and Atari\ngame playing, and we show that PPO outperforms other online policy gradient\nmethods, and overall strikes a favorable balance between sample complexity,\nsimplicity, and wall-time.",
+    "authors": [
+      "John Schulman",
+      "Filip Wolski",
+      "Prafulla Dhariwal",
+      "Alec Radford",
+      "Oleg Klimov"
+    ],
+    "published": "2017-07-20",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1707.06347",
+    "source": "arxiv",
+    "quality_score": 0.7,
+    "year": 2017
+  },
+  {
+    "id": "1703.01365",
+    "title": "Axiomatic Attribution for Deep Networks",
+    "abstract": "We study the problem of attributing the prediction of a deep network to its\ninput features, a problem previously studied by several other works. We\nidentify two fundamental axioms---Sensitivity and Implementation Invariance\nthat attribution methods ought to satisfy. We show that they are not satisfied\nby most known attribution methods, which we consider to be a fundamental\nweakness of those methods. We use the axioms to guide the design of a new\nattribution method called Integrated Gradients. Our method requires no\nmodification to the original network and is extremely simple to implement; it\njust needs a few calls to the standard gradient operator. We apply this method\nto a couple of image models, a couple of text models and a chemistry model,\ndemonstrating its ability to debug networks, to extract rules from a network,\nand to enable users to engage with models better.",
+    "authors": [
+      "Mukund Sundararajan",
+      "Ankur Taly",
+      "Qiqi Yan"
+    ],
+    "published": "2017-03-04",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1703.01365",
+    "source": "arxiv",
+    "quality_score": 0.7,
+    "year": 2017
+  },
+  {
+    "id": "2003.04297",
+    "title": "Improved Baselines with Momentum Contrastive Learning",
+    "abstract": "Contrastive unsupervised learning has recently shown encouraging progress,\ne.g., in Momentum Contrast (MoCo) and SimCLR. In this note, we verify the\neffectiveness of two of SimCLR's design improvements by implementing them in\nthe MoCo framework. With simple modifications to MoCo---namely, using an MLP\nprojection head and more data augmentation---we establish stronger baselines\nthat outperform SimCLR and do not require large training batches. We hope this\nwill make state-of-the-art unsupervised learning research more accessible. Code\nwill be made public.",
+    "authors": [
+      "Xinlei Chen",
+      "Haoqi Fan",
+      "Ross Girshick",
+      "Kaiming He"
+    ],
+    "published": "2020-03-09",
+    "venue": "",
+    "url": "https://arxiv.org/abs/2003.04297",
+    "source": "arxiv",
+    "quality_score": 0.6000000000000001,
+    "year": 2020
+  },
+  {
+    "id": "1506.02025",
+    "title": "Spatial Transformer Networks",
+    "abstract": "Convolutional Neural Networks define an exceptionally powerful class of\nmodels, but are still limited by the lack of ability to be spatially invariant\nto the input data in a computationally and parameter efficient manner. In this\nwork we introduce a new learnable module, the Spatial Transformer, which\nexplicitly allows the spatial manipulation of data within the network. This\ndifferentiable module can be inserted into existing convolutional\narchitectures, giving neural networks the ability to actively spatially\ntransform feature maps, conditional on the feature map itself, without any\nextra training supervision or modification to the optimisation process. We show\nthat the use of spatial transformers results in models which learn invariance\nto translation, scale, rotation and more generic warping, resulting in\nstate-of-the-art performance on several benchmarks, and for a number of classes\nof transformations.",
+    "authors": [
+      "Max Jaderberg",
+      "Karen Simonyan",
+      "Andrew Zisserman",
+      "Koray Kavukcuoglu"
+    ],
+    "published": "2015-06-05",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1506.02025",
+    "source": "arxiv",
+    "quality_score": 0.7,
+    "year": 2015
+  },
+  {
+    "id": "2103.00020",
+    "title": "Learning Transferable Visual Models From Natural Language Supervision",
+    "abstract": "State-of-the-art computer vision systems are trained to predict a fixed set\nof predetermined object categories. This restricted form of supervision limits\ntheir generality and usability since additional labeled data is needed to\nspecify any other visual concept. Learning directly from raw text about images\nis a promising alternative which leverages a much broader source of\nsupervision. We demonstrate that the simple pre-training task of predicting\nwhich caption goes with which image is an efficient and scalable way to learn\nSOTA image representations from scratch on a dataset of 400 million (image,\ntext) pairs collected from the internet. After pre-training, natural language\nis used to reference learned visual concepts (or describe new ones) enabling\nzero-shot transfer of the model to downstream tasks. We study the performance\nof this approach by benchmarking on over 30 different existing computer vision\ndatasets, spanning tasks such as OCR, action recognition in videos,\ngeo-localization, and many types of fine-grained object classification. The\nmodel transfers non-trivially to most tasks and is often competitive with a\nfully supervised baseline without the need for any dataset specific training.\nFor instance, we match the accuracy of the original ResNet-50 on ImageNet\nzero-shot without needing to use any of the 1.28 million training examples it\nwas trained on. We release our code and pre-trained model weights at\nhttps://github.com/OpenAI/CLIP.",
+    "authors": [
+      "Alec Radford",
+      "Jong Wook Kim",
+      "Chris Hallacy",
+      "Aditya Ramesh",
+      "Gabriel Goh",
+      "Sandhini Agarwal",
+      "Girish Sastry",
+      "Amanda Askell",
+      "Pamela Mishkin",
+      "Jack Clark",
+      "Gretchen Krueger",
+      "Ilya Sutskever"
+    ],
+    "published": "2021-02-26",
+    "venue": "",
+    "url": "https://arxiv.org/abs/2103.00020",
+    "source": "arxiv",
+    "quality_score": 0.5,
+    "year": 2021
+  },
+  {
+    "id": "2010.11929",
+    "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at\n  Scale",
+    "abstract": "While the Transformer architecture has become the de-facto standard for\nnatural language processing tasks, its applications to computer vision remain\nlimited. In vision, attention is either applied in conjunction with\nconvolutional networks, or used to replace certain components of convolutional\nnetworks while keeping their overall structure in place. We show that this\nreliance on CNNs is not necessary and a pure transformer applied directly to\nsequences of image patches can perform very well on image classification tasks.\nWhen pre-trained on large amounts of data and transferred to multiple mid-sized\nor small image recognition benchmarks (ImageNet, CIFAR-100, VTAB, etc.), Vision\nTransformer (ViT) attains excellent results compared to state-of-the-art\nconvolutional networks while requiring substantially fewer computational\nresources to train.",
+    "authors": [
+      "Alexey Dosovitskiy",
+      "Lucas Beyer",
+      "Alexander Kolesnikov",
+      "Dirk Weissenborn",
+      "Xiaohua Zhai",
+      "Thomas Unterthiner",
+      "Mostafa Dehghani",
+      "Matthias Minderer",
+      "Georg Heigold",
+      "Sylvain Gelly",
+      "Jakob Uszkoreit",
+      "Neil Houlsby"
+    ],
+    "published": "2020-10-22",
+    "venue": "",
+    "url": "https://arxiv.org/abs/2010.11929",
+    "source": "arxiv",
+    "quality_score": 0.5,
+    "year": 2020
+  },
+  {
+    "id": "1607.06450",
+    "title": "Layer Normalization",
+    "abstract": "Training state-of-the-art, deep neural networks is computationally expensive.\nOne way to reduce the training time is to normalize the activities of the\nneurons. A recently introduced technique called batch normalization uses the\ndistribution of the summed input to a neuron over a mini-batch of training\ncases to compute a mean and variance which are then used to normalize the\nsummed input to that neuron on each training case. This significantly reduces\nthe training time in feed-forward neural networks. However, the effect of batch\nnormalization is dependent on the mini-batch size and it is not obvious how to\napply it to recurrent neural networks. In this paper, we transpose batch\nnormalization into layer normalization by computing the mean and variance used\nfor normalization from all of the summed inputs to the neurons in a layer on a\nsingle training case. Like batch normalization, we also give each neuron its\nown adaptive bias and gain which are applied after the normalization but before\nthe non-linearity. Unlike batch normalization, layer normalization performs\nexactly the same computation at training and test times. It is also\nstraightforward to apply to recurrent neural networks by computing the\nnormalization statistics separately at each time step. Layer normalization is\nvery effective at stabilizing the hidden state dynamics in recurrent networks.\nEmpirically, we show that layer normalization can substantially reduce the\ntraining time compared with previously published techniques.",
+    "authors": [
+      "Jimmy Lei Ba",
+      "Jamie Ryan Kiros",
+      "Geoffrey E. Hinton"
+    ],
+    "published": "2016-07-21",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1607.06450",
+    "source": "arxiv",
+    "quality_score": 0.6000000000000001,
+    "year": 2016
+  },
+  {
+    "id": "1609.07061",
+    "title": "Quantized Neural Networks: Training Neural Networks with Low Precision\n  Weights and Activations",
+    "abstract": "We introduce a method to train Quantized Neural Networks (QNNs) --- neural\nnetworks with extremely low precision (e.g., 1-bit) weights and activations, at\nrun-time. At train-time the quantized weights and activations are used for\ncomputing the parameter gradients. During the forward pass, QNNs drastically\nreduce memory size and accesses, and replace most arithmetic operations with\nbit-wise operations. As a result, power consumption is expected to be\ndrastically reduced. We trained QNNs over the MNIST, CIFAR-10, SVHN and\nImageNet datasets. The resulting QNNs achieve prediction accuracy comparable to\ntheir 32-bit counterparts. For example, our quantized version of AlexNet with\n1-bit weights and 2-bit activations achieves $51\\%$ top-1 accuracy. Moreover,\nwe quantize the parameter gradients to 6-bits as well which enables gradients\ncomputation using only bit-wise operation. Quantized recurrent neural networks\nwere tested over the Penn Treebank dataset, and achieved comparable accuracy as\ntheir 32-bit counterparts using only 4-bits. Last but not least, we programmed\na binary matrix multiplication GPU kernel with which it is possible to run our\nMNIST QNN 7 times faster than with an unoptimized GPU kernel, without suffering\nany loss in classification accuracy. The QNN code is available online.",
+    "authors": [
+      "Itay Hubara",
+      "Matthieu Courbariaux",
+      "Daniel Soudry",
+      "Ran El-Yaniv",
+      "Yoshua Bengio"
+    ],
+    "published": "2016-09-22",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1609.07061",
+    "source": "arxiv",
+    "quality_score": 0.6000000000000001,
+    "year": 2016
+  },
+  {
+    "id": "1912.04958",
+    "title": "Analyzing and Improving the Image Quality of StyleGAN",
+    "abstract": "The style-based GAN architecture (StyleGAN) yields state-of-the-art results\nin data-driven unconditional generative image modeling. We expose and analyze\nseveral of its characteristic artifacts, and propose changes in both model\narchitecture and training methods to address them. In particular, we redesign\nthe generator normalization, revisit progressive growing, and regularize the\ngenerator to encourage good conditioning in the mapping from latent codes to\nimages. In addition to improving image quality, this path length regularizer\nyields the additional benefit that the generator becomes significantly easier\nto invert. This makes it possible to reliably attribute a generated image to a\nparticular network. We furthermore visualize how well the generator utilizes\nits output resolution, and identify a capacity problem, motivating us to train\nlarger models for additional quality improvements. Overall, our improved model\nredefines the state of the art in unconditional image modeling, both in terms\nof existing distribution quality metrics as well as perceived image quality.",
+    "authors": [
+      "Tero Karras",
+      "Samuli Laine",
+      "Miika Aittala",
+      "Janne Hellsten",
+      "Jaakko Lehtinen",
+      "Timo Aila"
+    ],
+    "published": "2019-12-03",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1912.04958",
+    "source": "arxiv",
+    "quality_score": 0.5,
+    "year": 2019
+  },
+  {
+    "id": "1910.01108",
+    "title": "DistilBERT, a distilled version of BERT: smaller, faster, cheaper and\n  lighter",
+    "abstract": "As Transfer Learning from large-scale pre-trained models becomes more\nprevalent in Natural Language Processing (NLP), operating these large models in\non-the-edge and/or under constrained computational training or inference\nbudgets remains challenging. In this work, we propose a method to pre-train a\nsmaller general-purpose language representation model, called DistilBERT, which\ncan then be fine-tuned with good performances on a wide range of tasks like its\nlarger counterparts. While most prior work investigated the use of distillation\nfor building task-specific models, we leverage knowledge distillation during\nthe pre-training phase and show that it is possible to reduce the size of a\nBERT model by 40%, while retaining 97% of its language understanding\ncapabilities and being 60% faster. To leverage the inductive biases learned by\nlarger models during pre-training, we introduce a triple loss combining\nlanguage modeling, distillation and cosine-distance losses. Our smaller, faster\nand lighter model is cheaper to pre-train and we demonstrate its capabilities\nfor on-device computations in a proof-of-concept experiment and a comparative\non-device study.",
+    "authors": [
+      "Victor Sanh",
+      "Lysandre Debut",
+      "Julien Chaumond",
+      "Thomas Wolf"
+    ],
+    "published": "2019-10-02",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1910.01108",
+    "source": "arxiv",
+    "quality_score": 0.5,
+    "year": 2019
+  },
+  {
+    "id": "1910.05446",
+    "title": "On Empirical Comparisons of Optimizers for Deep Learning",
+    "abstract": "Selecting an optimizer is a central step in the contemporary deep learning\npipeline. In this paper, we demonstrate the sensitivity of optimizer\ncomparisons to the hyperparameter tuning protocol. Our findings suggest that\nthe hyperparameter search space may be the single most important factor\nexplaining the rankings obtained by recent empirical comparisons in the\nliterature. In fact, we show that these results can be contradicted when\nhyperparameter search spaces are changed. As tuning effort grows without bound,\nmore general optimizers should never underperform the ones they can approximate\n(i.e., Adam should never perform worse than momentum), but recent attempts to\ncompare optimizers either assume these inclusion relationships are not\npractically relevant or restrict the hyperparameters in ways that break the\ninclusions. In our experiments, we find that inclusion relationships between\noptimizers matter in practice and always predict optimizer comparisons. In\nparticular, we find that the popular adaptive gradient methods never\nunderperform momentum or gradient descent. We also report practical tips around\ntuning often ignored hyperparameters of adaptive gradient methods and raise\nconcerns about fairly benchmarking optimizers for neural network training.",
+    "authors": [
+      "Dami Choi",
+      "Christopher J. Shallue",
+      "Zachary Nado",
+      "Jaehoon Lee",
+      "Chris J. Maddison",
+      "George E. Dahl"
+    ],
+    "published": "2019-10-11",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1910.05446",
+    "source": "arxiv",
+    "quality_score": 0.45,
+    "year": 2019
+  },
+  {
+    "id": "2102.03334",
+    "title": "ViLT: Vision-and-Language Transformer Without Convolution or Region\n  Supervision",
+    "abstract": "Vision-and-Language Pre-training (VLP) has improved performance on various\njoint vision-and-language downstream tasks. Current approaches to VLP heavily\nrely on image feature extraction processes, most of which involve region\nsupervision (e.g., object detection) and the convolutional architecture (e.g.,\nResNet). Although disregarded in the literature, we find it problematic in\nterms of both (1) efficiency/speed, that simply extracting input features\nrequires much more computation than the multimodal interaction steps; and (2)\nexpressive power, as it is upper bounded to the expressive power of the visual\nembedder and its predefined visual vocabulary. In this paper, we present a\nminimal VLP model, Vision-and-Language Transformer (ViLT), monolithic in the\nsense that the processing of visual inputs is drastically simplified to just\nthe same convolution-free manner that we process textual inputs. We show that\nViLT is up to tens of times faster than previous VLP models, yet with\ncompetitive or better downstream task performance. Our code and pre-trained\nweights are available at https://github.com/dandelin/vilt.",
+    "authors": [
+      "Wonjae Kim",
+      "Bokyung Son",
+      "Ildoo Kim"
+    ],
+    "published": "2021-02-05",
+    "venue": "",
+    "url": "https://arxiv.org/abs/2102.03334",
+    "source": "arxiv",
+    "quality_score": 0.38000000000000006,
+    "year": 2021
+  },
+  {
+    "id": "2006.07733",
+    "title": "Bootstrap your own latent: A new approach to self-supervised Learning",
+    "abstract": "We introduce Bootstrap Your Own Latent (BYOL), a new approach to\nself-supervised image representation learning. BYOL relies on two neural\nnetworks, referred to as online and target networks, that interact and learn\nfrom each other. From an augmented view of an image, we train the online\nnetwork to predict the target network representation of the same image under a\ndifferent augmented view. At the same time, we update the target network with a\nslow-moving average of the online network. While state-of-the art methods rely\non negative pairs, BYOL achieves a new state of the art without them. BYOL\nreaches $74.3\\%$ top-1 classification accuracy on ImageNet using a linear\nevaluation with a ResNet-50 architecture and $79.6\\%$ with a larger ResNet. We\nshow that BYOL performs on par or better than the current state of the art on\nboth transfer and semi-supervised benchmarks. Our implementation and pretrained\nmodels are given on GitHub.",
+    "authors": [
+      "Jean-Bastien Grill",
+      "Florian Strub",
+      "Florent Altché",
+      "Corentin Tallec",
+      "Pierre H. Richemond",
+      "Elena Buchatskaya",
+      "Carl Doersch",
+      "Bernardo Avila Pires",
+      "Zhaohan Daniel Guo",
+      "Mohammad Gheshlaghi Azar",
+      "Bilal Piot",
+      "Koray Kavukcuoglu",
+      "Rémi Munos",
+      "Michal Valko"
+    ],
+    "published": "2020-06-13",
+    "venue": "",
+    "url": "https://arxiv.org/abs/2006.07733",
+    "source": "arxiv",
+    "quality_score": 0.4,
+    "year": 2020
+  },
+  {
+    "id": "2005.12872",
+    "title": "End-to-End Object Detection with Transformers",
+    "abstract": "We present a new method that views object detection as a direct set\nprediction problem. Our approach streamlines the detection pipeline,\neffectively removing the need for many hand-designed components like a\nnon-maximum suppression procedure or anchor generation that explicitly encode\nour prior knowledge about the task. The main ingredients of the new framework,\ncalled DEtection TRansformer or DETR, are a set-based global loss that forces\nunique predictions via bipartite matching, and a transformer encoder-decoder\narchitecture. Given a fixed small set of learned object queries, DETR reasons\nabout the relations of the objects and the global image context to directly\noutput the final set of predictions in parallel. The new model is conceptually\nsimple and does not require a specialized library, unlike many other modern\ndetectors. DETR demonstrates accuracy and run-time performance on par with the\nwell-established and highly-optimized Faster RCNN baseline on the challenging\nCOCO object detection dataset. Moreover, DETR can be easily generalized to\nproduce panoptic segmentation in a unified manner. We show that it\nsignificantly outperforms competitive baselines. Training code and pretrained\nmodels are available at https://github.com/facebookresearch/detr.",
+    "authors": [
+      "Nicolas Carion",
+      "Francisco Massa",
+      "Gabriel Synnaeve",
+      "Nicolas Usunier",
+      "Alexander Kirillov",
+      "Sergey Zagoruyko"
+    ],
+    "published": "2020-05-26",
+    "venue": "",
+    "url": "https://arxiv.org/abs/2005.12872",
+    "source": "arxiv",
+    "quality_score": 0.4,
+    "year": 2020
+  },
+  {
+    "id": "1606.04080",
+    "title": "Matching Networks for One Shot Learning",
+    "abstract": "Learning from a few examples remains a key challenge in machine learning.\nDespite recent advances in important domains such as vision and language, the\nstandard supervised deep learning paradigm does not offer a satisfactory\nsolution for learning new concepts rapidly from little data. In this work, we\nemploy ideas from metric learning based on deep neural features and from recent\nadvances that augment neural networks with external memories. Our framework\nlearns a network that maps a small labelled support set and an unlabelled\nexample to its label, obviating the need for fine-tuning to adapt to new class\ntypes. We then define one-shot learning problems on vision (using Omniglot,\nImageNet) and language tasks. Our algorithm improves one-shot accuracy on\nImageNet from 87.6% to 93.2% and from 88.0% to 93.8% on Omniglot compared to\ncompeting approaches. We also demonstrate the usefulness of the same model on\nlanguage modeling by introducing a one-shot task on the Penn Treebank.",
+    "authors": [
+      "Oriol Vinyals",
+      "Charles Blundell",
+      "Timothy Lillicrap",
+      "Koray Kavukcuoglu",
+      "Daan Wierstra"
+    ],
+    "published": "2016-06-13",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1606.04080",
+    "source": "arxiv",
+    "quality_score": 0.5,
+    "year": 2016
+  },
+  {
+    "id": "2203.15556",
+    "title": "Training Compute-Optimal Large Language Models",
+    "abstract": "We investigate the optimal model size and number of tokens for training a\ntransformer language model under a given compute budget. We find that current\nlarge language models are significantly undertrained, a consequence of the\nrecent focus on scaling language models whilst keeping the amount of training\ndata constant. By training over 400 language models ranging from 70 million to\nover 16 billion parameters on 5 to 500 billion tokens, we find that for\ncompute-optimal training, the model size and the number of training tokens\nshould be scaled equally: for every doubling of model size the number of\ntraining tokens should also be doubled. We test this hypothesis by training a\npredicted compute-optimal model, Chinchilla, that uses the same compute budget\nas Gopher but with 70B parameters and 4$\\times$ more more data. Chinchilla\nuniformly and significantly outperforms Gopher (280B), GPT-3 (175B), Jurassic-1\n(178B), and Megatron-Turing NLG (530B) on a large range of downstream\nevaluation tasks. This also means that Chinchilla uses substantially less\ncompute for fine-tuning and inference, greatly facilitating downstream usage.\nAs a highlight, Chinchilla reaches a state-of-the-art average accuracy of 67.5%\non the MMLU benchmark, greater than a 7% improvement over Gopher.",
+    "authors": [
+      "Jordan Hoffmann",
+      "Sebastian Borgeaud",
+      "Arthur Mensch",
+      "Elena Buchatskaya",
+      "Trevor Cai",
+      "Eliza Rutherford",
+      "Diego de Las Casas",
+      "Lisa Anne Hendricks",
+      "Johannes Welbl",
+      "Aidan Clark",
+      "Tom Hennigan",
+      "Eric Noland",
+      "Katie Millican",
+      "George van den Driessche",
+      "Bogdan Damoc",
+      "Aurelia Guy",
+      "Simon Osindero",
+      "Karen Simonyan",
+      "Erich Elsen",
+      "Jack W. Rae",
+      "Oriol Vinyals",
+      "Laurent Sifre"
+    ],
+    "published": "2022-03-29",
+    "venue": "",
+    "url": "https://arxiv.org/abs/2203.15556",
+    "source": "arxiv",
+    "quality_score": 0.30000000000000004,
+    "year": 2022
+  },
+  {
+    "id": "1511.05952",
+    "title": "Prioritized Experience Replay",
+    "abstract": "Experience replay lets online reinforcement learning agents remember and\nreuse experiences from the past. In prior work, experience transitions were\nuniformly sampled from a replay memory. However, this approach simply replays\ntransitions at the same frequency that they were originally experienced,\nregardless of their significance. In this paper we develop a framework for\nprioritizing experience, so as to replay important transitions more frequently,\nand therefore learn more efficiently. We use prioritized experience replay in\nDeep Q-Networks (DQN), a reinforcement learning algorithm that achieved\nhuman-level performance across many Atari games. DQN with prioritized\nexperience replay achieves a new state-of-the-art, outperforming DQN with\nuniform replay on 41 out of 49 games.",
+    "authors": [
+      "Tom Schaul",
+      "John Quan",
+      "Ioannis Antonoglou",
+      "David Silver"
+    ],
+    "published": "2015-11-18",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1511.05952",
+    "source": "arxiv",
+    "quality_score": 0.5,
+    "year": 2015
+  },
+  {
+    "id": "1511.08198",
+    "title": "Towards Universal Paraphrastic Sentence Embeddings",
+    "abstract": "We consider the problem of learning general-purpose, paraphrastic sentence\nembeddings based on supervision from the Paraphrase Database (Ganitkevitch et\nal., 2013). We compare six compositional architectures, evaluating them on\nannotated textual similarity datasets drawn both from the same distribution as\nthe training data and from a wide range of other domains. We find that the most\ncomplex architectures, such as long short-term memory (LSTM) recurrent neural\nnetworks, perform best on the in-domain data. However, in out-of-domain\nscenarios, simple architectures such as word averaging vastly outperform LSTMs.\nOur simplest averaging model is even competitive with systems tuned for the\nparticular tasks while also being extremely efficient and easy to use.\n  In order to better understand how these architectures compare, we conduct\nfurther experiments on three supervised NLP tasks: sentence similarity,\nentailment, and sentiment classification. We again find that the word averaging\nmodels perform well for sentence similarity and entailment, outperforming\nLSTMs. However, on sentiment classification, we find that the LSTM performs\nvery strongly-even recording new state-of-the-art performance on the Stanford\nSentiment Treebank.\n  We then demonstrate how to combine our pretrained sentence embeddings with\nthese supervised tasks, using them both as a prior and as a black box feature\nextractor. This leads to performance rivaling the state of the art on the SICK\nsimilarity and entailment tasks. We release all of our resources to the\nresearch community with the hope that they can serve as the new baseline for\nfurther work on universal sentence embeddings.",
+    "authors": [
+      "John Wieting",
+      "Mohit Bansal",
+      "Kevin Gimpel",
+      "Karen Livescu"
+    ],
+    "published": "2015-11-25",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1511.08198",
+    "source": "arxiv",
+    "quality_score": 0.5,
+    "year": 2015
+  },
+  {
+    "id": "2204.02311",
+    "title": "PaLM: Scaling Language Modeling with Pathways",
+    "abstract": "Large language models have been shown to achieve remarkable performance\nacross a variety of natural language tasks using few-shot learning, which\ndrastically reduces the number of task-specific training examples needed to\nadapt the model to a particular application. To further our understanding of\nthe impact of scale on few-shot learning, we trained a 540-billion parameter,\ndensely activated, Transformer language model, which we call Pathways Language\nModel PaLM. We trained PaLM on 6144 TPU v4 chips using Pathways, a new ML\nsystem which enables highly efficient training across multiple TPU Pods. We\ndemonstrate continued benefits of scaling by achieving state-of-the-art\nfew-shot learning results on hundreds of language understanding and generation\nbenchmarks. On a number of these tasks, PaLM 540B achieves breakthrough\nperformance, outperforming the finetuned state-of-the-art on a suite of\nmulti-step reasoning tasks, and outperforming average human performance on the\nrecently released BIG-bench benchmark. A significant number of BIG-bench tasks\nshowed discontinuous improvements from model scale, meaning that performance\nsteeply increased as we scaled to our largest model. PaLM also has strong\ncapabilities in multilingual tasks and source code generation, which we\ndemonstrate on a wide array of benchmarks. We additionally provide a\ncomprehensive analysis on bias and toxicity, and study the extent of training\ndata memorization with respect to model scale. Finally, we discuss the ethical\nconsiderations related to large language models and discuss potential\nmitigation strategies.",
+    "authors": [
+      "Aakanksha Chowdhery",
+      "Sharan Narang",
+      "Jacob Devlin",
+      "Maarten Bosma",
+      "Gaurav Mishra",
+      "Adam Roberts",
+      "Paul Barham",
+      "Hyung Won Chung",
+      "Charles Sutton",
+      "Sebastian Gehrmann",
+      "Parker Schuh",
+      "Kensen Shi",
+      "Sasha Tsvyashchenko",
+      "Joshua Maynez",
+      "Abhishek Rao",
+      "Parker Barnes",
+      "Yi Tay",
+      "Noam Shazeer",
+      "Vinodkumar Prabhakaran",
+      "Emily Reif",
+      "Nan Du",
+      "Ben Hutchinson",
+      "Reiner Pope",
+      "James Bradbury",
+      "Jacob Austin",
+      "Michael Isard",
+      "Guy Gur-Ari",
+      "Pengcheng Yin",
+      "Toju Duke",
+      "Anselm Levskaya",
+      "Sanjay Ghemawat",
+      "Sunipa Dev",
+      "Henryk Michalewski",
+      "Xavier Garcia",
+      "Vedant Misra",
+      "Kevin Robinson",
+      "Liam Fedus",
+      "Denny Zhou",
+      "Daphne Ippolito",
+      "David Luan",
+      "Hyeontaek Lim",
+      "Barret Zoph",
+      "Alexander Spiridonov",
+      "Ryan Sepassi",
+      "David Dohan",
+      "Shivani Agrawal",
+      "Mark Omernick",
+      "Andrew M. Dai",
+      "Thanumalayan Sankaranarayana Pillai",
+      "Marie Pellat",
+      "Aitor Lewkowycz",
+      "Erica Moreira",
+      "Rewon Child",
+      "Oleksandr Polozov",
+      "Katherine Lee",
+      "Zongwei Zhou",
+      "Xuezhi Wang",
+      "Brennan Saeta",
+      "Mark Diaz",
+      "Orhan Firat",
+      "Michele Catasta",
+      "Jason Wei",
+      "Kathy Meier-Hellstern",
+      "Douglas Eck",
+      "Jeff Dean",
+      "Slav Petrov",
+      "Noah Fiedel"
+    ],
+    "published": "2022-04-05",
+    "venue": "",
+    "url": "https://arxiv.org/abs/2204.02311",
+    "source": "arxiv",
+    "quality_score": 0.25,
+    "year": 2022
+  },
+  {
+    "id": "1703.05175",
+    "title": "Prototypical Networks for Few-shot Learning",
+    "abstract": "We propose prototypical networks for the problem of few-shot classification,\nwhere a classifier must generalize to new classes not seen in the training set,\ngiven only a small number of examples of each new class. Prototypical networks\nlearn a metric space in which classification can be performed by computing\ndistances to prototype representations of each class. Compared to recent\napproaches for few-shot learning, they reflect a simpler inductive bias that is\nbeneficial in this limited-data regime, and achieve excellent results. We\nprovide an analysis showing that some simple design decisions can yield\nsubstantial improvements over recent approaches involving complicated\narchitectural choices and meta-learning. We further extend prototypical\nnetworks to zero-shot learning and achieve state-of-the-art results on the\nCU-Birds dataset.",
+    "authors": [
+      "Jake Snell",
+      "Kevin Swersky",
+      "Richard S. Zemel"
+    ],
+    "published": "2017-03-15",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1703.05175",
+    "source": "arxiv",
+    "quality_score": 0.4,
+    "year": 2017
+  },
+  {
+    "id": "1311.2901",
+    "title": "Visualizing and Understanding Convolutional Networks",
+    "abstract": "Large Convolutional Network models have recently demonstrated impressive\nclassification performance on the ImageNet benchmark. However there is no clear\nunderstanding of why they perform so well, or how they might be improved. In\nthis paper we address both issues. We introduce a novel visualization technique\nthat gives insight into the function of intermediate feature layers and the\noperation of the classifier. We also perform an ablation study to discover the\nperformance contribution from different model layers. This enables us to find\nmodel architectures that outperform Krizhevsky \\etal on the ImageNet\nclassification benchmark. We show our ImageNet model generalizes well to other\ndatasets: when the softmax classifier is retrained, it convincingly beats the\ncurrent state-of-the-art results on Caltech-101 and Caltech-256 datasets.",
+    "authors": [
+      "Matthew D Zeiler",
+      "Rob Fergus"
+    ],
+    "published": "2013-11-12",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1311.2901",
+    "source": "arxiv",
+    "quality_score": 0.5,
+    "year": 2013
+  },
+  {
+    "id": "1908.03557",
+    "title": "VisualBERT: A Simple and Performant Baseline for Vision and Language",
+    "abstract": "We propose VisualBERT, a simple and flexible framework for modeling a broad\nrange of vision-and-language tasks. VisualBERT consists of a stack of\nTransformer layers that implicitly align elements of an input text and regions\nin an associated input image with self-attention. We further propose two\nvisually-grounded language model objectives for pre-training VisualBERT on\nimage caption data. Experiments on four vision-and-language tasks including\nVQA, VCR, NLVR2, and Flickr30K show that VisualBERT outperforms or rivals with\nstate-of-the-art models while being significantly simpler. Further analysis\ndemonstrates that VisualBERT can ground elements of language to image regions\nwithout any explicit supervision and is even sensitive to syntactic\nrelationships, tracking, for example, associations between verbs and image\nregions corresponding to their arguments.",
+    "authors": [
+      "Liunian Harold Li",
+      "Mark Yatskar",
+      "Da Yin",
+      "Cho-Jui Hsieh",
+      "Kai-Wei Chang"
+    ],
+    "published": "2019-08-09",
+    "venue": "",
+    "url": "https://arxiv.org/abs/1908.03557",
+    "source": "arxiv",
+    "quality_score": 0.30000000000000004,
+    "year": 2019
   },
   {
     "id": "2106.07932v4",
-    "title": "AI Paper 5",
+    "title": "Medical Code Prediction from Discharge Summary: Document to Sequence BERT using Sequence Attention",
     "authors": [
-      "Unknown"
+      "Tak-Sung Heo",
+      "Yongmin Yoo",
+      "Yeongjoon Park",
+      "Byeong-Cheol Jo",
+      "Kyungsun Kim"
     ],
-    "abstract": "Abstract for 2106.07932v4.pdf",
-    "published": "2024-01-01",
+    "abstract": "Clinical notes are unstructured text generated by clinicians during patient\nencounters. Clinical notes are usually accompanied by a set of metadata codes\nfrom the International Classification of Diseases(ICD). ICD code is an\nimportant code used in various operations, including insurance, reimbursement,\nmedical diagnosis, etc. Therefore, it is important to classify ICD codes\nquickly and accurately. However, annotating these codes is costly and\ntime-consuming. So we propose a model based on bidirectional encoder\nrepresentations from transformers (BERT) using the sequence attention method\nfor automatic ICD code assignment. We evaluate our approach on the medical\ninformation mart for intensive care III (MIMIC-III) benchmark dataset. Our\nmodel achieved performance of macro-averaged F1: 0.62898 and micro-averaged F1:\n0.68555 and is performing better than a performance of the state-of-the-art\nmodel using the MIMIC-III dataset. The contribution of this study proposes a\nmethod of using BERT that can be applied to documents and a sequence attention\nmethod that can capture important sequence in-formation appearing in documents.",
+    "published": "2021-06-15",
+    "pdf_url": "http://arxiv.org/pdf/2106.07932v4",
     "local_path": "data/raw_papers/2106.07932v4.pdf"
+  },
+  {
+    "id": "2410.15198v4",
+    "title": "Medical-GAT: Cancer Document Classification Leveraging Graph-Based Residual Network for Scenarios with Limited Data",
+    "authors": [
+      "Elias Hossain",
+      "Tasfia Nuzhat",
+      "Shamsul Masum",
+      "Shahram Rahimi",
+      "Noorbakhsh Amiri Golilarz"
+    ],
+    "abstract": "Accurate classification of cancer-related medical abstracts is crucial for\nhealthcare management and research. However, obtaining large, labeled datasets\nin the medical domain is challenging due to privacy concerns and the complexity\nof clinical data. This scarcity of annotated data impedes the development of\neffective machine learning models for cancer document classification. To\naddress this challenge, we present a curated dataset of 1,874 biomedical\nabstracts, categorized into thyroid cancer, colon cancer, lung cancer, and\ngeneric topics. Our research focuses on leveraging this dataset to improve\nclassification performance, particularly in data-scarce scenarios. We introduce\na Residual Graph Attention Network (R-GAT) with multiple graph attention layers\nthat capture the semantic information and structural relationships within\ncancer-related documents. Our R-GAT model is compared with various techniques,\nincluding transformer-based models such as Bidirectional Encoder\nRepresentations from Transformers (BERT), RoBERTa, and domain-specific models\nlike BioBERT and Bio+ClinicalBERT. We also evaluated deep learning models\n(CNNs, LSTMs) and traditional machine learning models (Logistic Regression,\nSVM). Additionally, we explore ensemble approaches that combine deep learning\nmodels to enhance classification. Various feature extraction methods are\nassessed, including Term Frequency-Inverse Document Frequency (TF-IDF) with\nunigrams and bigrams, Word2Vec, and tokenizers from BERT and RoBERTa. The R-GAT\nmodel outperforms other techniques, achieving precision, recall, and F1 scores\nof 0.99, 0.97, and 0.98 for thyroid cancer; 0.96, 0.94, and 0.95 for colon\ncancer; 0.96, 0.99, and 0.97 for lung cancer; and 0.95, 0.96, and 0.95 for\ngeneric topics.",
+    "published": "2024-10-19",
+    "pdf_url": "http://arxiv.org/pdf/2410.15198v4",
+    "local_path": "data/raw_papers/2410.15198v4.pdf"
+  },
+  {
+    "id": "2010.07523v2",
+    "title": "Context-Guided BERT for Targeted Aspect-Based Sentiment Analysis",
+    "authors": [
+      "Zhengxuan Wu",
+      "Desmond C. Ong"
+    ],
+    "abstract": "Aspect-based sentiment analysis (ABSA) and Targeted ASBA (TABSA) allow\nfiner-grained inferences about sentiment to be drawn from the same text,\ndepending on context. For example, a given text can have different targets\n(e.g., neighborhoods) and different aspects (e.g., price or safety), with\ndifferent sentiment associated with each target-aspect pair. In this paper, we\ninvestigate whether adding context to self-attention models improves\nperformance on (T)ABSA. We propose two variants of Context-Guided BERT\n(CG-BERT) that learn to distribute attention under different contexts. We first\nadapt a context-aware Transformer to produce a CG-BERT that uses context-guided\nsoftmax-attention. Next, we propose an improved Quasi-Attention CG-BERT model\nthat learns a compositional attention that supports subtractive attention. We\ntrain both models with pretrained BERT on two (T)ABSA datasets: SentiHood and\nSemEval-2014 (Task 4). Both models achieve new state-of-the-art results with\nour QACG-BERT model having the best performance. Furthermore, we provide\nanalyses of the impact of context in the our proposed models. Our work provides\nmore evidence for the utility of adding context-dependencies to pretrained\nself-attention-based language models for context-based natural language tasks.",
+    "published": "2020-10-15",
+    "pdf_url": "http://arxiv.org/pdf/2010.07523v2",
+    "local_path": "data/raw_papers/2010.07523v2.pdf"
+  },
+  {
+    "id": "2009.14409v1",
+    "title": "AUBER: Automated BERT Regularization",
+    "authors": [
+      "Hyun Dong Lee",
+      "Seongmin Lee",
+      "U Kang"
+    ],
+    "abstract": "How can we effectively regularize BERT? Although BERT proves its\neffectiveness in various downstream natural language processing tasks, it often\noverfits when there are only a small number of training instances. A promising\ndirection to regularize BERT is based on pruning its attention heads based on a\nproxy score for head importance. However, heuristic-based methods are usually\nsuboptimal since they predetermine the order by which attention heads are\npruned. In order to overcome such a limitation, we propose AUBER, an effective\nregularization method that leverages reinforcement learning to automatically\nprune attention heads from BERT. Instead of depending on heuristics or\nrule-based policies, AUBER learns a pruning policy that determines which\nattention heads should or should not be pruned for regularization. Experimental\nresults show that AUBER outperforms existing pruning methods by achieving up to\n10% better accuracy. In addition, our ablation study empirically demonstrates\nthe effectiveness of our design choices for AUBER.",
+    "published": "2020-09-30",
+    "pdf_url": "http://arxiv.org/pdf/2009.14409v1",
+    "local_path": "data/raw_papers/2009.14409v1.pdf"
+  },
+  {
+    "id": "2102.10934v1",
+    "title": "Using Prior Knowledge to Guide BERT's Attention in Semantic Textual Matching Tasks",
+    "authors": [
+      "Tingyu Xia",
+      "Yue Wang",
+      "Yuan Tian",
+      "Yi Chang"
+    ],
+    "abstract": "We study the problem of incorporating prior knowledge into a deep\nTransformer-based model,i.e.,Bidirectional Encoder Representations from\nTransformers (BERT), to enhance its performance on semantic textual matching\ntasks. By probing and analyzing what BERT has already known when solving this\ntask, we obtain better understanding of what task-specific knowledge BERT needs\nthe most and where it is most needed. The analysis further motivates us to take\na different approach than most existing works. Instead of using prior knowledge\nto create a new training task for fine-tuning BERT, we directly inject\nknowledge into BERT's multi-head attention mechanism. This leads us to a simple\nyet effective approach that enjoys fast training stage as it saves the model\nfrom training on additional data or tasks other than the main task. Extensive\nexperiments demonstrate that the proposed knowledge-enhanced BERT is able to\nconsistently improve semantic textual matching performance over the original\nBERT model, and the performance benefit is most salient when training data is\nscarce.",
+    "published": "2021-02-22",
+    "pdf_url": "http://arxiv.org/pdf/2102.10934v1",
+    "local_path": "data/raw_papers/2102.10934v1.pdf"
   }
 ]
