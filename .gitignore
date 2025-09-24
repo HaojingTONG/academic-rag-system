@@ -20,3 +20,18 @@ venv_m3max/
 # IDE
 .vscode/
 .idea/
+
+# Data files (too large for GitHub)
+data/raw_papers/*.pdf
+data/embedding_cache/
+data/evaluation/results/
+data/evaluation/quick_results/
+vector_db/*.sqlite3
+vector_db/*/data_level0.bin
+vector_db/*/header.bin
+vector_db/*/length.bin
+vector_db/*/link_lists.bin
+vector_db/*/index_metadata.pickle
+
+# Processed data (can be regenerated)
+data/main_system_papers.json
