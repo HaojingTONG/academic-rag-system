@@ -13,7 +13,7 @@ sys.path.append(str(Path(__file__).parent))
 sys.path.append(str(Path(__file__).parent / 'src'))
 
 from src.evaluation import RAGEvaluator, BenchmarkDatasets
-from main_rag_system import AcademicRAGSystem
+from main_rag_system import MainRAGSystem as AcademicRAGSystem
 
 def main():
     """主评估流程"""
