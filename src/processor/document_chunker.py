@@ -408,17 +408,257 @@ class DocumentChunker:
         return processed_chunks
     
     def _clean_text(self, text: str) -> str:
-        """清理文本"""
-        # 移除多余空白
-        text = re.sub(r'\s+', ' ', text)
-        
-        # 移除特殊字符（保留基本标点）
-        text = re.sub(r'[^\w\s\.\,\!\?\:\;\-\(\)\[\]\"\'\/\\\$\%\#\@\&\*\+\=\<\>\~\`]', ' ', text)
-        
-        # 移除多余的换行和空格
-        text = '\n'.join(line.strip() for line in text.split('\n') if line.strip())
-        
-        return text.strip()
+        """
+        改进的文本清洗，保留换行与结构
+        保留段内换行、列表格式、章节结构，同时去除重复空格与噪声
+        """
+        if not text or not text.strip():
+            return ""
+
+        # 第1步：预处理 - 标准化行结束符
+        text = text.replace('\r\n', '\n').replace('\r', '\n')
+
+        # 第2步：按行处理，保留重要结构
+        lines = text.split('\n')
+        processed_lines = []
+
+        for i, line in enumerate(lines):
+            processed_line = self._process_line_for_cleaning(line, i, lines)
+            if processed_line is not None:  # None表示跳过该行
+                processed_lines.append(processed_line)
+
+        # 第3步：智能合并行，保留段落结构
+        structured_text = self._merge_lines_intelligently(processed_lines)
+
+        # 第4步：最终清理
+        final_text = self._final_text_cleanup(structured_text)
+
+        return final_text.strip()
+
+    def _process_line_for_cleaning(self, line: str, line_index: int, all_lines: list) -> str:
+        """处理单行文本，用于文本清洗"""
+        # 跳过完全空白的行（但保留单个换行作为段落分隔）
+        if not line.strip():
+            return ""
+
+        # 检查是否是噪声行
+        if self._is_noise_line_for_cleaning(line):
+            return None  # 跳过噪声行
+
+        # 检查是否是列表项
+        if self._is_list_item_for_cleaning(line):
+            return self._clean_list_item_for_cleaning(line)
+
+        # 检查是否是结构化行（章节标题等）
+        if self._is_structure_line_for_cleaning(line):
+            return self._clean_structure_line_for_cleaning(line)
+
+        # 普通文本行清理
+        return self._clean_normal_line_for_cleaning(line)
+
+    def _is_noise_line_for_cleaning(self, line: str) -> bool:
+        """检查是否是噪声行"""
+        line_stripped = line.strip()
+
+        if not line_stripped:
+            return False
+
+        # 噪声模式
+        noise_patterns = [
+            r'^\s*\d+\s*$',                    # 单独的页码
+            r'^\s*Figure\s+\d+[:\.]?\s*$',     # 单独的图片标题行
+            r'^\s*Table\s+\d+[:\.]?\s*$',      # 单独的表格标题行
+            r'^\s*Fig\.\s*\d+\s*$',            # 简化图片引用
+            r'^\s*[^\w\s]{3,}\s*$',            # 纯符号行(如分隔线)
+        ]
+
+        for pattern in noise_patterns:
+            if re.match(pattern, line, re.IGNORECASE):
+                return True
+
+        # 长度过短且没有实际内容的行
+        if len(line_stripped) < 3 and not re.search(r'\w', line_stripped):
+            return True
+
+        return False
+
+    def _is_list_item_for_cleaning(self, line: str) -> bool:
+        """检查是否是列表项"""
+        list_patterns = [
+            r'^\s*[-•·]\s+',           # 项目符号列表
+            r'^\s*[0-9]+\.\s+',        # 数字列表 (1. 2. 3.)
+            r'^\s*[0-9]+\)\s+',        # 数字列表 (1) 2) 3))
+            r'^\s*[a-zA-Z]\.\s+',      # 字母列表 (a. b. c.)
+            r'^\s*[a-zA-Z]\)\s+',      # 字母列表 (a) b) c))
+            r'^\s*[ivx]+\.\s+',        # 罗马数字列表 (i. ii. iii.)
+            r'^\s*\*\s+',              # 星号列表
+            r'^\s*\+\s+',              # 加号列表
+        ]
+
+        for pattern in list_patterns:
+            if re.match(pattern, line):
+                return True
+        return False
+
+    def _is_structure_line_for_cleaning(self, line: str) -> bool:
+        """检查是否是结构化行（章节标题等）"""
+        line_stripped = line.strip()
+
+        # 章节标题模式
+        if re.match(r'^\s*(?:\d+\.?\s*)?[A-Z][^.!?]*$', line_stripped):
+            return True
+
+        # 包含公式、引用等特殊内容
+        special_patterns = [
+            r'\$.*?\$|\\[a-zA-Z]+\{.*?\}',              # 数学公式
+            r'\[[0-9,\-\s]+\]|\([A-Za-z]+,?\s*[0-9]{4}\)',  # 引用
+            r'http[s]?://\S+|www\.\S+',                     # URL
+            r'```[\s\S]*?```|`[^`]+`',                # 代码块
+        ]
+
+        for pattern in special_patterns:
+            if re.search(pattern, line):
+                return True
+
+        return False
+
+    def _clean_list_item_for_cleaning(self, line: str) -> str:
+        """清理列表项"""
+        list_patterns = [
+            r'^\s*[-•·]\s+',           # 项目符号列表
+            r'^\s*[0-9]+\.\s+',        # 数字列表
+            r'^\s*[0-9]+\)\s+',        # 数字列表
+            r'^\s*[a-zA-Z]\.\s+',      # 字母列表
+            r'^\s*[a-zA-Z]\)\s+',      # 字母列表
+            r'^\s*[ivx]+\.\s+',        # 罗马数字列表
+            r'^\s*\*\s+',              # 星号列表
+            r'^\s*\+\s+',              # 加号列表
+        ]
+
+        # 找到列表标识符
+        for pattern in list_patterns:
+            match = re.match(pattern, line)
+            if match:
+                prefix = match.group(0)  # 列表标识符部分
+                content = line[match.end():].strip()  # 内容部分
+
+                # 清理内容部分
+                content = re.sub(r'\s+', ' ', content)
+
+                return prefix + content
+
+        # 如果没有匹配到模式，按普通行处理
+        return self._clean_normal_line_for_cleaning(line)
+
+    def _clean_structure_line_for_cleaning(self, line: str) -> str:
+        """清理结构化行"""
+        # 移除行首尾多余空格，但保留内部格式
+        line = line.strip()
+
+        # 清理多余的空格（但不破坏特殊格式）
+        line = re.sub(r'[ \t]+', ' ', line)
+
+        return line
+
+    def _clean_normal_line_for_cleaning(self, line: str) -> str:
+        """清理普通文本行"""
+        # 移除行首尾空格
+        line = line.strip()
+
+        # 清理多余的空格和制表符
+        line = re.sub(r'[ \t]+', ' ', line)
+
+        # 清理多余的标点符号
+        line = re.sub(r'([.!?]){2,}', r'\1', line)  # 重复标点
+        line = re.sub(r'([,;:]){2,}', r'\1', line)   # 重复标点
+
+        return line
+
+    def _merge_lines_intelligently(self, lines: list) -> str:
+        """智能合并行，保留段落结构"""
+        if not lines:
+            return ""
+
+        result_lines = []
+        i = 0
+
+        while i < len(lines):
+            current_line = lines[i]
+
+            # 空行作为段落分隔符
+            if current_line == "":
+                result_lines.append("")
+                i += 1
+                continue
+
+            # 结构化行（标题、列表等）单独成行
+            if (self._is_structure_line_for_cleaning(current_line) or
+                self._is_list_item_for_cleaning(current_line)):
+                result_lines.append(current_line)
+                i += 1
+                continue
+
+            # 普通文本行：检查是否需要与下一行合并
+            merged_line = current_line
+            j = i + 1
+
+            while j < len(lines):
+                next_line = lines[j]
+
+                # 遇到空行、结构化行或列表项，停止合并
+                if (next_line == "" or
+                    self._is_structure_line_for_cleaning(next_line) or
+                    self._is_list_item_for_cleaning(next_line)):
+                    break
+
+                # 检查是否应该合并
+                if self._should_merge_lines_for_cleaning(merged_line, next_line):
+                    merged_line += " " + next_line
+                    j += 1
+                else:
+                    break
+
+            result_lines.append(merged_line)
+            i = j
+
+        return '\n'.join(result_lines)
+
+    def _should_merge_lines_for_cleaning(self, line1: str, line2: str) -> bool:
+        """判断两行是否应该合并"""
+        # 如果第一行以句号、感叹号或问号结尾，通常不合并
+        if re.search(r'[.!?]\s*$', line1.strip()):
+            return False
+
+        # 如果第二行看起来像新句子的开始（大写字母），可能不应该合并
+        if re.match(r'^[A-Z]', line2.strip()):
+            # 但如果第一行很短（可能是断行），还是要合并
+            return len(line1.strip()) < 50
+
+        # 如果第二行是数字或特殊字符开头，可能不应该合并
+        if re.match(r'^\d+|^[^\w\s]', line2.strip()):
+            return False
+
+        # 默认情况下合并短行
+        return True
+
+    def _final_text_cleanup(self, text: str) -> str:
+        """最终清理"""
+        # 清理多个连续空行
+        text = re.sub(r'\n{3,}', '\n\n', text)
+
+        # 清理行尾空格
+        lines = text.split('\n')
+        lines = [line.rstrip() for line in lines]
+        text = '\n'.join(lines)
+
+        # 移除特殊字符（但保留基本标点和数学符号）
+        # 更温和的清理，避免破坏重要内容
+        text = re.sub(r'[^\w\s\.\,\!\?\:\;\-\(\)\[\]\"\'\/\\\$\%\#\@\&\*\+\=\<\>\~\`\n]', ' ', text)
+
+        # 最后清理：移除多余空格，但保留换行
+        text = re.sub(r'[ \t]+', ' ', text)
+
+        return text
     
     def get_chunking_stats(self, chunks: List[Chunk]) -> Dict:
         """获取切分统计信息"""

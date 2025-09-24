@@ -6,7 +6,7 @@ PDF全文处理模块 - 提取学术论文的完整内容
 
 import fitz  # PyMuPDF
 import re
-from typing import List, Dict, Optional, Tuple
+from typing import List, Dict, Optional, Tuple, Any
 from pathlib import Path
 from dataclasses import dataclass
 import logging
@@ -16,7 +16,7 @@ class PDFSection:
     """PDF章节数据结构"""
     title: str
     content: str
-    section_type: str  # abstract, introduction, method, experiment, result, conclusion, reference
+    section_type: str  # abstract, introduction, related_work, background, method, implementation, experiment, dataset, result, discussion, limitation, conclusion, acknowledgment, appendix, reference, content, header_content, footer_content, transition
     page_range: Tuple[int, int]
     confidence: float  # 识别置信度
 
@@ -51,30 +51,99 @@ class AcademicPDFProcessor:
                 r'^\s*1\.?\s*引\s*言\s*$',
                 r'^\s*引\s*言\s*$'
             ],
+            'related_work': [
+                r'^\s*\d+\.?\s*related\s+work\s*$',
+                r'^\s*related\s+work\s*$',
+                r'^\s*\d+\.?\s*literature\s+review\s*$',
+                r'^\s*literature\s+review\s*$',
+                r'^\s*\d+\.?\s*prior\s+work\s*$',
+                r'^\s*\d+\.?\s*相\s*关\s*工\s*作\s*$',
+                r'^\s*相\s*关\s*工\s*作\s*$'
+            ],
+            'background': [
+                r'^\s*\d+\.?\s*background\s*$',
+                r'^\s*background\s*$',
+                r'^\s*\d+\.?\s*preliminaries\s*$',
+                r'^\s*preliminaries\s*$',
+                r'^\s*\d+\.?\s*problem\s+formulation\s*$',
+                r'^\s*\d+\.?\s*背\s*景\s*$',
+                r'^\s*背\s*景\s*$'
+            ],
             'method': [
                 r'^\s*\d+\.?\s*method[s]?\s*$',
                 r'^\s*\d+\.?\s*approach\s*$',
                 r'^\s*\d+\.?\s*methodology\s*$',
+                r'^\s*\d+\.?\s*proposed\s+method\s*$',
+                r'^\s*\d+\.?\s*model\s*$',
+                r'^\s*\d+\.?\s*algorithm\s*$',
                 r'^\s*方\s*法\s*$',
                 r'^\s*\d+\.?\s*方\s*法\s*$'
+            ],
+            'implementation': [
+                r'^\s*\d+\.?\s*implementation\s*$',
+                r'^\s*implementation\s*$',
+                r'^\s*\d+\.?\s*system\s*$',
+                r'^\s*\d+\.?\s*architecture\s*$',
+                r'^\s*\d+\.?\s*design\s*$',
+                r'^\s*\d+\.?\s*实\s*现\s*$',
+                r'^\s*实\s*现\s*$'
             ],
             'experiment': [
                 r'^\s*\d+\.?\s*experiment[s]?\s*$',
                 r'^\s*\d+\.?\s*evaluation\s*$',
+                r'^\s*\d+\.?\s*experimental\s+setup\s*$',
                 r'^\s*\d+\.?\s*实\s*验\s*$',
                 r'^\s*实\s*验\s*$'
+            ],
+            'dataset': [
+                r'^\s*\d+\.?\s*dataset[s]?\s*$',
+                r'^\s*dataset[s]?\s*$',
+                r'^\s*\d+\.?\s*data\s*$',
+                r'^\s*\d+\.?\s*benchmark\s*$',
+                r'^\s*\d+\.?\s*数\s*据\s*集\s*$',
+                r'^\s*数\s*据\s*集\s*$'
             ],
             'result': [
                 r'^\s*\d+\.?\s*result[s]?\s*$',
                 r'^\s*\d+\.?\s*finding[s]?\s*$',
+                r'^\s*\d+\.?\s*analysis\s*$',
+                r'^\s*\d+\.?\s*performance\s*$',
                 r'^\s*结\s*果\s*$',
                 r'^\s*\d+\.?\s*结\s*果\s*$'
             ],
+            'discussion': [
+                r'^\s*\d+\.?\s*discussion\s*$',
+                r'^\s*discussion\s*$',
+                r'^\s*\d+\.?\s*analysis\s+and\s+discussion\s*$',
+                r'^\s*\d+\.?\s*讨\s*论\s*$',
+                r'^\s*讨\s*论\s*$'
+            ],
+            'limitation': [
+                r'^\s*\d+\.?\s*limitation[s]?\s*$',
+                r'^\s*limitation[s]?\s*$',
+                r'^\s*\d+\.?\s*future\s+work\s*$',
+                r'^\s*future\s+work\s*$',
+                r'^\s*\d+\.?\s*局\s*限\s*性\s*$',
+                r'^\s*局\s*限\s*性\s*$'
+            ],
             'conclusion': [
                 r'^\s*\d+\.?\s*conclusion[s]?\s*$',
-                r'^\s*\d+\.?\s*discussion\s*$',
+                r'^\s*conclusion[s]?\s*$',
+                r'^\s*\d+\.?\s*concluding\s+remarks\s*$',
+                r'^\s*\d+\.?\s*summary\s+and\s+conclusion\s*$',
                 r'^\s*结\s*论\s*$',
                 r'^\s*\d+\.?\s*结\s*论\s*$'
+            ],
+            'acknowledgment': [
+                r'^\s*acknowledgment[s]?\s*$',
+                r'^\s*acknowledgement[s]?\s*$',
+                r'^\s*致\s*谢\s*$'
+            ],
+            'appendix': [
+                r'^\s*appendix\s*[a-z]?\s*$',
+                r'^\s*[a-z]\.?\s*appendix\s*$',
+                r'^\s*supplementary\s+material\s*$',
+                r'^\s*附\s*录\s*$'
             ],
             'reference': [
                 r'^\s*reference[s]?\s*$',
@@ -90,7 +159,7 @@ class AcademicPDFProcessor:
                 re.compile(pattern, re.IGNORECASE) for pattern in patterns
             ]
     
-    def extract_pdf_content(self, pdf_path: str) -> Optional[PDFContent]:
+    def extract_pdf_content(self, pdf_path: str, use_column_aware: bool = True) -> Optional[PDFContent]:
         """提取PDF完整内容"""
         try:
             print(f"📄 处理PDF: {Path(pdf_path).name}")
@@ -104,13 +173,20 @@ class AcademicPDFProcessor:
             
             print(f"   📊 总页数: {total_pages}")
             
-            # 提取全文内容
+            # 提取全文内容 - 支持双栏感知
             full_text = ""
             page_texts = []
-            
+
             for page_num in range(total_pages):
                 page = doc[page_num]
-                page_text = page.get_text()
+
+                if use_column_aware:
+                    # 使用双栏感知提取
+                    page_text = self._extract_column_aware_text(page)
+                else:
+                    # 使用默认提取
+                    page_text = page.get_text()
+
                 page_texts.append((page_num + 1, page_text))
                 full_text += page_text + "\n"
             
@@ -258,6 +334,13 @@ class AcademicPDFProcessor:
                 )
                 sections.append(section)
         
+        # ⭐ 添加fallback机制：处理未被章节覆盖的文本
+        fallback_sections = self._extract_fallback_content(page_texts, sections)
+        sections.extend(fallback_sections)
+
+        # 按页面顺序重新排序所有章节
+        sections.sort(key=lambda x: x.page_range[0])
+
         return sections
     
     def _extract_section_content(self, page_texts: List[Tuple[int, str]], 
@@ -326,7 +409,283 @@ class AcademicPDFProcessor:
             confidence += 0.3
         
         return min(confidence, 1.0)
-    
+
+    def _extract_fallback_content(self, page_texts: List[Tuple[int, str]],
+                                 sections: List[PDFSection]) -> List[PDFSection]:
+        """提取未被章节覆盖的内容作为fallback段落"""
+        fallback_sections = []
+
+        # 1. 构建已覆盖区域的映射
+        covered_ranges = []
+        for section in sections:
+            covered_ranges.append({
+                'start_page': section.page_range[0],
+                'end_page': section.page_range[1],
+                'type': section.section_type
+            })
+
+        # 按页面排序
+        covered_ranges.sort(key=lambda x: x['start_page'])
+
+        # 2. 识别未覆盖的区域
+        uncovered_regions = []
+        total_pages = len(page_texts)
+
+        if not covered_ranges:
+            # 如果没有识别到任何章节，整个文档都是未覆盖区域
+            uncovered_regions.append({
+                'start_page': page_texts[0][0] if page_texts else 1,
+                'end_page': page_texts[-1][0] if page_texts else 1,
+                'reason': 'no_sections_detected'
+            })
+        else:
+            # 检查第一个章节前的内容
+            first_section = covered_ranges[0]
+            if first_section['start_page'] > page_texts[0][0]:
+                uncovered_regions.append({
+                    'start_page': page_texts[0][0],
+                    'end_page': first_section['start_page'] - 1,
+                    'reason': 'before_first_section'
+                })
+
+            # 检查章节之间的空隙
+            for i in range(len(covered_ranges) - 1):
+                current_end = covered_ranges[i]['end_page']
+                next_start = covered_ranges[i + 1]['start_page']
+
+                if next_start > current_end + 1:  # 有空隙
+                    uncovered_regions.append({
+                        'start_page': current_end + 1,
+                        'end_page': next_start - 1,
+                        'reason': 'between_sections'
+                    })
+
+            # 检查最后一个章节后的内容
+            last_section = covered_ranges[-1]
+            if last_section['end_page'] < page_texts[-1][0]:
+                uncovered_regions.append({
+                    'start_page': last_section['end_page'] + 1,
+                    'end_page': page_texts[-1][0],
+                    'reason': 'after_last_section'
+                })
+
+        # 3. 为每个未覆盖区域创建fallback section
+        fallback_counter = 1
+        for region in uncovered_regions:
+            content = self._extract_fallback_region_content(
+                page_texts, region['start_page'], region['end_page']
+            )
+
+            if content.strip() and len(content.strip()) > 100:  # 只保留有意义的内容
+                # 智能推断内容类型
+                inferred_type = self._infer_content_type(content, region['reason'])
+
+                fallback_section = PDFSection(
+                    title=f"Content Block {fallback_counter}",
+                    content=content,
+                    section_type=inferred_type,
+                    page_range=(region['start_page'], region['end_page']),
+                    confidence=0.3  # 低置信度标记为fallback内容
+                )
+                fallback_sections.append(fallback_section)
+                fallback_counter += 1
+
+        return fallback_sections
+
+    def _extract_fallback_region_content(self, page_texts: List[Tuple[int, str]],
+                                        start_page: int, end_page: int) -> str:
+        """提取指定页面范围的内容"""
+        content_lines = []
+
+        for page_num, page_text in page_texts:
+            if start_page <= page_num <= end_page:
+                lines = page_text.split('\n')
+
+                for line in lines:
+                    line_clean = line.strip()
+                    # 过滤噪声内容
+                    if len(line_clean) > 5 and not self._is_noise_line(line_clean):
+                        content_lines.append(line_clean)
+
+        content = '\n'.join(content_lines)
+        return self._clean_text_content(content)
+
+    def _infer_content_type(self, content: str, reason: str) -> str:
+        """智能推断fallback内容的类型"""
+        content_lower = content.lower()
+
+        # 基于位置推断
+        if reason == 'before_first_section':
+            if 'abstract' in content_lower or 'summary' in content_lower:
+                return 'abstract'
+            elif 'introduction' in content_lower:
+                return 'introduction'
+            else:
+                return 'header_content'
+
+        elif reason == 'after_last_section':
+            if 'reference' in content_lower or 'bibliography' in content_lower:
+                return 'reference'
+            elif 'appendix' in content_lower:
+                return 'appendix'
+            else:
+                return 'footer_content'
+
+        else:  # between_sections
+            # 基于内容特征推断
+            if any(keyword in content_lower for keyword in ['figure', 'table', 'algorithm']):
+                return 'content'
+            elif len(content.split()) < 50:  # 短内容可能是标题或过渡
+                return 'transition'
+            else:
+                return 'content'
+
+    def _is_noise_line(self, line: str) -> bool:
+        """判断是否为噪声行（页码、页眉页脚等）"""
+        line_lower = line.lower()
+
+        # 常见的噪声模式
+        noise_patterns = [
+            r'^\d+$',  # 纯数字（页码）
+            r'^page \d+',  # "page 1"
+            r'^\d+\s*/\s*\d+$',  # "1/10"
+            r'^[a-z\s]{1,3}$',  # 极短的字母组合
+            r'^[\W\s]*$',  # 纯标点符号或空白
+        ]
+
+        for pattern in noise_patterns:
+            if re.match(pattern, line_lower):
+                return True
+
+        # 检查是否为页眉页脚常见内容
+        if any(keyword in line_lower for keyword in ['arxiv:', 'doi:', 'www.', 'http', '©', 'copyright']):
+            return True
+
+        return False
+
+    def _extract_column_aware_text(self, page) -> str:
+        """双栏感知的文本提取"""
+
+        # 获取页面尺寸
+        page_rect = page.rect
+        page_width = page_rect.width
+
+        # 使用blocks模式获取文本块
+        blocks = page.get_text("blocks")
+        text_blocks = []
+
+        for block in blocks:
+            x0, y0, x1, y1, text, block_no, block_type = block
+
+            # 只处理文本块 (block_type = 0)
+            if block_type == 0 and text.strip():
+                text_blocks.append({
+                    'x0': x0, 'y0': y0, 'x1': x1, 'y1': y1,
+                    'text': text.strip(),
+                    'center_x': (x0 + x1) / 2,
+                    'center_y': (y0 + y1) / 2,
+                    'width': x1 - x0,
+                    'height': y1 - y0
+                })
+
+        if len(text_blocks) < 4:
+            # 文本块太少，使用默认提取
+            return page.get_text()
+
+        # 检测双栏布局
+        is_two_column, column_divider = self._detect_two_column_layout(text_blocks, page_width)
+
+        if is_two_column:
+            return self._reorder_two_column_text(text_blocks, column_divider)
+        else:
+            # 单栏布局，按y坐标排序
+            text_blocks.sort(key=lambda b: b['y0'])
+            return '\n\n'.join(block['text'] for block in text_blocks)
+
+    def _detect_two_column_layout(self, text_blocks: List[Dict], page_width: float) -> Tuple[bool, float]:
+        """检测是否为双栏布局并找到分栏位置"""
+
+        if len(text_blocks) < 6:  # 文本块太少
+            return False, 0.0
+
+        # 分析文本块的x坐标分布
+        center_xs = [block['center_x'] for block in text_blocks]
+
+        # 计算可能的分栏位置
+        center_xs.sort()
+
+        # 寻找最大的间隙作为潜在的列分割
+        max_gap = 0
+        best_divider = page_width / 2
+
+        for i in range(len(center_xs) - 1):
+            gap = center_xs[i + 1] - center_xs[i]
+            if gap > max_gap:
+                max_gap = gap
+                best_divider = (center_xs[i] + center_xs[i + 1]) / 2
+
+        # 判断是否为双栏
+        if max_gap > page_width * 0.08:  # 间隙占页面宽度的8%以上
+            # 验证左右分布是否平衡
+            left_blocks = sum(1 for x in center_xs if x < best_divider)
+            right_blocks = sum(1 for x in center_xs if x >= best_divider)
+
+            if left_blocks >= 2 and right_blocks >= 2:
+                balance_ratio = min(left_blocks, right_blocks) / max(left_blocks, right_blocks)
+                if balance_ratio > 0.3:  # 左右相对平衡
+                    return True, best_divider
+
+        return False, 0.0
+
+    def _reorder_two_column_text(self, text_blocks: List[Dict], column_divider: float) -> str:
+        """重新排序双栏文本，按阅读顺序"""
+
+        # 分离左右栏
+        left_blocks = [b for b in text_blocks if b['center_x'] < column_divider]
+        right_blocks = [b for b in text_blocks if b['center_x'] >= column_divider]
+
+        # 按y坐标排序
+        left_blocks.sort(key=lambda b: b['y0'])
+        right_blocks.sort(key=lambda b: b['y0'])
+
+        # 智能交替合并 - 基于y坐标匹配
+        result_text = []
+        left_idx = 0
+        right_idx = 0
+
+        while left_idx < len(left_blocks) or right_idx < len(right_blocks):
+            left_available = left_idx < len(left_blocks)
+            right_available = right_idx < len(right_blocks)
+
+            if not left_available:
+                # 左栏用完，添加右栏剩余
+                result_text.append(right_blocks[right_idx]['text'])
+                right_idx += 1
+            elif not right_available:
+                # 右栏用完，添加左栏剩余
+                result_text.append(left_blocks[left_idx]['text'])
+                left_idx += 1
+            else:
+                # 两栏都有内容，选择y坐标更小的
+                left_y = left_blocks[left_idx]['y0']
+                right_y = right_blocks[right_idx]['y0']
+
+                # 使用一定的阈值来避免频繁切换
+                y_threshold = 20  # 20个单位的阈值
+
+                if left_y + y_threshold < right_y:
+                    result_text.append(left_blocks[left_idx]['text'])
+                    left_idx += 1
+                elif right_y + y_threshold < left_y:
+                    result_text.append(right_blocks[right_idx]['text'])
+                    right_idx += 1
+                else:
+                    # 差距很小，优先左栏
+                    result_text.append(left_blocks[left_idx]['text'])
+                    left_idx += 1
+
+        return '\n\n'.join(result_text)
+
     def _detect_formulas(self, text: str) -> bool:
         """检测文档是否包含数学公式"""
         formula_indicators = [

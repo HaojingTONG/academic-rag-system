@@ -16,6 +16,7 @@ sys.path.append(str(Path(__file__).parent / 'src'))
 
 from src.processor.pdf_processor import AcademicPDFProcessor
 from src.processor.document_chunker import DocumentChunker, ChunkingConfig
+from short_section_handler import ShortSectionHandler
 
 def process_pdf_fulltext():
     """处理所有PDF的全文内容"""
@@ -24,7 +25,8 @@ def process_pdf_fulltext():
     
     # 初始化处理器
     pdf_processor = AcademicPDFProcessor()
-    
+    short_section_handler = ShortSectionHandler()  # ⭐ 短章节处理器
+
     # 配置智能分块器
     chunking_config = ChunkingConfig(
         strategy='hybrid',
@@ -94,31 +96,30 @@ def process_pdf_fulltext():
             failed_count += 1
             continue
         
+        # ⭐ 智能处理短章节
+        print(f"   🔍 检测短章节...")
+
+        # 使用短章节处理器处理所有章节
+        processed_section_docs = short_section_handler.process_short_sections(
+            pdf_content.sections, min_length=200
+        )
+
         # 准备文档用于分块
         documents_for_chunking = []
-        
+
         # 添加摘要（如果存在）
         if pdf_content.abstract:
             documents_for_chunking.append({
                 'content': f"Title: {pdf_content.title}\n\nAbstract: {pdf_content.abstract}",
                 'metadata': {
                     'section_type': 'abstract',
-                    'title': pdf_content.title
+                    'title': pdf_content.title,
+                    'is_short_section': False
                 }
             })
-        
-        # 添加各个章节
-        for section in pdf_content.sections:
-            if section.content.strip() and len(section.content) > 200:  # 过滤太短的章节
-                documents_for_chunking.append({
-                    'content': f"Section: {section.title}\n\n{section.content}",
-                    'metadata': {
-                        'section_type': section.section_type,
-                        'section_title': section.title,
-                        'page_range': f"{section.page_range[0]}-{section.page_range[1]}",
-                        'confidence': section.confidence
-                    }
-                })
+
+        # 添加处理后的章节
+        documents_for_chunking.extend(processed_section_docs)
         
         if not documents_for_chunking:
             print(f"   ❌ 无有效内容可处理")
@@ -158,14 +159,28 @@ def process_pdf_fulltext():
                     'section_type': chunk.metadata.get('section_type', 'content'),
                     'word_count': chunk.word_count,
                     'char_count': chunk.char_count,
-                    'has_formulas': pdf_content.has_formulas,
-                    'has_code': False,  # 可以后续扩展
-                    'has_citations': 'references' in chunk.text.lower(),
+
+                    # ⭐ 使用chunk级细粒度特征（而非论文级）
+                    'has_formulas': chunk.metadata.get('has_formulas', False),
+                    'has_code': chunk.metadata.get('has_code', False),
+                    'has_citations': chunk.metadata.get('has_citations', False),
+                    'has_numbers': chunk.metadata.get('has_numbers', False),
+                    'has_urls': chunk.metadata.get('has_urls', False),
+                    'paragraph_count': chunk.metadata.get('paragraph_count', 1),
+                    'sentence_count': chunk.metadata.get('sentence_count', 1),
+
                     'section_title': chunk.metadata.get('section_title', ''),
                     'page_range': chunk.metadata.get('page_range', ''),
                     'language': pdf_content.language,
                     'total_pages': pdf_content.total_pages,
-                    'processing_version': '2.0'  # 标记为全文处理版本
+                    'processing_version': '2.2',  # 更新版本号：细粒度特征版本
+
+                    # ⭐ 短章节相关元数据
+                    'is_short_section': chunk.metadata.get('is_short_section', False),
+                    'short_section_reason': chunk.metadata.get('short_section_reason', ''),
+                    'original_length': chunk.metadata.get('original_length', chunk.char_count),
+                    'extended_length': chunk.metadata.get('extended_length', chunk.char_count),
+                    'original_types': chunk.metadata.get('original_types', chunk.metadata.get('section_type', ''))
                 }
             }
             processed_chunks.append(chunk_data)
