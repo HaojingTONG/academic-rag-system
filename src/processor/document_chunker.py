@@ -104,6 +104,8 @@ class BaseChunker(ABC):
             'has_citations': bool(re.search(r'\[[0-9,\-\s]+\]|\([A-Za-z]+,?\s*[0-9]{4}\)', text)),
             'has_numbers': bool(re.search(r'\b\d+\.?\d*\b', text)),
             'has_urls': bool(re.search(r'http[s]?://\S+|www\.\S+', text)),
+            'has_table': bool(re.search(r'^\s*(?:Table|Tab\.)\s+\d+|^\s*\|.*\|', text, re.MULTILINE | re.IGNORECASE)),
+            'has_figure': bool(re.search(r'^\s*(?:Figure|Fig\.)\s+\d+', text, re.MULTILINE | re.IGNORECASE)),
             'paragraph_count': len([p for p in text.split('\n\n') if p.strip()]),
             'sentence_count': len(re.findall(r'[.!?]+', text))
         }
@@ -364,7 +366,7 @@ class HybridChunker(BaseChunker):
 
 class DocumentChunker:
     """文档切分器主类"""
-    
+
     def __init__(self, config: ChunkingConfig = None):
         self.config = config or ChunkingConfig()
         self.chunkers = {
@@ -372,22 +374,520 @@ class DocumentChunker:
             'semantic': SemanticChunker,
             'hybrid': HybridChunker
         }
+        self.table_blocks = []  # Store extracted table blocks during processing
+        self.current_char_offset = 0  # Track character position in original text
     
-    def chunk_document(self, text: str, paper_id: str, metadata: Dict = None) -> List[Chunk]:
-        """切分文档"""
+    def chunk_document(self, text: str, paper_id: str, metadata: Dict = None,
+                      image_extractor = None) -> List[Chunk]:
+        """
+        切分文档
+
+        Args:
+            text: 文档文本
+            paper_id: 论文ID
+            metadata: 元数据，可包含 figure_image_paths 字典 (figure_id -> image_path)
+            image_extractor: ImageCaptionExtractor 实例（可选）
+        """
         if self.config.strategy not in self.chunkers:
             raise ValueError(f"未知的切分策略: {self.config.strategy}")
-        
+
+        # Reset table and figure blocks for new document
+        self.table_blocks = []
+        self.figure_blocks = []
+        self.current_char_offset = 0
+
+        # Extract table blocks before chunking
+        text_without_tables, table_chunks = self._extract_and_chunk_tables(text, paper_id, metadata)
+
+        # Extract figure blocks from the text (without tables)
+        text_without_figures, figure_chunks = self._extract_and_chunk_figures(text_without_tables, paper_id, metadata)
+
         chunker_class = self.chunkers[self.config.strategy]
         chunker = chunker_class(self.config)
-        
-        chunks = chunker.chunk_document(text, paper_id, metadata)
-        
+
+        chunks = chunker.chunk_document(text_without_figures, paper_id, metadata)
+
         # 后处理：质量检查和优化
         chunks = self._post_process_chunks(chunks)
-        
-        return chunks
+
+        # Merge table and figure chunks with text chunks, preserving order
+        all_chunks = self._merge_chunks_with_tables_and_figures(chunks, table_chunks, figure_chunks)
+
+        # Append image descriptions if available
+        if image_extractor and metadata and 'figure_image_paths' in metadata:
+            all_chunks = self._append_image_descriptions(all_chunks, metadata['figure_image_paths'], image_extractor)
+
+        return all_chunks
     
+    def _extract_and_chunk_tables(self, text: str, paper_id: str, metadata: Dict = None) -> Tuple[str, List[Chunk]]:
+        """Extract table blocks and create dedicated chunks, return text without tables"""
+        lines = text.split('\n')
+        table_chunks = []
+        processed_lines = []
+        i = 0
+        chunk_index = 0
+
+        while i < len(lines):
+            line = lines[i]
+
+            # Check if line starts a table block
+            if self._is_table_start(line):
+                # Extract entire table block
+                table_block, table_end_idx = self._extract_table_block(lines, i)
+
+                if table_block:
+                    # Serialize table to Markdown format
+                    serialized_table = self._serialize_table(table_block)
+
+                    # Calculate offsets in original text
+                    start_offset = sum(len(l) + 1 for l in lines[:i])
+                    end_offset = sum(len(l) + 1 for l in lines[:table_end_idx])
+
+                    # Create table chunk
+                    table_chunk = self._create_table_chunk(
+                        serialized_table, paper_id, chunk_index,
+                        start_offset, end_offset, metadata
+                    )
+                    table_chunks.append(table_chunk)
+                    chunk_index += 1
+
+                    # Replace table with placeholder in text
+                    processed_lines.append(f"[TABLE_{len(table_chunks)-1}_PLACEHOLDER]")
+                    i = table_end_idx
+                    continue
+
+            processed_lines.append(line)
+            i += 1
+
+        text_without_tables = '\n'.join(processed_lines)
+        return text_without_tables, table_chunks
+
+    def _is_table_start(self, line: str) -> bool:
+        """Detect if line starts a table block"""
+        line_stripped = line.strip()
+
+        # Table caption patterns
+        table_patterns = [
+            r'^Table\s+\d+',
+            r'^Tab\.\s*\d+',
+            r'^TABLE\s+\d+',
+        ]
+
+        for pattern in table_patterns:
+            if re.match(pattern, line_stripped, re.IGNORECASE):
+                return True
+
+        return False
+
+    def _extract_table_block(self, lines: List[str], start_idx: int) -> Tuple[List[str], int]:
+        """Extract complete table block from lines starting at start_idx"""
+        table_lines = [lines[start_idx]]
+        i = start_idx + 1
+
+        # Continue collecting lines that are part of the table
+        while i < len(lines):
+            line = lines[i]
+            line_stripped = line.strip()
+
+            # Empty line might end table
+            if not line_stripped:
+                # Check if next line is also empty or starts new section
+                if i + 1 < len(lines) and not lines[i + 1].strip():
+                    break
+                if i + 1 < len(lines) and self._is_section_header(lines[i + 1]):
+                    break
+
+            # Stop if we hit another table or figure
+            if i > start_idx + 1 and (self._is_table_start(line) or self._is_figure_line(line)):
+                break
+
+            # Include lines that look like table content
+            if self._is_table_content_line(line):
+                table_lines.append(line)
+                i += 1
+            else:
+                # Stop after a few non-table lines
+                if len(table_lines) > 1 and not line_stripped:
+                    break
+                if len(table_lines) > 1 and self._is_section_header(line):
+                    break
+                table_lines.append(line)
+                i += 1
+                if i - start_idx > 3 and not self._has_table_structure(table_lines[-3:]):
+                    break
+
+        return table_lines, i
+
+    def _is_table_content_line(self, line: str) -> bool:
+        """Check if line is likely table content"""
+        line_stripped = line.strip()
+
+        # Markdown table
+        if '|' in line_stripped and line_stripped.count('|') >= 2:
+            return True
+
+        # CSV-like with multiple delimiters
+        if line_stripped.count(',') >= 2 or line_stripped.count('\t') >= 2:
+            return True
+
+        # ASCII table borders
+        if re.match(r'^[\+\-\|=\s]+$', line_stripped):
+            return True
+
+        return False
+
+    def _has_table_structure(self, lines: List[str]) -> bool:
+        """Check if lines contain table structure"""
+        for line in lines:
+            if self._is_table_content_line(line):
+                return True
+        return False
+
+    def _is_section_header(self, line: str) -> bool:
+        """Check if line is a section header"""
+        line_stripped = line.strip()
+
+        # Numbered section or all caps header
+        if re.match(r'^\d+[\.\)]\s+[A-Z]', line_stripped):
+            return True
+        if re.match(r'^[A-Z][A-Z\s]{3,}$', line_stripped):
+            return True
+
+        return False
+
+    def _is_figure_line(self, line: str) -> bool:
+        """Check if line references a figure"""
+        line_stripped = line.strip()
+        return bool(re.match(r'^Figure\s+\d+|^Fig\.\s*\d+', line_stripped, re.IGNORECASE))
+
+    def _serialize_table(self, table_lines: List[str]) -> str:
+        """Serialize table block to Markdown format"""
+        # Extract caption (first line usually)
+        caption = table_lines[0].strip() if table_lines else ""
+        content_lines = table_lines[1:]
+
+        # Try to detect table format and convert to Markdown
+        markdown_rows = []
+
+        # Check if already Markdown format
+        has_pipes = any('|' in line for line in content_lines)
+
+        if has_pipes:
+            # Already Markdown-ish, clean it up
+            for line in content_lines:
+                if '|' in line:
+                    markdown_rows.append(line.strip())
+        else:
+            # Try to parse as CSV or space-delimited
+            for line in content_lines:
+                line_stripped = line.strip()
+                if not line_stripped or re.match(r'^[\+\-=\s]+$', line_stripped):
+                    continue
+
+                # Split by tab, comma, or multiple spaces
+                if '\t' in line:
+                    cells = [c.strip() for c in line.split('\t')]
+                elif ',' in line:
+                    cells = [c.strip() for c in line.split(',')]
+                else:
+                    cells = [c.strip() for c in re.split(r'\s{2,}', line_stripped)]
+
+                if cells:
+                    markdown_rows.append('| ' + ' | '.join(cells) + ' |')
+
+        # Build final Markdown table
+        result = [caption, '']
+
+        if markdown_rows:
+            result.append(markdown_rows[0])
+            # Add separator after header
+            if len(markdown_rows) > 1:
+                num_cols = markdown_rows[0].count('|') - 1
+                result.append('|' + '---|' * num_cols)
+                result.extend(markdown_rows[1:])
+        else:
+            # Fallback: bullet list
+            result.append('Table content:')
+            for line in content_lines:
+                if line.strip():
+                    result.append('- ' + line.strip())
+
+        return '\n'.join(result)
+
+    def _create_table_chunk(self, text: str, paper_id: str, chunk_index: int,
+                           start_char: int, end_char: int, metadata: Dict = None) -> Chunk:
+        """Create a Chunk object for a table"""
+        chunk_id = f"{paper_id}_table_{chunk_index}"
+
+        enhanced_metadata = {
+            'paper_id': paper_id,
+            'chunk_index': chunk_index,
+            'start_char': start_char,
+            'end_char': end_char,
+            'chunking_strategy': 'table_extraction',
+            'has_table': True,
+        }
+
+        if metadata:
+            for key, value in metadata.items():
+                if isinstance(value, list):
+                    enhanced_metadata[key] = ', '.join(str(v) for v in value) if value else ""
+                elif isinstance(value, dict):
+                    enhanced_metadata[f"{key}_str"] = str(value)
+                elif isinstance(value, (str, int, float, bool)) or value is None:
+                    enhanced_metadata[key] = value
+                else:
+                    enhanced_metadata[key] = str(value)
+
+        return Chunk(
+            text=text,
+            chunk_id=chunk_id,
+            paper_id=paper_id,
+            chunk_index=chunk_index,
+            start_char=start_char,
+            end_char=end_char,
+            metadata=enhanced_metadata,
+            section_type="table"
+        )
+
+    def _extract_and_chunk_figures(self, text: str, paper_id: str, metadata: Dict = None) -> Tuple[str, List[Chunk]]:
+        """Extract figure blocks and create dedicated chunks, return text without figures"""
+        lines = text.split('\n')
+        figure_chunks = []
+        processed_lines = []
+        i = 0
+        chunk_index = 0
+
+        while i < len(lines):
+            line = lines[i]
+
+            # Check if line starts a figure block
+            if self._is_figure_start(line):
+                # Extract figure caption
+                figure_caption, figure_end_idx, figure_id = self._extract_figure_caption(lines, i)
+
+                if figure_caption:
+                    # Calculate offsets in original text
+                    start_offset = sum(len(l) + 1 for l in lines[:i])
+                    end_offset = sum(len(l) + 1 for l in lines[:figure_end_idx])
+
+                    # Check if caption is too small to be a standalone chunk
+                    if len(figure_caption) < self.config.min_chunk_size:
+                        # Mark for merging with narrative - store in metadata
+                        processed_lines.append(f"[FIGURE_{len(figure_chunks)}_SMALL:{figure_caption}]")
+                    else:
+                        # Create dedicated figure chunk
+                        figure_chunk = self._create_figure_chunk(
+                            figure_caption, paper_id, chunk_index,
+                            start_offset, end_offset, metadata, figure_id
+                        )
+                        figure_chunks.append(figure_chunk)
+                        chunk_index += 1
+
+                        # Replace figure with placeholder in text
+                        processed_lines.append(f"[FIGURE_{len(figure_chunks)-1}_PLACEHOLDER]")
+
+                    i = figure_end_idx
+                    continue
+
+            processed_lines.append(line)
+            i += 1
+
+        text_without_figures = '\n'.join(processed_lines)
+        return text_without_figures, figure_chunks
+
+    def _is_figure_start(self, line: str) -> bool:
+        """Detect if line starts a figure block"""
+        line_stripped = line.strip()
+
+        # Figure caption patterns
+        figure_patterns = [
+            r'^Figure\s+\d+',
+            r'^Fig\.\s*\d+',
+            r'^FIG\.\s*\d+',
+            r'^FIGURE\s+\d+',
+        ]
+
+        for pattern in figure_patterns:
+            if re.match(pattern, line_stripped, re.IGNORECASE):
+                return True
+
+        return False
+
+    def _extract_figure_caption(self, lines: List[str], start_idx: int) -> Tuple[str, int, str]:
+        """Extract figure caption from lines starting at start_idx, return (caption, end_idx, figure_id)"""
+        caption_lines = [lines[start_idx]]
+        i = start_idx + 1
+
+        # Extract figure ID from first line
+        figure_id = self._extract_figure_id(lines[start_idx])
+
+        # Continue collecting caption lines (usually 1-3 lines)
+        while i < len(lines) and i < start_idx + 5:  # Limit caption to 5 lines max
+            line = lines[i]
+            line_stripped = line.strip()
+
+            # Empty line ends caption
+            if not line_stripped:
+                break
+
+            # Stop if we hit another figure or table
+            if i > start_idx and (self._is_figure_start(line) or self._is_table_start(line)):
+                break
+
+            # Stop if we hit a section header
+            if self._is_section_header(line):
+                break
+
+            # Include line if it looks like part of caption
+            if len(line_stripped) > 10 or ':' in line or '.' in line:
+                caption_lines.append(line)
+                i += 1
+            else:
+                break
+
+        caption = ' '.join(l.strip() for l in caption_lines if l.strip())
+        return caption, i, figure_id
+
+    def _extract_figure_id(self, line: str) -> str:
+        """Extract figure ID from caption line (e.g., 'Figure 3' -> 'fig_3')"""
+        match = re.search(r'(?:Figure|Fig\.?|FIG\.?)\s*(\d+)', line, re.IGNORECASE)
+        if match:
+            return f"fig_{match.group(1)}"
+        return "fig_unknown"
+
+    def _create_figure_chunk(self, caption: str, paper_id: str, chunk_index: int,
+                            start_char: int, end_char: int, metadata: Dict = None,
+                            figure_id: str = None) -> Chunk:
+        """Create a Chunk object for a figure caption"""
+        chunk_id = f"{paper_id}_figure_{chunk_index}"
+
+        enhanced_metadata = {
+            'paper_id': paper_id,
+            'chunk_index': chunk_index,
+            'start_char': start_char,
+            'end_char': end_char,
+            'chunking_strategy': 'figure_extraction',
+            'has_figure': True,
+            'figure_caption': caption,
+            'figure_id': figure_id or 'unknown',
+        }
+
+        if metadata:
+            for key, value in metadata.items():
+                if isinstance(value, list):
+                    enhanced_metadata[key] = ', '.join(str(v) for v in value) if value else ""
+                elif isinstance(value, dict):
+                    enhanced_metadata[f"{key}_str"] = str(value)
+                elif isinstance(value, (str, int, float, bool)) or value is None:
+                    enhanced_metadata[key] = value
+                else:
+                    enhanced_metadata[key] = str(value)
+
+        return Chunk(
+            text=caption,
+            chunk_id=chunk_id,
+            paper_id=paper_id,
+            chunk_index=chunk_index,
+            start_char=start_char,
+            end_char=end_char,
+            metadata=enhanced_metadata,
+            section_type="figure"
+        )
+
+    def _merge_chunks_with_tables_and_figures(self, text_chunks: List[Chunk],
+                                              table_chunks: List[Chunk],
+                                              figure_chunks: List[Chunk]) -> List[Chunk]:
+        """Merge text, table, and figure chunks, handling small figure captions"""
+        # First, handle small figure captions in text chunks
+        for chunk in text_chunks:
+            # Check for small figure placeholders
+            small_fig_pattern = r'\[FIGURE_(\d+)_SMALL:(.*?)\]'
+            matches = re.findall(small_fig_pattern, chunk.text)
+
+            if matches:
+                # Replace placeholders with actual caption text
+                for fig_idx, caption in matches:
+                    placeholder = f"[FIGURE_{fig_idx}_SMALL:{caption}]"
+                    chunk.text = chunk.text.replace(placeholder, caption)
+
+                    # Extract figure ID from caption
+                    figure_id = self._extract_figure_id(caption)
+
+                    # Update metadata to note figure origin
+                    chunk.metadata['has_figure'] = True
+                    chunk.metadata['figure_caption'] = caption
+                    chunk.metadata['figure_id'] = figure_id
+                    chunk.metadata['merged_from_small_caption'] = True
+
+                    # Update section type to indicate figure content
+                    if chunk.section_type == "content":
+                        chunk.section_type = "figure_caption"
+
+                # Recalculate counts
+                chunk.char_count = len(chunk.text)
+                chunk.word_count = len(chunk.text.split())
+
+        # Merge all chunks
+        all_chunks = text_chunks + table_chunks + figure_chunks
+
+        # Sort by start_char to preserve document order
+        all_chunks.sort(key=lambda c: c.start_char)
+
+        # Reindex chunks
+        for i, chunk in enumerate(all_chunks):
+            chunk.chunk_index = i
+            chunk.chunk_id = f"{chunk.paper_id}_chunk_{i}"
+
+        return all_chunks
+
+    def _merge_chunks_with_tables(self, text_chunks: List[Chunk], table_chunks: List[Chunk]) -> List[Chunk]:
+        """Merge text chunks and table chunks, reindex properly (deprecated - use _merge_chunks_with_tables_and_figures)"""
+        all_chunks = text_chunks + table_chunks
+
+        # Sort by start_char to preserve document order
+        all_chunks.sort(key=lambda c: c.start_char)
+
+        # Reindex chunks
+        for i, chunk in enumerate(all_chunks):
+            chunk.chunk_index = i
+            chunk.chunk_id = f"{chunk.paper_id}_chunk_{i}"
+
+        return all_chunks
+
+    def _append_image_descriptions(self, chunks: List[Chunk],
+                                   figure_image_paths: Dict[str, str],
+                                   image_extractor) -> List[Chunk]:
+        """
+        Append image OCR/caption descriptions to figure chunks
+
+        Args:
+            chunks: List of chunks
+            figure_image_paths: Dict mapping figure_id to image file path
+            image_extractor: ImageCaptionExtractor instance
+
+        Returns:
+            Updated chunks with image descriptions appended
+        """
+        from .image_caption_extractor import append_image_descriptions_to_chunk
+
+        for chunk in chunks:
+            # Check if this chunk is a figure or has a figure
+            figure_id = chunk.metadata.get('figure_id')
+
+            if figure_id and figure_id in figure_image_paths:
+                image_path = figure_image_paths[figure_id]
+
+                try:
+                    # Append OCR and caption to chunk
+                    append_image_descriptions_to_chunk(chunk, image_path, image_extractor)
+                except Exception as e:
+                    # Don't fail ingestion if image extraction fails
+                    import logging
+                    logging.warning(f"Failed to extract image descriptions for {figure_id}: {e}")
+
+        return chunks
+
     def _post_process_chunks(self, chunks: List[Chunk]) -> List[Chunk]:
         """后处理chunks"""
         processed_chunks = []
@@ -435,7 +935,7 @@ class DocumentChunker:
 
         return final_text.strip()
 
-    def _process_line_for_cleaning(self, line: str, line_index: int, all_lines: list) -> str:
+    def _process_line_for_cleaning(self, line: str, line_index: int = 0, all_lines: list = None) -> str:
         """处理单行文本，用于文本清洗"""
         # 跳过完全空白的行（但保留单个换行作为段落分隔）
         if not line.strip():

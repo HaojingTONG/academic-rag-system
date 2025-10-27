@@ -149,6 +149,16 @@ class VectorStore:
         """搜索包含代码的内容"""
         filter_condition = {"has_code": True}
         return self.search(query, top_k, filter_condition)
+
+    def search_with_tables(self, query: str, top_k: int = 5) -> Dict:
+        """搜索包含表格的内容"""
+        filter_condition = {"has_table": True}
+        return self.search(query, top_k, filter_condition)
+
+    def search_with_figures(self, query: str, top_k: int = 5) -> Dict:
+        """搜索包含图表的内容"""
+        filter_condition = {"has_figure": True}
+        return self.search(query, top_k, filter_condition)
     
     def get_statistics(self) -> Dict:
         """获取向量数据库统计信息"""
@@ -165,7 +175,7 @@ class VectorStore:
             # 章节类型分布
             section_distribution = {}
             papers_distribution = {}
-            content_features = {"has_formulas": 0, "has_code": 0, "has_citations": 0}
+            content_features = {"has_formulas": 0, "has_code": 0, "has_citations": 0, "has_table": 0, "has_figure": 0}
             
             for metadata in metadatas:
                 # 章节分布

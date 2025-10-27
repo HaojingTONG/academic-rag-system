@@ -1,0 +1,209 @@
+# Academic RAG System Configuration
+# ==================================
+
+system:
+  name: "Academic RAG System"
+  version: "2.0.0"
+  log_level: "INFO"
+  log_format: "structured"  # structured, json, simple
+
+# Embedding Configuration
+embedding:
+  model: "all-mpnet-base-v2"
+  dimension: 768
+  device: "auto"  # auto, cuda, mps, cpu
+  cache_dir: "data/embedding_cache"
+  batch_size: 32
+  max_length: 384
+  normalize: true
+
+# Vector Store Configuration
+vector_store:
+  backend: "chromadb"
+  path: "vector_db"
+  collection_name: "enhanced_ai_papers_v2"
+  distance_metric: "cosine"
+  persist: true
+
+# Retrieval Configuration
+retrieval:
+  # Basic retrieval
+  top_k: 5
+  similarity_threshold: 0.5
+
+  # Hybrid retrieval
+  enable_bm25: true
+  bm25_weight: 0.3
+  vector_weight: 0.7
+
+  # Reranking
+  enable_rerank: true
+  rerank_top_k: 10
+  rerank_model: "cross-encoder/ms-marco-MiniLM-L-6-v2"
+
+  # Diversity
+  enable_mmr: true
+  mmr_diversity: 0.3
+
+  # Query expansion
+  enable_query_expansion: true
+  max_synonyms: 3
+
+# Document Chunking Configuration
+chunking:
+  strategy: "hybrid"  # fixed, semantic, hybrid
+  chunk_size: 600
+  chunk_overlap: 100
+  min_chunk_size: 50
+  max_chunk_size: 1000
+
+  # Content preservation
+  preserve_tables: true
+  preserve_figures: true
+  preserve_formulas: true
+  preserve_code: true
+  preserve_citations: true
+
+  # Section awareness
+  respect_section_boundaries: true
+  merge_short_sections: true
+  short_section_threshold: 200
+
+# LLM Generation Configuration
+generation:
+  # Backend
+  llm_backend: "ollama"
+  ollama_host: "http://localhost:11434"
+
+  # Model selection
+  model: "llama3.1:8b"
+  fallback_models:
+    - "llama3:8b"
+    - "mistral:7b"
+
+  # Generation parameters
+  temperature: 0.1
+  top_p: 0.9
+  max_tokens: 2000
+  timeout: 60
+
+  # Prompt settings
+  system_prompt_template: "academic"  # academic, general, technical
+  include_sources: true
+  max_context_length: 4000
+
+# Quality Enhancement
+quality:
+  # Context optimization
+  enable_context_ranking: true
+  context_relevance_threshold: 0.6
+
+  # Fact checking
+  enable_fact_check: true
+  fact_check_model: "self"  # self, external
+
+  # Citation management
+  enable_citations: true
+  citation_style: "academic"  # academic, numeric, inline
+
+# Evaluation Configuration
+evaluation:
+  enabled: true
+
+  # Metrics to compute
+  metrics:
+    - "context_relevance"
+    - "answer_faithfulness"
+    - "answer_relevance"
+    - "context_precision"
+    - "context_recall"
+
+  # LLM-assisted evaluation
+  llm_judge: true
+  llm_judge_model: "llama3.1:8b"
+
+  # Baseline tracking
+  track_baseline: true
+  baseline_path: "tests/regression/baselines"
+
+# Data Paths
+data:
+  raw_papers_dir: "data/raw_papers"
+  processed_papers: "data/main_system_papers.json"
+  high_quality_papers: "data/high_quality_papers.json"
+  papers_info: "data/papers_info.json"
+  evaluation_dir: "data/evaluation"
+
+# PDF Processing
+pdf_processing:
+  # Section detection
+  detect_sections: true
+  bilingual_support: true  # EN/CN
+  section_types:
+    - "abstract"
+    - "introduction"
+    - "related_work"
+    - "method"
+    - "experiment"
+    - "results"
+    - "discussion"
+    - "conclusion"
+    - "references"
+
+  # Layout handling
+  handle_dual_column: true
+  extract_tables: true
+  extract_figures: true
+  extract_formulas: true
+
+  # Short section handling
+  preserve_short_sections: true
+  short_section_merge_strategy: "append_to_previous"
+
+# API Configuration (if enabled)
+api:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+  reload: false
+  cors_origins:
+    - "*"
+  rate_limit: 100  # requests per minute
+  enable_docs: true
+
+# Logging
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  handlers:
+    console:
+      enabled: true
+      level: "INFO"
+    file:
+      enabled: true
+      level: "DEBUG"
+      path: "logs/rag_system.log"
+      max_bytes: 10485760  # 10MB
+      backup_count: 5
+
+# Performance
+performance:
+  # Caching
+  enable_embedding_cache: true
+  cache_ttl: 86400  # 24 hours
+
+  # Batching
+  batch_size: 32
+  max_concurrent_requests: 10
+
+  # Memory management
+  max_memory_percent: 80
+  clear_cache_on_memory_pressure: true
+
+# Feature Flags
+features:
+  enable_web_api: false
+  enable_streaming: false
+  enable_feedback_loop: false
+  enable_multi_modal: false
+  enable_graph_rag: false
