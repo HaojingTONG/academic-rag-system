@@ -48,6 +48,16 @@ except ImportError as e:
     print(f"⚠️ Failed to import rag modules: {e}")
     VectorStore = None
 
+# Import new modular components
+try:
+    from rag.composer import PromptComposer, PromptConfig, compose_empty_response
+    from rag.generator import RAGGenerator, GenerationConfig, ProviderType
+    from rag.citation_utils import sanitize_sources, add_citation_warnings, get_cited_numbers
+except ImportError as e:
+    print(f"⚠️ Failed to import new RAG modules: {e}")
+    PromptComposer = None
+    RAGGenerator = None
+
 
 # ============================================================================
 # Configuration
@@ -140,6 +150,10 @@ class RAGPipeline:
         self.ranker = None
         self.llm_client = None
 
+        # Initialize new modular components
+        self.composer = None
+        self.generator = None
+
         print("✅ RAG Pipeline initialized")
 
     def initialize(self,
@@ -163,6 +177,20 @@ class RAGPipeline:
             self.vector_store = VectorStore()
         else:
             raise RuntimeError("VectorStore not available")
+
+        # BM25 Retriever - auto-load from disk if available
+        if bm25_retriever is None and self.config.use_hybrid_retrieval:
+            bm25_path = Path("data/bm25_index.pkl")
+            if bm25_path.exists():
+                try:
+                    import pickle
+                    print(f"📦 Loading BM25 index from {bm25_path}...")
+                    with open(bm25_path, 'rb') as f:
+                        bm25_retriever = pickle.load(f)
+                    print(f"   ✓ BM25 index loaded ({len(bm25_retriever.documents)} docs)")
+                except Exception as e:
+                    print(f"⚠️ Failed to load BM25 index: {e}")
+                    bm25_retriever = None
 
         # Retriever
         if self.config.use_hybrid_retrieval and bm25_retriever is not None:
@@ -189,17 +217,39 @@ class RAGPipeline:
         if llm_client is not None:
             self.llm_client = llm_client
         else:
-            # Try to import and initialize LLM client
+            # Try to import and initialize LLM client from config
             try:
-                from src.generator.llm_client import OllamaClient
-                self.llm_client = OllamaClient(
-                    model=self.config.llm_model,
-                    temperature=self.config.llm_temperature,
-                    max_tokens=self.config.max_tokens
-                )
+                from src.generator.llm_client import create_llm_manager_from_config
+                self.llm_client = create_llm_manager_from_config()
+                print(f"✅ LLM Manager initialized: {self.llm_client.backend}")
             except Exception as e:
                 print(f"⚠️ Could not initialize LLM client: {e}")
                 self.llm_client = None
+
+        # Prompt Composer
+        if PromptComposer:
+            prompt_config = PromptConfig(
+                max_context_length=self.config.max_context_length,
+                include_metadata=True,
+                context_style="detailed"
+            )
+            self.composer = PromptComposer(prompt_config)
+            print(f"✅ Prompt Composer initialized")
+        else:
+            print(f"⚠️ PromptComposer not available")
+
+        # RAG Generator with retry and fallback
+        if RAGGenerator:
+            gen_config = GenerationConfig(
+                primary_provider=ProviderType.OPENAI,
+                max_retries=3,
+                max_tokens=self.config.max_tokens,
+                temperature=self.config.llm_temperature
+            )
+            self.generator = RAGGenerator(gen_config)
+            print(f"✅ RAG Generator initialized (retry + multi-provider fallback)")
+        else:
+            print(f"⚠️ RAGGenerator not available")
 
         print("✅ Components initialized")
 
@@ -265,33 +315,135 @@ class RAGPipeline:
             ranking_time = time.time() - ranking_start
             print(f"   ✓ Ranked to {len(results)} documents ({ranking_time:.2f}s)")
 
+            # Check for empty context
+            if len(results) == 0:
+                print("\n⚠️  WARNING: No relevant documents found")
+                # Use new composer for empty response if available
+                if self.composer:
+                    empty_answer = self.composer.compose_empty_context_response(question)
+                else:
+                    empty_answer = self._empty_context_response(question)
+
+                return {
+                    'answer': empty_answer,
+                    'sources': [],
+                    'num_sources': 0,
+                    'success': True,
+                    'warning': 'no_context_found'
+                }
+
             # Step 3: Prompt Composition
             print("\n✍️  [3/4] Composing prompt...")
-            prompt = self._compose_prompt(
-                question=question,
-                results=results,
-                custom_template=custom_prompt
-            )
 
-            # Step 4: Generation
+            # Detect query intent for template selection
+            template_style = "academic"  # default
+            if self.composer and hasattr(self.retriever, 'query_analyzer'):
+                from rag.retriever import QueryAnalyzer
+                analyzer = QueryAnalyzer()
+                query_intent = analyzer.analyze(question)
+
+                # Map intent to template style
+                intent_to_template = {
+                    'definition': 'definition',
+                    'comparison': 'comparative',
+                    'method': 'detailed',
+                    'recent_work': 'detailed',
+                    'general': 'academic'
+                }
+                template_style = intent_to_template.get(query_intent.intent_type, 'academic')
+                print(f"   ✓ Detected query intent: {query_intent.intent_type} → using '{template_style}' template")
+
+            # Use new composer if available
+            if self.composer:
+                prompt = self.composer.compose(
+                    question=question,
+                    results=results,
+                    template_style=template_style,
+                    custom_template=custom_prompt
+                )
+            else:
+                prompt = self._compose_prompt(
+                    question=question,
+                    results=results,
+                    custom_template=custom_prompt
+                )
+
+            # Step 4: Generation with retry and fallback
             print("\n🤖 [4/4] Generating answer...")
             generation_start = time.time()
 
-            if self.llm_client is not None:
-                answer = self._generate_answer(prompt)
+            # Use new generator with retry if available
+            if self.generator:
+                gen_result = self.generator.generate(
+                    prompt=prompt,
+                    max_tokens=self.config.max_tokens,
+                    temperature=self.config.llm_temperature
+                )
+                answer = gen_result.text
+                print(f"   ✓ Generated with {gen_result.provider.value} ({gen_result.attempts} attempts)")
+            elif self.llm_client is not None:
+                answer = self._generate_answer(prompt, results)
             else:
                 answer = "[LLM client not available - showing context only]"
 
             generation_time = time.time() - generation_start
             print(f"   ✓ Answer generated ({generation_time:.2f}s)")
 
+            # Step 4.5: Answer Quality Enhancement
+            print("\n✨ [4.5/5] Enhancing answer quality...")
+            formatted_sources = self._format_sources(results)
+
+            try:
+                from rag.answer_quality import AnswerEnhancer, FaithfulnessChecker
+
+                # Add summary if missing
+                enhancer = AnswerEnhancer()
+                answer = enhancer.add_summary(answer, question, formatted_sources)
+
+                # Check faithfulness with keyword validation
+                checker = FaithfulnessChecker()
+                context_text = '\n'.join([r.content for r in results])
+                faithfulness = checker.check_faithfulness(
+                    answer=answer,
+                    context=context_text,
+                    question=question  # Pass question for concept detection
+                )
+
+                print(f"   ✓ Faithfulness score: {faithfulness.score:.2f}")
+                print(f"   ✓ Citation coverage: {faithfulness.citation_coverage:.1%}")
+                print(f"   ✓ Keyword coverage: {faithfulness.keyword_coverage:.1%}")
+                print(f"   ✓ Verbatim copying: {faithfulness.verbatim_copying:.1%}")
+
+                if faithfulness.issues:
+                    for issue in faithfulness.issues:
+                        print(f"   ⚠️  {issue}")
+
+            except Exception as e:
+                print(f"   ⚠️  Enhancement skipped: {e}")
+
+            # Step 5: Citation Sanitization
+            print("\n🔍 [5/5] Sanitizing citations...")
+            # Add warnings for missing/invalid citations
+            if add_citation_warnings:
+                answer = add_citation_warnings(answer, len(results))
+
+            # Sanitize sources - only keep cited ones
+            if sanitize_sources and get_cited_numbers(answer):
+                cited_nums = get_cited_numbers(answer)
+                print(f"   ✓ Found {len(cited_nums)} unique citations")
+                sanitized_sources = sanitize_sources(answer, formatted_sources)
+                print(f"   ✓ Kept {len(sanitized_sources)}/{len(formatted_sources)} cited sources")
+            else:
+                sanitized_sources = formatted_sources
+
             # Prepare response
             total_time = time.time() - start_time
 
             response = {
                 'answer': answer,
-                'sources': self._format_sources(results),
-                'num_sources': len(results),
+                'sources': sanitized_sources,
+                'num_sources': len(sanitized_sources),
+                'all_retrieved': len(results),
                 'success': True
             }
 
@@ -360,24 +512,101 @@ Instructions:
 
 Answer:"""
 
-    def _generate_answer(self, prompt: str) -> str:
-        """Generate answer using LLM"""
+    def _empty_context_response(self, question: str) -> str:
+        """Generate safe response when no context is found"""
+        return f"""I apologize, but I couldn't find relevant information in the academic paper database to answer your question: "{question}"
+
+This could mean:
+- The question is outside the scope of the indexed papers
+- The query terms don't match the available content
+- The papers relevant to this topic haven't been indexed yet
+
+**Suggestions:**
+- Try rephrasing your question with different keywords
+- Ask about topics more directly covered in machine learning/AI research papers
+- Check if the question is within the domain of computer science research
+
+**Note:** This response is based on a search of the indexed academic papers. I cannot provide information beyond what's in the database."""
+
+    def _generate_answer(self, prompt: str, results: List[RetrievalResult]) -> str:
+        """
+        Generate answer using LLM with citation validation
+
+        Args:
+            prompt: The formatted prompt with context
+            results: The retrieval results (for citation validation)
+
+        Returns:
+            Generated answer text
+        """
         try:
-            # Different LLM client interfaces
-            if hasattr(self.llm_client, 'generate'):
+            # LLMManager interface (returns LLMResponse)
+            if hasattr(self.llm_client, 'generate_answer'):
+                response = self.llm_client.generate_answer(
+                    prompt=prompt,
+                    max_tokens=self.config.max_tokens,
+                    temperature=self.config.llm_temperature
+                )
+                # LLMResponse has a .text attribute
+                if hasattr(response, 'text'):
+                    answer = response.text
+                else:
+                    answer = str(response)
+
+                # Validate citations exist in response
+                return self._validate_citations(answer, results)
+
+            # OllamaClient or similar (returns dict)
+            elif hasattr(self.llm_client, 'generate'):
                 response = self.llm_client.generate(prompt)
                 if isinstance(response, dict):
-                    return response.get('response', str(response))
-                return str(response)
+                    answer = response.get('response', str(response))
+                else:
+                    answer = str(response)
+                return self._validate_citations(answer, results)
+
+            # Direct query interface
             elif hasattr(self.llm_client, 'query'):
-                return self.llm_client.query(prompt)
+                answer = self.llm_client.query(prompt)
+                return self._validate_citations(answer, results)
+
+            # Callable interface
             elif callable(self.llm_client):
-                return self.llm_client(prompt)
+                answer = self.llm_client(prompt)
+                return self._validate_citations(answer, results)
             else:
                 return "[LLM client interface not recognized]"
 
         except Exception as e:
             return f"[Generation error: {e}]"
+
+    def _validate_citations(self, answer: str, results: List[RetrievalResult]) -> str:
+        """
+        Validate that citations in answer correspond to actual sources
+
+        Args:
+            answer: Generated answer text
+            results: Retrieved documents
+
+        Returns:
+            Validated answer (with warning if citations are invalid)
+        """
+        import re
+
+        # Find all citation markers like [1], [2], etc.
+        citations = re.findall(r'\[(\d+)\]', answer)
+
+        if not citations:
+            # No citations found - add warning if we have sources
+            if len(results) > 0:
+                answer += "\n\n**Note:** This answer should cite specific sources. Please verify information independently."
+        else:
+            # Validate citation numbers
+            max_citation = max([int(c) for c in citations])
+            if max_citation > len(results):
+                answer += f"\n\n**Warning:** Some citations ([1]-[{len(results)}] available) may be invalid."
+
+        return answer
 
     def _format_sources(self, results: List[RetrievalResult]) -> List[Dict]:
         """Format sources for response"""

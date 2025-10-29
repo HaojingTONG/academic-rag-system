@@ -1,0 +1,79 @@
+# Academic RAG System - Docker Compose
+# =====================================
+# 用于快速启动整个系统（后端+前端）
+
+version: '3.8'
+
+services:
+  # 后端API服务
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rag-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ENVIRONMENT=production
+      - LLM_BACKEND=${LLM_BACKEND:-openai}
+      - LLM_MODEL=${LLM_MODEL:-gpt-4o-mini}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL:-BAAI/bge-m3}
+    volumes:
+      # 挂载数据目录（持久化）
+      - ./data:/app/data
+      - ./vector_db:/app/vector_db
+      - ./configs:/app/configs:ro  # 只读挂载配置
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    networks:
+      - rag-network
+
+  # 前端服务
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: rag-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_RAG_BASE_URL=http://backend:8000
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - rag-network
+
+  # 可选：Nginx反向代理（生产环境推荐）
+  nginx:
+    image: nginx:alpine
+    container_name: rag-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro  # SSL证书
+    depends_on:
+      - backend
+      - frontend
+    restart: unless-stopped
+    networks:
+      - rag-network
+    profiles:
+      - production  # 只在production profile启用
+
+networks:
+  rag-network:
+    driver: bridge
+
+volumes:
+  vector_db_data:
+    driver: local

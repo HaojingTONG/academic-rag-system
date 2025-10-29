@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.pytest_cache/
 
 # Virtual environments
 venv/
@@ -16,13 +17,24 @@ venv_m3max/
 
 # Logs
 *.log
+logs/
 
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
+
+# Environment variables (IMPORTANT: never commit these!)
+.env
+.env.local
+.env.production
+!.env.example
 
 # Data files (too large for GitHub)
 data/raw_papers/*.pdf
+data/parsed/*.json
 data/embedding_cache/
 data/evaluation/results/
 data/evaluation/quick_results/
@@ -35,3 +47,25 @@ vector_db/*/index_metadata.pickle
 
 # Processed data (can be regenerated)
 data/main_system_papers.json
+data/bm25_index.pkl
+
+# Test results
+tests/results/
+*.coverage
+htmlcov/
+.coverage
+coverage.xml
+junit.xml
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Docker
+.dockerignore
+
+# Backup and temporary files
+.backup/
+*.bak
+*.tmp

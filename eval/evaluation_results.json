@@ -1,0 +1,210 @@
+[
+  {
+    "query": "What is Transformer Architecture?",
+    "concept": "transformer",
+    "success": true,
+    "hit_at_5": true,
+    "num_sources": 3,
+    "expected_paper_found": true,
+    "required_keywords": [
+      "self-attention",
+      "encoder-decoder",
+      "attention mechanism"
+    ],
+    "keywords_present": [],
+    "keywords_missing": [
+      "self-attention",
+      "encoder-decoder",
+      "attention mechanism",
+      "parallel"
+    ],
+    "keyword_coverage": 0.0,
+    "keyword_count": 0,
+    "faithfulness_score": 0.4494543650793651,
+    "citation_coverage": 0.3333333333333333,
+    "verbatim_copying": 0.6746031746031746,
+    "claim_support": 0.28125,
+    "word_count": 126,
+    "citation_count": 4,
+    "has_summary": true,
+    "passes_threshold": false,
+    "answer": "**Definition:**\n[1] Using Prior Knowledge to Guide BERT's Attention in Semantic Textual Matching Tasks Abstract: We study the problem of incorporating prior knowledge into a deep Transformer-based model,i [1]\n\n**Mechanism/Architecture:**\n,Bidirectional Encoder Representations from Transformers (BERT), to enhance its performance on semantic textual matching tasks [2]\n\n**Applications:**\nBy probing and analyzing what BERT has already known when solving this task, we obtain better understanding of what task-specific knowledge BERT needs the most and where it is most needed [3]\n\n\nNote: This answer is generated from the retrieved research papers. For complete details, please refer to the original sources.\n\n**Summary:**\nIn summary, transformer architecture is a significant concept in the field, as demonstrated across 3 research papers including Using Prior Knowledge to Guide BERT's At and others.",
+    "sources": [
+      {
+        "title": "Using Prior Knowledge to Guide BERT's Attention in Semantic Textual Matching Tasks",
+        "score": 4.269380968356068
+      },
+      {
+        "title": "Attention Is All You Need",
+        "score": 3.4504808829025286
+      },
+      {
+        "title": "Context-Guided BERT for Targeted Aspect-Based Sentiment Analysis",
+        "score": 3.2976115728537434
+      }
+    ],
+    "metadata": {
+      "retrieval_time": 0.06380581855773926,
+      "ranking_time": 3.159402847290039,
+      "generation_time": 0.1892108917236328,
+      "total_time": 3.416888952255249,
+      "top_k": 5,
+      "config": {
+        "top_k": 5,
+        "use_hybrid_retrieval": true,
+        "vector_weight": 0.7,
+        "bm25_weight": 0.3,
+        "enable_reranking": true,
+        "enable_diversification": true,
+        "enable_filtering": true,
+        "llm_model": "llama3.1:8b",
+        "llm_temperature": 0.1,
+        "max_tokens": 2000,
+        "include_sources": true,
+        "enable_fact_check": false,
+        "enable_citations": true,
+        "max_context_length": 4000,
+        "timeout": 60
+      }
+    }
+  },
+  {
+    "query": "What is BERT?",
+    "concept": "bert",
+    "success": true,
+    "hit_at_5": true,
+    "num_sources": 3,
+    "expected_paper_found": true,
+    "required_keywords": [
+      "bidirectional",
+      "transformer",
+      "pre-training"
+    ],
+    "keywords_present": [
+      "bidirectional",
+      "transformer"
+    ],
+    "keywords_missing": [
+      "pre-training",
+      "masked"
+    ],
+    "keyword_coverage": 0.5,
+    "keyword_count": 2,
+    "faithfulness_score": 0.45775,
+    "citation_coverage": 0.3333333333333333,
+    "verbatim_copying": 0.68,
+    "claim_support": 0.3125,
+    "word_count": 125,
+    "citation_count": 4,
+    "has_summary": true,
+    "passes_threshold": false,
+    "answer": "**Definition:**\n[1] Using Prior Knowledge to Guide BERT's Attention in Semantic Textual Matching Tasks Abstract: We study the problem of incorporating prior knowledge into a deep Transformer-based model,i [1]\n\n**Mechanism/Architecture:**\n,Bidirectional Encoder Representations from Transformers (BERT), to enhance its performance on semantic textual matching tasks [2]\n\n**Applications:**\nBy probing and analyzing what BERT has already known when solving this task, we obtain better understanding of what task-specific knowledge BERT needs the most and where it is most needed [3]\n\n\nNote: This answer is generated from the retrieved research papers. For complete details, please refer to the original sources.\n\n**Summary:**\nIn summary, bert is a significant concept in the field, as demonstrated across 3 research papers including Using Prior Knowledge to Guide BERT's At and others.",
+    "sources": [
+      {
+        "title": "Using Prior Knowledge to Guide BERT's Attention in Semantic Textual Matching Tasks",
+        "score": 5.583640510130407
+      },
+      {
+        "title": "Medical-GAT: Cancer Document Classification Leveraging Graph-Based Residual Network for Scenarios with Limited Data",
+        "score": 4.032925539138244
+      },
+      {
+        "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language\n  Understanding",
+        "score": 4.009983539581299
+      }
+    ],
+    "metadata": {
+      "retrieval_time": 0.10717010498046875,
+      "ranking_time": 0.620391845703125,
+      "generation_time": 0.22116923332214355,
+      "total_time": 0.9504368305206299,
+      "top_k": 5,
+      "config": {
+        "top_k": 5,
+        "use_hybrid_retrieval": true,
+        "vector_weight": 0.7,
+        "bm25_weight": 0.3,
+        "enable_reranking": true,
+        "enable_diversification": true,
+        "enable_filtering": true,
+        "llm_model": "llama3.1:8b",
+        "llm_temperature": 0.1,
+        "max_tokens": 2000,
+        "include_sources": true,
+        "enable_fact_check": false,
+        "enable_citations": true,
+        "max_context_length": 4000,
+        "timeout": 60
+      }
+    }
+  },
+  {
+    "query": "What is attention mechanism?",
+    "concept": "attention",
+    "success": true,
+    "hit_at_5": false,
+    "num_sources": 3,
+    "expected_paper_found": false,
+    "required_keywords": [
+      "attention mechanism",
+      "weight",
+      "relevance"
+    ],
+    "keywords_present": [
+      "attention mechanism"
+    ],
+    "keywords_missing": [
+      "weight",
+      "relevance"
+    ],
+    "keyword_coverage": 0.3333333333333333,
+    "keyword_count": 1,
+    "faithfulness_score": 0.4409090909090909,
+    "citation_coverage": 0.3333333333333333,
+    "verbatim_copying": 0.7954545454545454,
+    "claim_support": 0.3333333333333333,
+    "word_count": 132,
+    "citation_count": 4,
+    "has_summary": true,
+    "passes_threshold": false,
+    "answer": "**Definition:**\n[1] Effective Approaches to Attention-based Neural Machine Translation Abstract: An attentional mechanism has lately been used to improve neural machine translation (NMT) by selectively focusing on parts of the source sentence during translation [1]\n\n**Mechanism/Architecture:**\nHowever, there has been little work exploring useful architectures for attention-based NMT [2]\n\n**Applications:**\nThis paper examines two simple and effective classes of attentional mechanism: a global approach which always attends to all source words and a local one that only looks at a subset of source words at a time [3]\n\n\nNote: This answer is generated from the retrieved research papers. For complete details, please refer to the original sources.\n\n**Summary:**\nIn summary, attention mechanism is a significant concept in the field, as demonstrated across 3 research papers including Effective Approaches to Attention-based  and others.",
+    "sources": [
+      {
+        "title": "Effective Approaches to Attention-based Neural Machine Translation",
+        "score": 4.995656650618176
+      },
+      {
+        "title": "Using Prior Knowledge to Guide BERT's Attention in Semantic Textual Matching Tasks",
+        "score": 4.833250373995216
+      },
+      {
+        "title": "Context-Guided BERT for Targeted Aspect-Based Sentiment Analysis",
+        "score": 4.186118483251975
+      }
+    ],
+    "metadata": {
+      "retrieval_time": 0.05670881271362305,
+      "ranking_time": 0.5029792785644531,
+      "generation_time": 0.17568397521972656,
+      "total_time": 0.7373969554901123,
+      "top_k": 5,
+      "config": {
+        "top_k": 5,
+        "use_hybrid_retrieval": true,
+        "vector_weight": 0.7,
+        "bm25_weight": 0.3,
+        "enable_reranking": true,
+        "enable_diversification": true,
+        "enable_filtering": true,
+        "llm_model": "llama3.1:8b",
+        "llm_temperature": 0.1,
+        "max_tokens": 2000,
+        "include_sources": true,
+        "enable_fact_check": false,
+        "enable_citations": true,
+        "max_context_length": 4000,
+        "timeout": 60
+      }
+    }
+  }
+]

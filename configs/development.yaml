@@ -1,0 +1,29 @@
+# Development Environment Configuration
+# 开发环境配置
+# =====================================
+# 继承自default.yaml，覆盖开发环境特定配置
+
+# 系统配置
+system:
+  log_level: "DEBUG"
+  log_format: "structured"  # 开发环境使用结构化日志便于调试
+
+# API配置
+api:
+  host: "127.0.0.1"  # 开发环境只监听本地
+  port: 8000
+  reload: true       # 开发模式启用热重载
+  workers: 1         # 开发环境单worker便于调试
+
+# 性能配置
+performance:
+  enable_caching: true
+  enable_embedding_cache: true
+  max_concurrent_requests: 5  # 开发环境限制并发
+
+# 调试选项
+debug:
+  enable_profiling: true
+  verbose_errors: true
+  log_queries: true
+  log_retrieval_details: true

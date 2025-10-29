@@ -53,19 +53,23 @@ class CrossEncoderRanker:
     """
     Cross-encoder based reranking
 
-    Uses feature-based scoring for reranking retrieved documents.
-    For production, can be replaced with actual cross-encoder models
-    like cross-encoder/ms-marco-MiniLM-L-6-v2.
+    Supports multiple reranking models:
+    - bge-reranker-large (default, highest quality)
+    - cross-encoder/ms-marco-MiniLM-L-6-v2 (fallback)
+    - Feature-based scoring (final fallback)
     """
 
-    def __init__(self, use_model: bool = False):
+    def __init__(self, use_model: bool = True, model_name: str = None):
         """
         Initialize reranker
 
         Args:
             use_model: Whether to use actual cross-encoder model (if False, uses features)
+            model_name: Specific model to use (if None, tries bge-reranker-large then ms-marco)
         """
         self.use_model = use_model
+        self.model = None
+        self.model_type = "feature"  # feature, bge, cross-encoder
 
         # Feature weights for reranking
         self.feature_weights = {
@@ -92,20 +96,38 @@ class CrossEncoderRanker:
             'content': 0.60
         }
 
-        # Try to load cross-encoder model if requested
+        # Try to load reranker model if requested
         if self.use_model:
-            try:
-                from sentence_transformers import CrossEncoder
-                model_name = "cross-encoder/ms-marco-MiniLM-L-6-v2"
-                self.model = CrossEncoder(model_name)
-                print(f"✅ Loaded cross-encoder model: {model_name}")
-            except Exception as e:
-                print(f"⚠️ Could not load cross-encoder model: {e}")
+            # Try bge-reranker-large first (best quality)
+            if model_name is None or model_name == "bge-reranker-large":
+                try:
+                    from FlagEmbedding import FlagReranker
+                    self.model = FlagReranker('BAAI/bge-reranker-large', use_fp16=False)
+                    self.model_type = "bge"
+                    print(f"✅ Loaded reranker: BAAI/bge-reranker-large")
+                except Exception as e:
+                    print(f"⚠️ Could not load bge-reranker-large: {e}")
+                    if model_name == "bge-reranker-large":
+                        # If specifically requested, don't try fallback
+                        self.use_model = False
+
+            # Fallback to cross-encoder if bge failed and not specifically requested
+            if self.model is None and self.use_model and model_name != "bge-reranker-large":
+                try:
+                    from sentence_transformers import CrossEncoder
+                    fallback_model = model_name or "cross-encoder/ms-marco-MiniLM-L-6-v2"
+                    self.model = CrossEncoder(fallback_model)
+                    self.model_type = "cross-encoder"
+                    print(f"✅ Loaded cross-encoder model: {fallback_model}")
+                except Exception as e:
+                    print(f"⚠️ Could not load cross-encoder model: {e}")
+                    self.use_model = False
+
+            # Final fallback to feature-based
+            if self.model is None:
                 print("   Falling back to feature-based reranking")
                 self.use_model = False
-                self.model = None
-        else:
-            self.model = None
+                self.model_type = "feature"
 
     def rerank(self,
                query: str,
@@ -141,12 +163,20 @@ class CrossEncoderRanker:
         return results
 
     def _model_rerank(self, query: str, results: List[RetrievalResult]) -> List[RetrievalResult]:
-        """Model-based reranking using cross-encoder"""
-        # Prepare pairs for cross-encoder
+        """Model-based reranking using BGE or cross-encoder"""
+        # Prepare pairs
         pairs = [[query, result.content] for result in results]
 
-        # Get scores from cross-encoder
-        scores = self.model.predict(pairs)
+        # Get scores based on model type
+        if self.model_type == "bge":
+            # BGE FlagReranker uses compute_score()
+            scores = self.model.compute_score(pairs)
+            # Handle single result case (returns scalar instead of list)
+            if not isinstance(scores, list):
+                scores = [scores]
+        else:
+            # Cross-encoder uses predict()
+            scores = self.model.predict(pairs)
 
         # Update rerank scores
         for result, score in zip(results, scores):
@@ -362,26 +392,40 @@ class MMRDiversifier:
 # ============================================================================
 
 class RelevanceFilter:
-    """Filter results by relevance threshold"""
+    """Filter results by relevance threshold with minimum keep guarantee"""
 
-    def __init__(self, threshold: float = None):
+    def __init__(self, threshold: float = None, min_keep_k: int = 3):
         """
         Initialize relevance filter
 
         Args:
-            threshold: Minimum score threshold (default from config or 0.5)
+            threshold: Minimum score threshold (default from config or 0.3)
+            min_keep_k: Minimum number of results to keep regardless of threshold
         """
         if USE_CONFIG and threshold is None:
             self.threshold = config.retrieval.similarity_threshold
         else:
-            self.threshold = threshold or 0.5
+            self.threshold = threshold or 0.3  # Lowered from 0.5
 
-        print(f"🔍 Relevance Filter initialized (threshold={self.threshold})")
+        self.min_keep_k = min_keep_k
 
-    def filter(self, results: List[RetrievalResult]) -> List[RetrievalResult]:
-        """Filter results below threshold"""
-        filtered = []
+        print(f"🔍 Relevance Filter initialized (threshold={self.threshold}, min_keep={min_keep_k})")
 
+    def filter(self, results: List[RetrievalResult], min_keep: int = None) -> List[RetrievalResult]:
+        """
+        Filter results below threshold, but keep at least min_keep results
+
+        Args:
+            results: Results to filter
+            min_keep: Override minimum keep count (default uses self.min_keep_k)
+
+        Returns:
+            Filtered results, guaranteed to have at least min_keep if available
+        """
+        min_keep = min_keep if min_keep is not None else self.min_keep_k
+
+        # Score all results
+        scored_results = []
         for result in results:
             # Get the highest score available
             max_score = max(
@@ -389,11 +433,21 @@ class RelevanceFilter:
                 result.combined_score,
                 result.vector_score
             )
+            scored_results.append((max_score, result))
 
-            if max_score >= self.threshold:
-                filtered.append(result)
+        # Sort by score descending
+        scored_results.sort(key=lambda x: x[0], reverse=True)
 
-        print(f"✅ Filtered: {len(results)} → {len(filtered)} results")
+        # Filter by threshold
+        filtered = [r for score, r in scored_results if score >= self.threshold]
+
+        # Guarantee minimum results
+        if len(filtered) < min_keep and len(scored_results) > 0:
+            # Keep top min_keep results regardless of threshold
+            filtered = [r for _, r in scored_results[:min_keep]]
+            print(f"⚠️  Only {len([s for s, _ in scored_results if s >= self.threshold])} above threshold, keeping top {len(filtered)}")
+
+        print(f"✅ Filtered: {len(results)} → {len(filtered)} results (threshold={self.threshold})")
         return filtered
 
 
@@ -491,7 +545,7 @@ class CompositeRanker:
 
         # Initialize components
         if enable_reranking:
-            self.reranker = CrossEncoderRanker(use_model=False)
+            self.reranker = CrossEncoderRanker(use_model=True)  # Try bge-reranker-large by default
 
         if enable_filtering:
             self.filter = RelevanceFilter()
@@ -530,9 +584,10 @@ class CompositeRanker:
             results = self.reranker.rerank(query, results)
             print(f"   ✓ Reranked")
 
-        # 2. Filtering
+        # 2. Filtering (with min_keep guarantee)
         if self.enable_filtering:
-            results = self.filter.filter(results)
+            # Guarantee we keep at least top_k results
+            results = self.filter.filter(results, min_keep=top_k)
             print(f"   ✓ Filtered ({len(results)} remain)")
 
         # 3. Diversification

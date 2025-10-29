@@ -1,0 +1,42 @@
+[
+  {
+    "query": "What is Transformer Architecture?",
+    "success": true,
+    "retrieved_n": 10,
+    "kept_n": 3,
+    "citation_count": 3,
+    "latency": 2.281697988510132
+  },
+  {
+    "query": "What is attention mechanism?",
+    "success": true,
+    "retrieved_n": 10,
+    "kept_n": 3,
+    "citation_count": 3,
+    "latency": 1.1060187816619873
+  },
+  {
+    "query": "What is BERT?",
+    "success": true,
+    "retrieved_n": 10,
+    "kept_n": 3,
+    "citation_count": 3,
+    "latency": 1.505272626876831
+  },
+  {
+    "query": "Explain ResNet architecture",
+    "success": true,
+    "retrieved_n": 10,
+    "kept_n": 5,
+    "citation_count": 5,
+    "latency": 2.4650299549102783
+  },
+  {
+    "query": "What is Adam optimizer?",
+    "success": true,
+    "retrieved_n": 10,
+    "kept_n": 3,
+    "citation_count": 3,
+    "latency": 0.7771549224853516
+  }
+]

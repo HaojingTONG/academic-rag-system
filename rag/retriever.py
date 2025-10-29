@@ -365,10 +365,7 @@ class VectorStore:
         print("🔢 Generating embeddings...")
         if hasattr(self.embedding_manager, 'encode'):
             # EmbeddingManager or SentenceTransformer
-            embeddings = self.embedding_manager.encode(
-                documents,
-                show_progress_bar=True
-            )
+            embeddings = self.embedding_manager.encode(documents)
         else:
             embeddings = self.embedding_manager.encode(documents)
 
@@ -409,7 +406,7 @@ class VectorStore:
         """Vector similarity search"""
         # Generate query embedding
         if hasattr(self.embedding_manager, 'encode'):
-            query_embedding = self.embedding_manager.encode(query, show_progress_bar=False)
+            query_embedding = self.embedding_manager.encode(query)
         else:
             query_embedding = self.embedding_manager.encode([query])
 

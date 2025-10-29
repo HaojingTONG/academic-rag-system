@@ -1,0 +1,465 @@
+# Prompt Templates for RAG Pipeline
+# ====================================
+#
+# This file documents the prompt templates used for different query types.
+# Templates are implemented in rag/composer.py
+#
+# Updated: 2025-10-27
+# Changes:
+#   - Added definition template with structured format
+#   - Added "SYNTHESIZE and REPHRASE" directives to prevent copying
+#   - Added post-generation summary injection
+#   - Added faithfulness checking
+
+# Template Selection Logic
+# -------------------------
+# Query intent detection (from rag/retriever.py:QueryAnalyzer) maps to templates:
+#
+#   Query Intent    → Template Style → Expected Structure
+#   ────────────────────────────────────────────────────────────
+#   definition      → definition     → Definition/Mechanism/Application
+#   comparison      → comparative    → Similarities/Differences/Analysis
+#   method          → detailed       → Comprehensive explanation
+#   recent_work     → detailed       → Latest findings/trends
+#   general         → academic       → Evidence-based answer
+
+# Available Templates
+# -------------------
+
+templates:
+  # 1. Definition Template
+  # For "What is X?" queries
+  # Enforces structured output with citations
+  definition:
+    use_case: "Explaining concepts, architectures, or terminology"
+    query_examples:
+      - "What is Transformer Architecture?"
+      - "What is attention mechanism?"
+      - "Define BERT model"
+
+    output_structure:
+      - "**Definition:** Core concept with citation"
+      - "**Mechanism/Architecture:** How it works, key components"
+      - "**Applications:** Practical use cases from papers"
+
+    requirements:
+      - "MUST cite sources using [1], [2], etc."
+      - "MUST follow the 3-part structure"
+      - "MUST NOT copy prompt text into answer"
+      - "Base answer ONLY on provided context"
+
+    prompt_location: "rag/composer.py:PromptTemplate.definition_template"
+
+  # 2. Academic Template (Default)
+  # General-purpose template for most queries
+  academic:
+    use_case: "General academic questions requiring evidence"
+    query_examples:
+      - "How does BERT improve NLP tasks?"
+      - "What are the benefits of transformers?"
+
+    output_structure:
+      - "Direct answer with citations"
+      - "Technical details when appropriate"
+      - "Clear, structured explanation"
+
+    requirements:
+      - "Cite sources for all claims"
+      - "Acknowledge limitations if context incomplete"
+      - "Be precise and technical"
+
+    prompt_location: "rag/composer.py:PromptTemplate.academic_template"
+
+  # 3. Comparative Template
+  # For comparing concepts, methods, or papers
+  comparative:
+    use_case: "Comparing multiple concepts or approaches"
+    query_examples:
+      - "Compare BERT and GPT"
+      - "What's the difference between RNN and Transformer?"
+      - "BERT vs ELMo advantages"
+
+    output_structure:
+      - "Key similarities"
+      - "Key differences"
+      - "Structured comparison (table or bullet points)"
+
+    requirements:
+      - "Be objective and evidence-based"
+      - "Cite sources for each comparison point"
+      - "Highlight practical implications"
+
+    prompt_location: "rag/composer.py:PromptTemplate.comparative_template"
+
+  # 4. Detailed Template
+  # For in-depth explanations
+  detailed:
+    use_case: "Complex topics requiring comprehensive coverage"
+    query_examples:
+      - "How to implement attention mechanism?"
+      - "Explain transformer training process"
+      - "Recent advances in language models"
+
+    output_structure:
+      - "Comprehensive answer with multiple perspectives"
+      - "Organized in paragraphs or sections"
+      - "Includes examples and details from papers"
+
+    requirements:
+      - "Cover multiple aspects"
+      - "Cite sources throughout"
+      - "Acknowledge research gaps"
+
+    prompt_location: "rag/composer.py:PromptTemplate.detailed_template"
+
+  # 5. Concise Template
+  # For brief, direct answers
+  concise:
+    use_case: "Quick answers, summaries, key points"
+    query_examples:
+      - "Quick summary of transformer architecture"
+      - "Main benefit of self-attention"
+
+    output_structure:
+      - "Direct answer (3-4 sentences max)"
+      - "Key points only"
+      - "Citations for claims"
+
+    requirements:
+      - "Maximum brevity"
+      - "Focus on core information"
+      - "Still cite sources"
+
+    prompt_location: "rag/composer.py:PromptTemplate.concise_template"
+
+# Query Intent Detection
+# ----------------------
+# Patterns used to detect query intent (from rag/retriever.py:QueryAnalyzer)
+
+intent_patterns:
+  definition:
+    patterns:
+      - "\\b(what is|define|definition|meaning|explain)\\b"
+      - "\\b(how.*work|principle|concept)\\b"
+    expansion_terms:
+      transformer: ["attention mechanism", "self-attention", "multi-head attention"]
+      attention: ["attention mechanism", "self-attention", "cross-attention"]
+      bert: ["bidirectional encoder", "transformer encoder", "pre-trained model"]
+
+  comparison:
+    patterns:
+      - "\\b(compare|comparison|versus|vs|difference|differ)\\b"
+      - "\\b(better|worse|advantage|disadvantage)\\b"
+      - "\\b(which|what.*best|superior|inferior)\\b"
+
+  method:
+    patterns:
+      - "\\b(how to|method|approach|technique|algorithm)\\b"
+      - "\\b(implement|implementation|steps|procedure)\\b"
+
+  recent_work:
+    patterns:
+      - "\\b(recent|latest|new|current|state-of-the-art)\\b"
+      - "\\b(progress|advance|development|trend)\\b"
+
+# Context Formatting
+# ------------------
+# How retrieved documents are formatted in the prompt
+
+context_formatting:
+  style: "detailed"  # Options: detailed, concise, minimal
+  include_metadata: true  # Include paper titles, sections
+  max_context_length: 4000  # characters
+  truncation_strategy: "smart"  # Preserve complete sources
+
+  format_example: |
+    [1] Attention Is All You Need (Section: Abstract)
+    The Transformer model architecture is based entirely on attention mechanisms,
+    dispensing with recurrence and convolutions entirely...
+
+# Best Practices
+# ---------------
+# Guidelines for template design to prevent issues
+
+best_practices:
+  avoid_meta_text_in_answer:
+    problem: "LLM copying prompt structure into answer"
+    solution:
+      - "Use clear separation between context and instructions"
+      - "Explicitly instruct: 'Do NOT copy prompt text'"
+      - "Use directive: 'Start directly with your answer'"
+
+  ensure_citations:
+    problem: "Missing source citations"
+    solution:
+      - "Repeat citation requirement in multiple places"
+      - "Use explicit format: 'ALWAYS cite using [1], [2]'"
+      - "Include in both instructions and output structure"
+
+  enforce_structure:
+    problem: "Unstructured answers"
+    solution:
+      - "Provide clear section headings in instructions"
+      - "Use markdown formatting (**Definition:**)"
+      - "Give examples of expected structure"
+
+  prevent_hallucination:
+    problem: "LLM making claims not in context"
+    solution:
+      - "Emphasize: 'based ONLY on provided context'"
+      - "Instruct to acknowledge limitations"
+      - "Use constraint: 'Do NOT make claims without citations'"
+
+  prevent_verbatim_copying:
+    problem: "LLM copying sentences verbatim from context"
+    solution:
+      - "Use directive: 'SYNTHESIZE information in your own words'"
+      - "Add warning: 'DO NOT copy sentences verbatim'"
+      - "Emphasize: 'REPHRASE the key ideas'"
+      - "Require: 'Integrate information from multiple sources'"
+      - "Add post-generation faithfulness check"
+
+  ensure_synthesis:
+    problem: "Answers lack coherent synthesis"
+    solution:
+      - "Require: 'Provide a coherent, well-structured explanation'"
+      - "Instruct: 'Include a brief concluding sentence'"
+      - "Add post-generation summary paragraph"
+      - "Use context fusion to show key insights upfront"
+
+# Troubleshooting
+# ---------------
+
+troubleshooting:
+  symptom: "Answer contains prompt text"
+  fixes:
+    - "Remove phrases like 'You are an AI assistant' from template"
+    - "Add explicit instruction: 'Do NOT include prompt text'"
+    - "Use simpler prompt structure"
+
+  symptom: "No citations in answer"
+  fixes:
+    - "Make citation requirement more prominent"
+    - "Show citation format in instructions: 'using [1], [2]'"
+    - "Add post-processing citation validation"
+
+  symptom: "Wrong template selected"
+  fixes:
+    - "Check intent patterns in rag/retriever.py:QueryAnalyzer"
+    - "Verify intent_to_template mapping in rag/pipeline.py"
+    - "Add logging to see detected intent"
+
+  symptom: "Answer doesn't follow structure"
+  fixes:
+    - "Make structure requirements more explicit"
+    - "Use markdown formatting for clarity"
+    - "Reduce complexity of requested structure"
+
+# Answer Quality Enhancement Pipeline
+# ------------------------------------
+
+answer_quality_pipeline:
+  step_1_pre_generation:
+    name: "Context Fusion (Optional)"
+    implementation: "rag/composer.py:ContextSummarizer"
+    purpose: "Extract and summarize key points before LLM generation"
+    output: "Fusion summary prepended to context"
+
+  step_2_generation:
+    name: "LLM Generation with Anti-Copying Directives"
+    implementation: "rag/composer.py:PromptTemplate"
+    directives:
+      - "SYNTHESIZE information in your own words"
+      - "REPHRASE key ideas while maintaining technical accuracy"
+      - "DO NOT copy sentences verbatim"
+      - "Integrate information from multiple sources"
+      - "Include a brief concluding sentence"
+
+  step_3_post_generation:
+    name: "Answer Enhancement"
+    implementation: "rag/answer_quality.py:AnswerEnhancer"
+    enhancements:
+      - "Add summary paragraph if missing"
+      - "Improve technical clarity"
+      - "Ensure proper formatting"
+
+  step_4_faithfulness_check:
+    name: "Faithfulness Verification"
+    implementation: "rag/answer_quality.py:FaithfulnessChecker"
+    metrics:
+      - "Citation coverage (≥50% of sentences cited)"
+      - "Verbatim copying (<30% copied)"
+      - "Claim support (≥70% claims in context)"
+    score: "Overall faithfulness score 0.0-1.0"
+
+# Faithfulness Metrics
+# --------------------
+
+faithfulness_metrics:
+  citation_coverage:
+    description: "Ratio of sentences with citations"
+    threshold: 0.5
+    calculation: "cited_sentences / total_sentences"
+
+  verbatim_copying:
+    description: "Ratio of answer copied verbatim from context"
+    threshold: 0.3
+    calculation: "consecutive_word_matches / total_words"
+    note: "Lower is better"
+
+  claim_support:
+    description: "Ratio of claims supported by context"
+    threshold: 0.7
+    calculation: "supported_claims / total_claims"
+    method: "Keyword overlap between answer and context"
+
+  overall_faithfulness:
+    formula: "(citation_coverage * 0.4) + (claim_support * 0.4) + ((1 - verbatim_copying) * 0.2)"
+    range: "0.0 (unfaithful) to 1.0 (fully faithful)"
+
+# Testing
+# -------
+
+# Structured Answer Prompt (Advanced)
+# =====================================
+
+structured_answer_prompt: |
+  You are a research summarization model specializing in producing integrated, factual summaries.
+
+  Read the following retrieved context and answer the question BY INTEGRATING AND REPHRASING the information.
+
+  Context from research papers:
+  {context}
+
+  Question: {question}
+
+  Produce a well-structured summary with these sections:
+
+  **Definition:**
+  - Briefly define the core concept and its origin
+  - Cite the seminal paper (e.g., Vaswani et al., 2017) [X]
+  - Use your own words - DO NOT quote sentences verbatim
+  - 2-3 sentences maximum
+
+  **Mechanism:**
+  - Explain the fundamental components and how they work
+  - For Transformers: multi-head self-attention, positional encoding, encoder-decoder stack
+  - For BERT: bidirectional encoding, masked language modeling, pre-training
+  - Integrate information from multiple sources [X][Y]
+  - 3-4 sentences in your own phrasing
+
+  **Applications:**
+  - Describe key practical applications and use cases
+  - Provide specific examples from the papers
+  - Cite relevant sources [X][Y][Z]
+  - 2-3 sentences synthesizing application areas
+
+  **Summary:**
+  - Synthesize the overall contribution and significance in 2-3 sentences
+  - Highlight the key innovation (e.g., "attention replacing recurrence")
+  - Mention scalability, influence, or cross-domain impact
+  - Conclude with the broader significance
+
+  CRITICAL INSTRUCTIONS:
+  - Avoid quoting sentences verbatim
+  - Focus on integration and abstraction
+  - Rephrase key ideas while maintaining technical accuracy
+  - Use natural, flowing language
+  - Cite all claims with [1], [2], etc.
+
+  Answer:
+
+# Concept-Specific Requirements
+# ==============================
+
+concept_requirements:
+  transformer:
+    required_keywords:
+      - "self-attention"
+      - "encoder-decoder"
+      - "attention mechanism"
+      - "parallel"
+      - "Vaswani"
+    optional_keywords:
+      - "positional encoding"
+      - "multi-head"
+      - "recurrence"
+      - "sequence"
+    key_papers:
+      - "Attention Is All You Need"
+
+  bert:
+    required_keywords:
+      - "bidirectional"
+      - "transformer"
+      - "pre-training"
+      - "masked"
+    optional_keywords:
+      - "language model"
+      - "fine-tuning"
+      - "BERT"
+    key_papers:
+      - "BERT: Pre-training of Deep Bidirectional Transformers"
+
+  attention:
+    required_keywords:
+      - "attention mechanism"
+      - "weight"
+      - "relevance"
+    optional_keywords:
+      - "query"
+      - "key"
+      - "value"
+      - "self-attention"
+    key_papers:
+      - "Attention Is All You Need"
+      - "Neural Machine Translation by Jointly Learning to Align and Translate"
+
+# Final Summary Template
+# =======================
+
+final_summary_template: |
+  Based on the sections above, write a concise final paragraph (2-3 sentences) that:
+
+  - Summarizes the key innovation or breakthrough
+  - Highlights scalability, performance, or influence on the field
+  - Mentions cross-domain impact or broader significance
+
+  Be specific about the contribution while remaining concise.
+
+  Final Summary:
+
+test_cases:
+  definition_query:
+    input: "What is Transformer Architecture?"
+    expected_intent: "definition"
+    expected_template: "definition"
+    expected_output_includes:
+      - "**Definition:**"
+      - "**Mechanism:**"
+      - "**Applications:**"
+      - "**Summary:**"
+      - "[1]"  # At least one citation
+      - "[2]"  # At least two citations
+      - "self-attention"  # Key concept mentioned
+    required_keywords:
+      - "self-attention"
+      - "encoder-decoder"
+    faithfulness_threshold: 0.9
+
+  comparison_query:
+    input: "Compare BERT and GPT architectures"
+    expected_intent: "comparison"
+    expected_template: "comparative"
+    expected_output_includes:
+      - "similarities"
+      - "differences"
+      - "[1]"
+      - "[2]"
+
+# Implementation Notes
+# --------------------
+# - Templates are implemented as static methods in rag/composer.py:PromptTemplate
+# - Intent detection happens in rag/retriever.py:QueryAnalyzer
+# - Template selection logic is in rag/pipeline.py:RAGPipeline.query()
+# - Context formatting is handled by rag/composer.py:ContextFormatter

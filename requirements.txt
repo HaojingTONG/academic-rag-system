@@ -10,12 +10,15 @@ torchaudio
 PyMuPDF>=1.23.8
 arxiv
 requests
+tiktoken  # Token counting for chunking
 
 # 检索增强
 rank-bm25
+FlagEmbedding  # bge-reranker-large for advanced reranking
 
-# 本地LLM支持
-ollama
+# LLM支持
+openai>=1.0.0  # OpenAI API
+ollama  # 本地Ollama支持
 
 # 数据处理
 pandas
@@ -26,6 +29,11 @@ tqdm
 python-dotenv
 pyyaml
 loguru
+
+# Web框架
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.0.0
 
 # 机器学习工具
 scikit-learn

@@ -1,0 +1,168 @@
+# Retrieval Configuration
+# =======================
+#
+# This file configures the retrieval and ranking stages of the RAG pipeline.
+#
+# Updated: 2025-10-27
+# Changes:
+#   - Lowered threshold from 0.5 → 0.3 (more realistic for academic embeddings)
+#   - Added min_keep_k=3 guarantee to prevent zero results
+#   - Configured hybrid retrieval (Dense + BM25)
+
+# Basic Retrieval Settings
+retrieval:
+  # Number of documents to retrieve
+  top_k: 5
+
+  # Similarity threshold - CRITICAL SETTING
+  # Academic paper embeddings typically score 0.15-0.35
+  # Previous value of 0.5 was too strict and caused zero results
+  similarity_threshold: 0.3  # Lowered from 0.5
+
+  # Minimum documents to keep regardless of threshold
+  # Ensures queries always get results even if scores are low
+  min_keep_k: 3  # NEW: Guarantees at least 3 results
+
+# Hybrid Retrieval (Dense + BM25)
+hybrid:
+  # Enable BM25 keyword search alongside dense vector search
+  enable: true
+
+  # Weight for dense vector search (semantic similarity)
+  vector_weight: 0.7
+
+  # Weight for BM25 keyword search
+  bm25_weight: 0.3
+
+  # BM25 index path
+  bm25_index_path: "data/bm25_index.pkl"
+
+  # Fusion method: weighted or rrf (reciprocal rank fusion)
+  fusion_method: "rrf"
+
+# Reranking Settings
+reranking:
+  # Enable neural reranking
+  enable: true
+
+  # Reranker model to use
+  # Options: bge-reranker-large, cross-encoder/ms-marco-MiniLM-L-6-v2, feature-based
+  model: "bge-reranker-large"
+
+  # Number of candidates to retrieve before reranking
+  rerank_candidates: 20
+
+  # Final number to keep after reranking
+  rerank_top_k: 5
+
+  # Rerank threshold (lower than similarity_threshold)
+  # Set to null to disable threshold-based filtering after reranking
+  rerank_threshold: null  # No strict threshold after neural reranking
+
+# Filtering Settings
+filtering:
+  # Enable relevance filtering
+  enable: true
+
+  # Threshold for filtering (uses similarity_threshold above)
+  # Documents below this score are filtered out UNLESS min_keep_k applies
+  use_threshold: true
+
+  # Minimum documents to keep (overrides threshold)
+  # This is the KEY setting to prevent zero results
+  min_keep: 3  # Same as min_keep_k above
+
+  # Filter duplicates
+  deduplicate: true
+
+  # Deduplication threshold (Jaccard similarity)
+  dedup_threshold: 0.85
+
+# Diversification Settings (MMR)
+diversification:
+  # Enable Maximal Marginal Relevance
+  enable: true
+
+  # Lambda parameter (0 = max diversity, 1 = max relevance)
+  lambda: 0.7  # Balanced
+
+  # Apply diversification after reranking
+  apply_after_rerank: true
+
+# Query Processing
+query:
+  # Enable query expansion
+  expand: true
+
+  # Maximum number of expansion terms
+  max_expansions: 3
+
+  # Query analysis
+  analyze_intent: true
+
+# Performance Settings
+performance:
+  # Batch size for embedding
+  batch_size: 32
+
+  # Use GPU if available
+  use_gpu: true
+
+  # Cache retrieval results
+  cache_results: false
+
+  # Cache TTL (seconds)
+  cache_ttl: 300
+
+# Advanced Settings
+advanced:
+  # Combine scores from multiple retrievers
+  # Options: rrf, weighted, max, mean
+  score_aggregation: "rrf"
+
+  # Normalize scores before aggregation
+  normalize_scores: true
+
+  # Score normalization method
+  # Options: minmax, zscore, none
+  normalization_method: "minmax"
+
+  # Ensemble settings
+  ensemble:
+    enable: false
+    methods: ["dense", "bm25", "tfidf"]
+    weights: [0.6, 0.3, 0.1]
+
+# Logging
+logging:
+  # Log retrieval details
+  log_retrieval: true
+
+  # Log scores for debugging
+  log_scores: true
+
+  # Log filtered results
+  log_filtering: true
+
+  # Verbose mode
+  verbose: false
+
+# Notes:
+# ------
+# 1. similarity_threshold: Lowered from 0.5 to 0.3 based on empirical data
+#    showing academic embeddings score 0.15-0.35 typically
+#
+# 2. min_keep_k: NEW safety net to guarantee results. Even if all documents
+#    score below threshold, the top 3 will be kept.
+#
+# 3. rerank_threshold: Set to null to rely on neural reranker scores instead
+#    of hard thresholds (neural scores are already well-calibrated)
+#
+# 4. Hybrid retrieval: Combines semantic (dense) and keyword (BM25) search
+#    for better coverage across different query types
+#
+# 5. If you see zero results:
+#    - Check similarity_threshold (may need to lower further)
+#    - Check min_keep_k is set (default: 3)
+#    - Check bm25_index_path exists
+#    - Run: python build_bm25_index.py

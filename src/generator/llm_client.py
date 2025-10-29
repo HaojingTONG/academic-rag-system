@@ -7,6 +7,7 @@ LLM客户端 - 与本地/远程语言模型通信
 import json
 import requests
 import subprocess
+import os
 from typing import Dict, List, Optional
 from dataclasses import dataclass
 
@@ -116,6 +117,171 @@ class OllamaClient:
                 error_message=str(e)
             )
 
+class OpenAIClient:
+    """OpenAI API客户端"""
+
+    def __init__(self, api_key: Optional[str] = None, base_url: str = "https://api.openai.com/v1",
+                 default_model: str = "gpt-4o-mini", organization: Optional[str] = None):
+        """
+        初始化OpenAI客户端
+
+        Args:
+            api_key: OpenAI API密钥 (如果为None，从环境变量OPENAI_API_KEY获取)
+            base_url: API基础URL (默认为OpenAI官方API)
+            default_model: 默认模型名称
+            organization: OpenAI组织ID (可选)
+        """
+        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
+        self.base_url = base_url.rstrip('/')
+        self.default_model = default_model
+        self.organization = organization
+
+        if not self.api_key:
+            print("⚠️ 警告: OPENAI_API_KEY未设置，请设置环境变量或传入api_key参数")
+
+    def is_available(self) -> bool:
+        """检查OpenAI API是否可用"""
+        if not self.api_key:
+            return False
+
+        try:
+            headers = {
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json"
+            }
+            if self.organization:
+                headers["OpenAI-Organization"] = self.organization
+
+            response = requests.get(
+                f"{self.base_url}/models",
+                headers=headers,
+                timeout=5
+            )
+            return response.status_code == 200
+        except Exception as e:
+            print(f"OpenAI API检查失败: {e}")
+            return False
+
+    def generate(self, prompt: str, model: Optional[str] = None,
+                 max_tokens: int = 2000, temperature: float = 0.1,
+                 system_message: Optional[str] = None) -> LLMResponse:
+        """
+        生成文本回答
+
+        Args:
+            prompt: 用户提示
+            model: 模型名称 (如果为None使用默认模型)
+            max_tokens: 最大token数
+            temperature: 温度参数
+            system_message: 系统消息 (可选)
+
+        Returns:
+            LLMResponse对象
+        """
+        if not self.api_key:
+            return LLMResponse(
+                text="OpenAI API密钥未设置，请设置OPENAI_API_KEY环境变量",
+                success=False,
+                error_message="API key not configured"
+            )
+
+        model_name = model or self.default_model
+
+        try:
+            # 构建消息列表
+            messages = []
+            if system_message:
+                messages.append({"role": "system", "content": system_message})
+            messages.append({"role": "user", "content": prompt})
+
+            # 构建请求
+            headers = {
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json"
+            }
+            if self.organization:
+                headers["OpenAI-Organization"] = self.organization
+
+            payload = {
+                "model": model_name,
+                "messages": messages,
+                "temperature": temperature,
+                "max_tokens": max_tokens,
+            }
+
+            # 发送请求
+            response = requests.post(
+                f"{self.base_url}/chat/completions",
+                headers=headers,
+                json=payload,
+                timeout=60
+            )
+
+            if response.status_code == 200:
+                result = response.json()
+                answer = result['choices'][0]['message']['content'].strip()
+                tokens_used = result.get('usage', {}).get('total_tokens', None)
+
+                return LLMResponse(
+                    text=answer,
+                    success=True,
+                    model=model_name,
+                    tokens_used=tokens_used
+                )
+            else:
+                error_data = response.json() if response.text else {}
+                error_msg = error_data.get('error', {}).get('message', f"HTTP {response.status_code}")
+
+                return LLMResponse(
+                    text=f"OpenAI API调用失败: {error_msg}",
+                    success=False,
+                    error_message=error_msg
+                )
+
+        except requests.exceptions.Timeout:
+            return LLMResponse(
+                text="OpenAI API请求超时，请稍后重试",
+                success=False,
+                error_message="Request timeout"
+            )
+        except Exception as e:
+            return LLMResponse(
+                text=f"OpenAI API调用异常: {str(e)}",
+                success=False,
+                error_message=str(e)
+            )
+
+    def get_available_models(self) -> List[str]:
+        """获取可用模型列表"""
+        if not self.api_key:
+            return []
+
+        try:
+            headers = {
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json"
+            }
+            if self.organization:
+                headers["OpenAI-Organization"] = self.organization
+
+            response = requests.get(
+                f"{self.base_url}/models",
+                headers=headers,
+                timeout=10
+            )
+
+            if response.status_code == 200:
+                data = response.json()
+                models = [m['id'] for m in data.get('data', [])]
+                # 只返回常用的GPT模型
+                return [m for m in models if m.startswith(('gpt-', 'o1-'))]
+            else:
+                return []
+
+        except Exception as e:
+            print(f"获取OpenAI模型列表失败: {e}")
+            return []
+
 class FallbackGenerator:
     """后备生成器 - 当LLM不可用时使用规则生成"""
     
@@ -136,7 +302,7 @@ class FallbackGenerator:
         main_points = key_info.get('main_points', [])
         
         if not main_points:
-            answer = f"很抱歉，我无法在当前的学术文献中找到关于\"{query}\"的具体信息。建议您：\n\n1. 尝试使用不同的关键词重新搜索\n2. 扩展您的查询范围\n3. 查看相关领域的最新研究进展"
+            answer = f'I apologize, but I could not find specific information about "{query}" in the current academic literature. Suggestions:\n\n1. Try rephrasing your question with different keywords\n2. Expand your query scope\n3. Check recent research developments in related areas'
         else:
             # 根据查询意图生成连贯的回答
             if query_intent == 'definition' or 'what is' in query.lower() or '什么是' in query:
@@ -155,24 +321,32 @@ class FallbackGenerator:
         )
     
     def _generate_definition_answer(self, query: str, main_points: List[str]) -> str:
-        """生成定义类回答"""
+        """Generate definition-type answer with structured format"""
         concept = self._extract_main_concept(query)
-        
-        answer_parts = [f"根据相关学术文献，{concept}是一个重要的概念，具有以下特点：\n"]
-        
-        # 整合主要观点为连贯的定义
+
+        answer_parts = []
+
+        # Definition section
         if len(main_points) >= 1:
-            answer_parts.append(f"**核心定义**：{main_points[0]}\n")
-        
+            answer_parts.append(f"**Definition:**\n{main_points[0]} [1]\n")
+        else:
+            answer_parts.append(f"**Definition:**\nBased on the research papers, {concept} is a key concept in this field. [1]\n")
+
+        # Mechanism/Architecture section
         if len(main_points) >= 2:
-            answer_parts.append(f"**主要特征**：{main_points[1]}\n")
-        
+            answer_parts.append(f"**Mechanism/Architecture:**\n{main_points[1]} [2]\n")
+        else:
+            answer_parts.append(f"**Mechanism/Architecture:**\nThe mechanism involves several key components as described in the literature. [2]\n")
+
+        # Applications section
         if len(main_points) >= 3:
-            answer_parts.append(f"**应用场景**：{main_points[2]}\n")
-        
-        # 添加总结
-        answer_parts.append(f"总的来说，{concept}在相关领域中扮演着重要角色，其研究和应用具有重要的学术和实用价值。")
-        
+            answer_parts.append(f"**Applications:**\n{main_points[2]} [3]\n")
+        else:
+            answer_parts.append(f"**Applications:**\nThis concept has various applications in research and practice. [3]\n")
+
+        # Note about sources
+        answer_parts.append("\nNote: This answer is generated from the retrieved research papers. For complete details, please refer to the original sources.")
+
         return "\n".join(answer_parts)
     
     def _generate_comparison_answer(self, query: str, main_points: List[str]) -> str:
@@ -207,28 +381,28 @@ class FallbackGenerator:
         return "\n".join(answer_parts)
     
     def _generate_general_answer(self, query: str, main_points: List[str]) -> str:
-        """生成通用回答"""
-        answer_parts = [f"基于相关学术文献，关于\"{query}\"的研究表明：\n"]
-        
-        # 生成连贯的回答而不是简单列表
+        """Generate general answer with English format"""
+        answer_parts = [f'Based on the research papers, regarding "{query}":\n']
+
+        # Generate coherent answer rather than simple list
         if len(main_points) >= 1:
-            answer_parts.append(f"**主要发现**：{main_points[0]}\n")
-        
+            answer_parts.append(f"{main_points[0]} [1]\n")
+
         if len(main_points) >= 2:
-            answer_parts.append(f"**研究进展**：{main_points[1]}\n")
-        
+            answer_parts.append(f"{main_points[1]} [2]\n")
+
         if len(main_points) >= 3:
-            answer_parts.append(f"**实践应用**：{main_points[2]}\n")
-        
-        # 如果有更多信息，添加额外观点
+            answer_parts.append(f"{main_points[2]} [3]\n")
+
+        # If more information, add additional points
         if len(main_points) >= 4:
-            answer_parts.append("**其他重要观点**：")
-            for point in main_points[3:6]:  # 最多再加3个
-                answer_parts.append(f"• {point}")
+            answer_parts.append("\n**Additional Findings:**")
+            for i, point in enumerate(main_points[3:6], 4):  # Max 3 more
+                answer_parts.append(f"• {point} [{i}]")
             answer_parts.append("")
-        
-        answer_parts.append("这些研究为该领域的理论发展和实际应用提供了重要参考。")
-        
+
+        answer_parts.append("\nThese research findings provide important reference for both theoretical development and practical applications in the field.")
+
         return "\n".join(answer_parts)
     
     def _extract_key_info(self, content: str) -> Dict:
@@ -256,69 +430,204 @@ class FallbackGenerator:
 
 class LLMManager:
     """LLM管理器 - 统一管理多种LLM客户端"""
-    
-    def __init__(self, preferred_model: str = "llama3.1:8b"):
-        self.ollama_client = OllamaClient(default_model=preferred_model)
+
+    def __init__(self, backend: str = "openai", preferred_model: Optional[str] = None,
+                 api_key: Optional[str] = None, api_base: Optional[str] = None,
+                 organization: Optional[str] = None, ollama_host: Optional[str] = None):
+        """
+        初始化LLM管理器
+
+        Args:
+            backend: LLM后端 ("openai" 或 "ollama")
+            preferred_model: 首选模型名称
+            api_key: OpenAI API密钥 (仅OpenAI后端)
+            api_base: OpenAI API基础URL (仅OpenAI后端)
+            organization: OpenAI组织ID (仅OpenAI后端)
+            ollama_host: Ollama服务地址 (仅Ollama后端)
+        """
+        self.backend = backend.lower()
         self.fallback_generator = FallbackGenerator()
-        self.preferred_model = preferred_model
-        
-        # 检查可用性
-        self.ollama_available = self.ollama_client.is_available()
-        
-        print(f"LLM管理器初始化:")
-        print(f"  Ollama可用: {self.ollama_available}")
-        if self.ollama_available:
-            print(f"  可用模型: {self.ollama_client.available_models}")
-        print(f"  后备生成器: 已加载")
+
+        # 初始化客户端
+        self.openai_client = None
+        self.ollama_client = None
+        self.openai_available = False
+        self.ollama_available = False
+
+        if self.backend == "openai":
+            # 初始化OpenAI客户端
+            default_model = preferred_model or "gpt-4o-mini"
+            self.openai_client = OpenAIClient(
+                api_key=api_key,
+                base_url=api_base or "https://api.openai.com/v1",
+                default_model=default_model,
+                organization=organization
+            )
+            self.preferred_model = default_model
+            self.openai_available = self.openai_client.is_available()
+
+            print(f"LLM管理器初始化:")
+            print(f"  后端: OpenAI")
+            print(f"  OpenAI可用: {self.openai_available}")
+            if self.openai_available:
+                print(f"  默认模型: {default_model}")
+            print(f"  后备生成器: 已加载")
+
+        elif self.backend == "ollama":
+            # 初始化Ollama客户端
+            default_model = preferred_model or "llama3.1:8b"
+            ollama_url = ollama_host or "http://localhost:11434"
+            self.ollama_client = OllamaClient(
+                base_url=ollama_url,
+                default_model=default_model
+            )
+            self.preferred_model = default_model
+            self.ollama_available = self.ollama_client.is_available()
+
+            print(f"LLM管理器初始化:")
+            print(f"  后端: Ollama")
+            print(f"  Ollama可用: {self.ollama_available}")
+            if self.ollama_available:
+                print(f"  可用模型: {self.ollama_client.available_models}")
+            print(f"  后备生成器: 已加载")
+
+        else:
+            raise ValueError(f"不支持的后端: {backend}，请使用 'openai' 或 'ollama'")
     
     def generate_answer(self, prompt: str, query_intent: str = 'general',
-                       max_tokens: int = 512, temperature: float = 0.7) -> LLMResponse:
+                       max_tokens: int = 2000, temperature: float = 0.1) -> LLMResponse:
         """生成回答 - 自动选择最佳可用方法"""
-        
-        # 优先使用Ollama
-        if self.ollama_available:
-            response = self.ollama_client.generate(
-                prompt, 
+
+        # 根据后端选择客户端
+        if self.backend == "openai" and self.openai_available:
+            response = self.openai_client.generate(
+                prompt,
                 model=self.preferred_model,
                 max_tokens=max_tokens,
                 temperature=temperature
             )
-            
+
+            if response.success and response.text.strip():
+                return response
+            else:
+                print(f"OpenAI生成失败，回退到后备生成器: {response.error_message}")
+
+        elif self.backend == "ollama" and self.ollama_available:
+            response = self.ollama_client.generate(
+                prompt,
+                model=self.preferred_model,
+                max_tokens=max_tokens,
+                temperature=temperature
+            )
+
             if response.success and response.text.strip():
                 return response
             else:
                 print(f"Ollama生成失败，回退到后备生成器: {response.error_message}")
-        
+
         # 后备方案：使用规则生成器
         # 从prompt中提取查询和上下文
         query, context = self._parse_prompt(prompt)
         return self.fallback_generator.generate_fallback_answer(query, context, query_intent)
     
     def _parse_prompt(self, prompt: str) -> tuple:
-        """从prompt中解析查询和上下文"""
+        """Parse query and context from prompt"""
         lines = prompt.split('\n')
         query = ""
         context = ""
-        
-        for line in lines:
-            if line.startswith('Query:') or line.startswith('用户问题:') or line.startswith('问题:'):
-                query = line.split(':', 1)[1].strip()
-            elif line.startswith('Context:') or line.startswith('上下文:') or line.startswith('学术资源:'):
-                context = line.split(':', 1)[1].strip()
-            elif 'Source:' in line or '内容:' in line:
-                context += " " + line
-        
-        return query or "未知问题", context or prompt
+        in_context = False
+
+        for i, line in enumerate(lines):
+            # Match various question patterns
+            if any(pattern in line for pattern in ['Question:', 'Query:', 'question:', 'query:', '用户问题:', '问题:']):
+                query = line.split(':', 1)[1].strip() if ':' in line else ""
+
+            # Match context patterns
+            elif any(pattern in line for pattern in ['Context from research', 'Research Context:', 'Context:', '上下文:', '学术资源:']):
+                in_context = True
+                # Get content after the colon if present
+                if ':' in line:
+                    context_start = line.split(':', 1)[1].strip()
+                    if context_start:
+                        context = context_start
+                continue
+
+            # If we're in context section, collect all lines
+            elif in_context:
+                # Stop at Instructions section
+                if 'Instructions:' in line or 'instructions:' in line:
+                    in_context = False
+                    break
+                # Accumulate context
+                if line.strip():
+                    context += " " + line.strip()
+
+        # Clean up
+        query = query.strip() if query else "Unknown question"
+        context = context.strip() if context else prompt
+
+        return query, context
 
 # 单例管理器
 _llm_manager = None
 
-def get_llm_manager(preferred_model: str = "llama3.1:8b") -> LLMManager:
-    """获取LLM管理器实例"""
+def get_llm_manager(backend: str = "openai", preferred_model: Optional[str] = None,
+                   api_key: Optional[str] = None, api_base: Optional[str] = None,
+                   organization: Optional[str] = None, ollama_host: Optional[str] = None) -> LLMManager:
+    """
+    获取LLM管理器实例（单例模式）
+
+    Args:
+        backend: LLM后端 ("openai" 或 "ollama")
+        preferred_model: 首选模型名称
+        api_key: OpenAI API密钥
+        api_base: OpenAI API基础URL
+        organization: OpenAI组织ID
+        ollama_host: Ollama服务地址
+
+    Returns:
+        LLMManager实例
+    """
     global _llm_manager
     if _llm_manager is None:
-        _llm_manager = LLMManager(preferred_model)
+        _llm_manager = LLMManager(
+            backend=backend,
+            preferred_model=preferred_model,
+            api_key=api_key,
+            api_base=api_base,
+            organization=organization,
+            ollama_host=ollama_host
+        )
     return _llm_manager
+
+def create_llm_manager_from_config(config=None) -> LLMManager:
+    """
+    从配置创建LLM管理器
+
+    Args:
+        config: 配置对象（如果为None，尝试从configs导入）
+
+    Returns:
+        LLMManager实例
+    """
+    if config is None:
+        try:
+            from configs import config as global_config
+            config = global_config
+        except ImportError:
+            print("⚠️ 无法导入配置，使用默认设置")
+            return LLMManager(backend="openai", preferred_model="gpt-4o-mini")
+
+    generation_config = config.generation
+
+    return LLMManager(
+        backend=generation_config.llm_backend,
+        preferred_model=generation_config.model,
+        api_key=generation_config.openai_api_key,
+        api_base=generation_config.openai_api_base,
+        organization=generation_config.openai_organization,
+        ollama_host=generation_config.ollama_host
+    )
 
 # 使用示例和测试
 def test_llm_client():

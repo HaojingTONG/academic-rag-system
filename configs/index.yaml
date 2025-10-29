@@ -1,0 +1,133 @@
+# Indexing Configuration
+# ======================
+#
+# Controls document parsing, chunking, embedding, and upserting
+
+# Document Parsing
+parsing:
+  # Output directory for parsed documents
+  output_dir: "data/parsed"
+
+  # Metadata extraction
+  extract_metadata: true
+
+  # Section detection
+  detect_sections: true
+
+# Chunking Configuration
+chunking:
+  # Target chunk size in tokens
+  chunk_size: 700
+
+  # Overlap ratio (0.0-1.0)
+  # 0.12 = 12% overlap (~84 tokens)
+  overlap: 0.12
+
+  # Add context prefix (title + section)
+  add_context: true
+
+  # Tokenizer encoding
+  encoding: "cl100k_base"
+
+# Embedding Configuration
+embedding:
+  # Embedding model namespace
+  # Format: {model_name}@{dimension}@{version}
+  model_namespace: "bge-m3@1024@v1"
+
+  # Actual model name for embedding generation
+  model_name: "BAAI/bge-m3"
+
+  # Embedding dimension
+  dimension: 1024
+
+  # Batch size for embedding
+  batch_size: 32
+
+  # Device (auto, cpu, cuda, mps)
+  device: "auto"
+
+# Vector DB Configuration
+vector_db:
+  # Collection name template
+  # {namespace} will be replaced with model_namespace
+  collection_template: "papers_{namespace}"
+
+  # Distance metric
+  distance: "cosine"
+
+  # Index type (hnsw, flat)
+  index_type: "hnsw"
+
+  # HNSW parameters
+  hnsw_ef: 128
+  hnsw_m: 16
+
+# Manifest Database
+manifest:
+  # Path to manifest SQLite database
+  db_path: "data/manifest.db"
+
+  # Soft delete by default (vs hard delete)
+  soft_delete: true
+
+# Deduplication
+deduplication:
+  # Enable deduplication
+  enabled: true
+
+  # Dedup strategy: sha256 (hash-based) or content (semantic similarity)
+  strategy: "sha256"
+
+  # For semantic dedup: similarity threshold
+  similarity_threshold: 0.99
+
+# Migration
+migration:
+  # Enable automatic migration on namespace change
+  auto_migrate: false
+
+  # Keep old namespace during migration
+  keep_old: true
+
+  # Migration validation queries
+  validation_queries:
+    - "What is Transformer Architecture?"
+    - "What is BERT?"
+    - "What is attention mechanism?"
+
+# Processing
+processing:
+  # Number of worker threads
+  workers: 4
+
+  # Skip already processed documents
+  skip_processed: true
+
+  # Re-process if source file modified
+  reprocess_on_change: true
+
+# Logging
+logging:
+  # Log level (DEBUG, INFO, WARNING, ERROR)
+  level: "INFO"
+
+  # Log file
+  file: "logs/indexer.log"
+
+  # Console output
+  console: true
+
+# Directories
+directories:
+  # Raw papers input
+  raw_papers: "data/raw_papers"
+
+  # Parsed output
+  parsed: "data/parsed"
+
+  # Chunks output (optional, for debugging)
+  chunks: null
+
+  # Logs
+  logs: "logs"

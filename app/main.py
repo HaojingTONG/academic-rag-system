@@ -219,6 +219,79 @@ async def health_check():
     )
 
 
+@app.get("/health/rag", tags=["System"])
+async def health_rag():
+    """
+    RAG smoke test endpoint
+
+    Runs a test query to verify end-to-end RAG functionality.
+    Returns retrieval stats, kept results, and citation info.
+    """
+    if rag_pipeline is None:
+        return JSONResponse(
+            status_code=503,
+            content={
+                "status": "error",
+                "message": "RAG system not initialized",
+                "retrieved_n": 0,
+                "kept_n": 0,
+                "citations": []
+            }
+        )
+
+    try:
+        # Run smoke test query
+        test_query = "What is Transformer Architecture?"
+        start_time = time.time()
+
+        result = rag_pipeline.query(
+            question=test_query,
+            top_k=5,
+            return_metadata=True
+        )
+
+        elapsed = time.time() - start_time
+
+        # Extract citations from answer
+        import re
+        citations = re.findall(r'\[(\d+)\]', result.get('answer', ''))
+
+        # Build response
+        response = {
+            "status": "healthy" if result.get('success') else "degraded",
+            "test_query": test_query,
+            "retrieved_n": result.get('metadata', {}).get('retrieved_count', result.get('num_sources', 0)),
+            "kept_n": result.get('num_sources', 0),
+            "citations": [int(c) for c in citations] if citations else [],
+            "has_answer": len(result.get('answer', '')) > 0,
+            "latency_ms": round(elapsed * 1000, 2),
+            "sources_preview": [
+                {
+                    "index": s.get('index'),
+                    "title": s.get('title', s.get('metadata', {}).get('title', 'Unknown'))[:60],
+                    "score": round(s.get('score', 0), 4)
+                }
+                for s in result.get('sources', [])[:3]
+            ],
+            "timestamp": time.time()
+        }
+
+        return JSONResponse(content=response)
+
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={
+                "status": "error",
+                "message": str(e),
+                "retrieved_n": 0,
+                "kept_n": 0,
+                "citations": [],
+                "timestamp": time.time()
+            }
+        )
+
+
 @app.get("/stats", response_model=StatsResponse, tags=["System"])
 async def get_stats():
     """Get system statistics"""

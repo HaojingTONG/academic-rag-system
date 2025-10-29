@@ -7,6 +7,15 @@ import yaml
 import os
 from loguru import logger
 
+# Load .env file if it exists
+try:
+    from dotenv import load_dotenv
+    load_dotenv(override=False)  # Don't override existing env vars
+except ImportError:
+    logger.warning("python-dotenv not installed, .env file will not be loaded")
+except Exception as e:
+    logger.warning(f"Failed to load .env file: {e}")
+
 
 @dataclass
 class SystemConfig:
@@ -77,14 +86,27 @@ class ChunkingConfig:
 @dataclass
 class GenerationConfig:
     """LLM generation configuration."""
-    llm_backend: str = "ollama"
+    llm_backend: str = "openai"  # "openai" or "ollama"
+
+    # OpenAI Configuration
+    openai_api_key: Optional[str] = None
+    openai_api_base: str = "https://api.openai.com/v1"
+    openai_organization: Optional[str] = None
+
+    # Ollama Configuration
     ollama_host: str = "http://localhost:11434"
-    model: str = "llama3.1:8b"
-    fallback_models: List[str] = field(default_factory=lambda: ["llama3:8b", "mistral:7b"])
+
+    # Model Configuration
+    model: str = "gpt-4o-mini"
+    fallback_models: List[str] = field(default_factory=lambda: ["gpt-3.5-turbo", "gpt-4"])
+
+    # Generation Parameters
     temperature: float = 0.1
     top_p: float = 0.9
     max_tokens: int = 2000
     timeout: int = 60
+
+    # Prompt Settings
     system_prompt_template: str = "academic"
     include_sources: bool = True
     max_context_length: int = 4000
@@ -217,9 +239,18 @@ def _apply_env_overrides(config_dict: Dict[str, Any]) -> Dict[str, Any]:
         'EMBEDDING_DEVICE': ('embedding', 'device'),
         'EMBEDDING_BATCH_SIZE': ('embedding', 'batch_size'),
 
-        # Generation
+        # Generation - OpenAI
+        'OPENAI_API_KEY': ('generation', 'openai_api_key'),
+        'OPENAI_API_BASE': ('generation', 'openai_api_base'),
+        'OPENAI_ORGANIZATION': ('generation', 'openai_organization'),
+
+        # Generation - Ollama
         'OLLAMA_HOST': ('generation', 'ollama_host'),
-        'OLLAMA_MODEL': ('generation', 'model'),
+
+        # Generation - General
+        'LLM_BACKEND': ('generation', 'llm_backend'),
+        'LLM_MODEL': ('generation', 'model'),
+        'OLLAMA_MODEL': ('generation', 'model'),  # Backward compatibility
         'GENERATION_TEMPERATURE': ('generation', 'temperature'),
         'GENERATION_MAX_TOKENS': ('generation', 'max_tokens'),
 
@@ -245,12 +276,13 @@ def _apply_env_overrides(config_dict: Dict[str, Any]) -> Dict[str, Any]:
         if value is not None:
             if section in config_dict:
                 # Convert types appropriately
-                if isinstance(config_dict[section].get(key), int):
+                # IMPORTANT: Check bool BEFORE int since bool is a subclass of int in Python
+                if isinstance(config_dict[section].get(key), bool):
+                    value = value.lower() in ('true', '1', 'yes')
+                elif isinstance(config_dict[section].get(key), int):
                     value = int(value)
                 elif isinstance(config_dict[section].get(key), float):
                     value = float(value)
-                elif isinstance(config_dict[section].get(key), bool):
-                    value = value.lower() in ('true', '1', 'yes')
 
                 config_dict[section][key] = value
                 logger.debug(f"Applied env override: {env_var} -> {section}.{key} = {value}")
@@ -361,5 +393,26 @@ config = load_config()
 validate_config(config)
 
 
-# Export SystemConfig for backward compatibility
-SystemConfig = Config
+# Export aliases for backward compatibility
+# Note: SystemConfig refers to the dataclass defined above (lines 12-17),
+# not the full Config class. Use Config or config for the complete configuration.
+__all__ = [
+    'Config',
+    'SystemConfig',
+    'EmbeddingConfig',
+    'VectorStoreConfig',
+    'RetrievalConfig',
+    'ChunkingConfig',
+    'GenerationConfig',
+    'QualityConfig',
+    'EvaluationConfig',
+    'DataConfig',
+    'PDFProcessingConfig',
+    'APIConfig',
+    'LoggingConfig',
+    'PerformanceConfig',
+    'FeaturesConfig',
+    'load_config',
+    'validate_config',
+    'config'
+]
