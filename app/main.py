@@ -18,13 +18,14 @@ Usage:
     make serve
 """
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
 import time
 import sys
+import json
 from pathlib import Path
 
 # Add parent to path
@@ -127,6 +128,29 @@ class StatsResponse(BaseModel):
     embedding_dimension: int
     device: str
     config: Dict
+
+
+class PaperMetadata(BaseModel):
+    """Paper metadata model"""
+    paper_id: str
+    title: str
+    authors: Optional[List[str]] = []
+    year: Optional[int] = None
+    venue: Optional[str] = None
+    arxiv_id: Optional[str] = None
+    num_chunks: Optional[int] = 0
+    file_path: Optional[str] = None
+
+
+class ConfigUpdateRequest(BaseModel):
+    """Configuration update request"""
+    top_k: Optional[int] = Field(None, ge=1, le=20)
+    vector_weight: Optional[float] = Field(None, ge=0.0, le=1.0)
+    bm25_weight: Optional[float] = Field(None, ge=0.0, le=1.0)
+    enable_reranking: Optional[bool] = None
+    enable_diversification: Optional[bool] = None
+    llm_temperature: Optional[float] = Field(None, ge=0.0, le=2.0)
+    max_tokens: Optional[int] = Field(None, ge=100, le=4000)
 
 
 # ============================================================================
@@ -400,6 +424,265 @@ async def list_models():
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
+# Paper Management Endpoints
+# ============================================================================
+
+@app.get("/papers", tags=["Papers"])
+async def list_papers(
+    limit: int = Query(100, ge=1, le=1000, description="Max number of papers to return"),
+    offset: int = Query(0, ge=0, description="Offset for pagination"),
+    search: Optional[str] = Query(None, description="Search in title/authors")
+):
+    """
+    List all indexed papers with metadata
+
+    Returns papers from papers_info.json with chunk counts from vector DB
+    """
+    try:
+        # Load papers info
+        papers_file = Path("data/papers_info.json")
+        if not papers_file.exists():
+            return JSONResponse(content={
+                "papers": [],
+                "total": 0,
+                "limit": limit,
+                "offset": offset
+            })
+
+        with open(papers_file, 'r', encoding='utf-8') as f:
+            papers_data = json.load(f)
+
+        # Convert to list if it's a dict
+        if isinstance(papers_data, dict):
+            papers_list = list(papers_data.values())
+        else:
+            papers_list = papers_data
+
+        # Search filter
+        if search:
+            search_lower = search.lower()
+            papers_list = [
+                p for p in papers_list
+                if search_lower in p.get('title', '').lower()
+                or search_lower in ' '.join(p.get('authors', [])).lower()
+            ]
+
+        # Sort by year (descending) then title
+        papers_list.sort(
+            key=lambda p: (-(p.get('year') or 0), p.get('title', ''))
+        )
+
+        total = len(papers_list)
+        papers_page = papers_list[offset:offset + limit]
+
+        return JSONResponse(content={
+            "papers": papers_page,
+            "total": total,
+            "limit": limit,
+            "offset": offset,
+            "has_more": offset + limit < total
+        })
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to list papers: {str(e)}")
+
+
+@app.get("/papers/{paper_id}", tags=["Papers"])
+async def get_paper(paper_id: str):
+    """Get detailed information about a specific paper"""
+    try:
+        papers_file = Path("data/papers_info.json")
+        if not papers_file.exists():
+            raise HTTPException(status_code=404, detail="Papers database not found")
+
+        with open(papers_file, 'r', encoding='utf-8') as f:
+            papers_data = json.load(f)
+
+        # Find paper
+        paper = None
+        if isinstance(papers_data, dict):
+            paper = papers_data.get(paper_id)
+        else:
+            paper = next((p for p in papers_data if p.get('paper_id') == paper_id), None)
+
+        if not paper:
+            raise HTTPException(status_code=404, detail=f"Paper {paper_id} not found")
+
+        return JSONResponse(content=paper)
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get paper: {str(e)}")
+
+
+@app.get("/papers/suggest/questions", tags=["Papers"])
+async def suggest_questions(limit: int = Query(5, ge=1, le=20)):
+    """
+    Suggest sample questions based on indexed papers
+
+    Returns common question templates populated with paper topics
+    """
+    try:
+        # Load papers to extract topics
+        papers_file = Path("data/papers_info.json")
+        if not papers_file.exists():
+            # Return default suggestions
+            return JSONResponse(content={
+                "suggestions": [
+                    "What is the transformer architecture?",
+                    "How does BERT differ from GPT?",
+                    "What are the key innovations in ResNet?",
+                    "Explain the attention mechanism",
+                    "What is transfer learning in NLP?"
+                ][:limit]
+            })
+
+        with open(papers_file, 'r', encoding='utf-8') as f:
+            papers_data = json.load(f)
+
+        # Extract papers list
+        if isinstance(papers_data, dict):
+            papers_list = list(papers_data.values())
+        else:
+            papers_list = papers_data
+
+        # Generate suggestions based on popular papers
+        suggestions = []
+
+        # Template questions
+        templates = [
+            "What is {}?",
+            "How does {} work?",
+            "What are the key innovations in {}?",
+            "Explain the main contribution of {}",
+            "What is the difference between {} and {}?"
+        ]
+
+        # Extract key concepts from titles
+        concepts = []
+        for paper in papers_list[:10]:  # Top 10 papers
+            title = paper.get('title', '')
+            # Extract main concept (simple heuristic)
+            if ':' in title:
+                concept = title.split(':')[0].strip()
+            else:
+                # Take first few meaningful words
+                words = title.split()[:4]
+                concept = ' '.join(words)
+            concepts.append(concept)
+
+        # Generate questions
+        for i, template in enumerate(templates[:limit]):
+            if '{}' in template:
+                count = template.count('{}')
+                if count == 1 and concepts:
+                    suggestions.append(template.format(concepts[i % len(concepts)]))
+                elif count == 2 and len(concepts) >= 2:
+                    suggestions.append(template.format(concepts[i % len(concepts)], concepts[(i+1) % len(concepts)]))
+
+        return JSONResponse(content={"suggestions": suggestions[:limit]})
+
+    except Exception as e:
+        # Return safe defaults on error
+        return JSONResponse(content={
+            "suggestions": [
+                "What is the transformer architecture?",
+                "How does attention mechanism work?",
+                "What are the main differences between BERT and GPT?",
+                "Explain residual connections in neural networks",
+                "What is self-attention?"
+            ][:limit]
+        })
+
+
+# ============================================================================
+# Configuration Management Endpoints
+# ============================================================================
+
+@app.get("/config", tags=["Configuration"])
+async def get_config():
+    """Get current RAG configuration"""
+    if rag_pipeline is None:
+        raise HTTPException(status_code=503, detail="RAG system not initialized")
+
+    try:
+        status = rag_pipeline.get_status()
+        config_dict = status.get('config', {})
+
+        return JSONResponse(content={
+            "config": config_dict,
+            "editable_params": [
+                "top_k",
+                "vector_weight",
+                "bm25_weight",
+                "enable_reranking",
+                "enable_diversification",
+                "llm_temperature",
+                "max_tokens"
+            ]
+        })
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get config: {str(e)}")
+
+
+@app.put("/config", tags=["Configuration"])
+async def update_config(request: ConfigUpdateRequest):
+    """
+    Update RAG configuration (hot reload without restart)
+
+    Only specified parameters will be updated, others remain unchanged
+    """
+    if rag_pipeline is None:
+        raise HTTPException(status_code=503, detail="RAG system not initialized")
+
+    try:
+        # Update only provided fields
+        config_updates = request.dict(exclude_none=True)
+
+        if not config_updates:
+            raise HTTPException(status_code=400, detail="No configuration updates provided")
+
+        # Update RAG pipeline config
+        for key, value in config_updates.items():
+            if hasattr(rag_pipeline.config, key):
+                setattr(rag_pipeline.config, key, value)
+
+        # Return updated config
+        updated_config = rag_pipeline.config.__dict__
+
+        return JSONResponse(content={
+            "message": "Configuration updated successfully",
+            "updated_fields": list(config_updates.keys()),
+            "current_config": updated_config
+        })
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update config: {str(e)}")
+
+
+@app.post("/config/reset", tags=["Configuration"])
+async def reset_config():
+    """Reset configuration to default values"""
+    if rag_pipeline is None:
+        raise HTTPException(status_code=503, detail="RAG system not initialized")
+
+    try:
+        # Reset to default config
+        default_config = RAGConfig.from_global_config() if USE_CONFIG else RAGConfig()
+        rag_pipeline.config = default_config
+
+        return JSONResponse(content={
+            "message": "Configuration reset to defaults",
+            "config": default_config.__dict__
+        })
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to reset config: {str(e)}")
 
 
 # ============================================================================

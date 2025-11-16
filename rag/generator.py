@@ -42,7 +42,7 @@ class ProviderType(Enum):
 class GenerationConfig:
     """Configuration for generation with retry"""
     # Provider settings
-    primary_provider: ProviderType = ProviderType.OPENAI
+    primary_provider: ProviderType = ProviderType.OLLAMA
     fallback_providers: List[ProviderType] = None
 
     # Retry settings
@@ -62,8 +62,8 @@ class GenerationConfig:
         """Set default fallback providers if not specified"""
         if self.fallback_providers is None:
             self.fallback_providers = [
+                ProviderType.OPENAI,
                 ProviderType.ANTHROPIC,
-                ProviderType.OLLAMA,
                 ProviderType.FALLBACK
             ]
 

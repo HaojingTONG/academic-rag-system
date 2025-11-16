@@ -72,21 +72,21 @@ chunking:
 # LLM Generation Configuration
 generation:
   # Backend: "openai" or "ollama"
-  llm_backend: "openai"
+  llm_backend: "ollama"
 
   # OpenAI Configuration
   openai_api_key: "${OPENAI_API_KEY}"  # Set via environment variable
   openai_api_base: "https://api.openai.com/v1"  # Or custom endpoint
   openai_organization: null  # Optional: set if using organization
 
-  # Ollama Configuration (fallback)
+  # Ollama Configuration
   ollama_host: "http://localhost:11434"
 
   # Model selection
-  model: "gpt-4o-mini"  # OpenAI: gpt-4o, gpt-4o-mini, gpt-3.5-turbo; Ollama: llama3.1:8b
+  model: "qwen2.5:14b"  # OpenAI: gpt-4o, gpt-4o-mini, gpt-3.5-turbo; Ollama: qwen2.5:14b, llama3.1:8b
   fallback_models:
-    - "gpt-3.5-turbo"
-    - "gpt-4"
+    - "llama3.1:8b"
+    - "llama3.1:latest"
 
   # Generation parameters
   temperature: 0.1

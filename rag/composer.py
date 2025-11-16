@@ -280,6 +280,95 @@ Remember:
 
 Answer:"""
 
+    @staticmethod
+    def afel_template(question: str, context: str) -> str:
+        """
+        A.F.E.L. Template - Answer, Facts, Evidence, Links
+
+        Simplified version to prevent prompt leakage and ensure proper formatting.
+        Detects language and provides appropriate instructions.
+        """
+        # Detect if question is in Chinese
+        is_chinese = any('\u4e00' <= char <= '\u9fff' for char in question)
+
+        if is_chinese:
+            # Simplified Chinese template for Ollama
+            return f"""你是一个学术助手。请用中文回答下面的问题。
+
+问题：{question}
+
+参考资料：
+{context}
+
+要求：
+1. 用2-3段话直接回答问题
+2. 用自己的话解释，不要复制原文
+3. 引用来源时用 [1]、[2] 等标注
+4. 回答要清晰、准确、简洁
+
+回答："""
+        else:
+            # Simplified English template for Ollama
+            return f"""You are an academic assistant. Answer the question based on the research papers below.
+
+Question: {question}
+
+Research Papers:
+{context}
+
+Requirements:
+1. Answer in 2-3 clear paragraphs
+2. Explain in your own words, don't copy text verbatim
+3. Cite sources using [1], [2], etc.
+4. Be clear, accurate, and concise
+
+Answer:"""
+
+    @staticmethod
+    def general_knowledge_fallback_template(question: str) -> str:
+        """
+        Template for general knowledge questions when retrieval fails
+
+        Used when:
+        - Query is general ("What is AI?")
+        - Retrieved papers are irrelevant (low scores)
+        - User needs conceptual knowledge, not specific research
+        """
+        return f"""You are an AI research assistant. The user has asked a general knowledge question that may not require specific research papers.
+
+Question: {question}
+
+INSTRUCTIONS:
+Since this appears to be a general knowledge question, provide a clear, accurate answer based on established knowledge in the field.
+
+Structure your answer as follows:
+
+1. **Direct Answer:**
+   - Provide a clear, concise definition or explanation
+   - Use standard terminology and concepts from the field
+   - Be technically accurate but accessible
+
+2. **Key Concepts:**
+   - Explain 2-3 fundamental concepts related to the question
+   - Use examples where helpful
+
+3. **Context:**
+   - Briefly mention the broader significance or applications
+   - Connect to current state of the field if relevant
+
+4. **Note:**
+   - Add: "Note: This answer is based on general knowledge in the field. For specific research findings, please ask about particular papers or methods."
+
+IMPORTANT:
+- Do NOT make up citations or paper references
+- Do NOT pretend to quote from papers
+- Be honest that this is based on general knowledge
+- Be accurate and helpful
+
+Answer:
+
+"""
+
 
 class ContextSummarizer:
     """Summarize and fuse context from multiple sources"""
@@ -412,7 +501,9 @@ class PromptComposer:
             'concise': PromptTemplate.concise_template,
             'detailed': PromptTemplate.detailed_template,
             'comparative': PromptTemplate.comparative_template,
-            'definition': PromptTemplate.definition_template
+            'definition': PromptTemplate.definition_template,
+            'afel': PromptTemplate.afel_template,  # New A.F.E.L. template
+            'general_fallback': lambda q, c: PromptTemplate.general_knowledge_fallback_template(q)
         }
 
         template_fn = templates.get(style)

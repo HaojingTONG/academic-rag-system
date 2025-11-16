@@ -2,14 +2,18 @@ import { useState } from 'react'
 import AskPanel from './components/AskPanel'
 import IngestPanel from './components/IngestPanel'
 import DebugPanel from './components/DebugPanel'
+import LibraryPanel from './components/LibraryPanel'
+import SettingsPanel from './components/SettingsPanel'
 
-type Tab = 'ask' | 'ingest' | 'debug'
+type Tab = 'ask' | 'library' | 'settings' | 'ingest' | 'debug'
 
 export default function RAGDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>('ask')
 
   const tabs: { id: Tab; label: string; icon: string }[] = [
     { id: 'ask', label: 'Ask', icon: '🔍' },
+    { id: 'library', label: 'Library', icon: '📚' },
+    { id: 'settings', label: 'Settings', icon: '⚙️' },
     { id: 'ingest', label: 'Ingest', icon: '📥' },
     { id: 'debug', label: 'Debug', icon: '🔧' },
   ]
@@ -68,6 +72,8 @@ export default function RAGDashboard() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === 'ask' && <AskPanel />}
+        {activeTab === 'library' && <LibraryPanel />}
+        {activeTab === 'settings' && <SettingsPanel />}
         {activeTab === 'ingest' && <IngestPanel />}
         {activeTab === 'debug' && <DebugPanel />}
       </main>

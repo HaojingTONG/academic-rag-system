@@ -174,7 +174,9 @@ class RAGPipeline:
         if vector_store is not None:
             self.vector_store = vector_store
         elif VectorStore is not None:
-            self.vector_store = VectorStore()
+            # Pass collection_name from config
+            collection_name = config.vector_store.collection_name if USE_CONFIG else "papers_bge-m3_1024_v1"
+            self.vector_store = VectorStore(collection_name=collection_name)
         else:
             raise RuntimeError("VectorStore not available")
 
@@ -241,7 +243,7 @@ class RAGPipeline:
         # RAG Generator with retry and fallback
         if RAGGenerator:
             gen_config = GenerationConfig(
-                primary_provider=ProviderType.OPENAI,
+                primary_provider=ProviderType.OLLAMA,
                 max_retries=3,
                 max_tokens=self.config.max_tokens,
                 temperature=self.config.llm_temperature
@@ -281,77 +283,167 @@ class RAGPipeline:
         print(f"{'='*60}\n")
 
         try:
-            # Step 1: Retrieval
-            print("🔍 [1/4] Retrieving documents...")
+            # Step 0.5: Query Analysis and Rewriting
+            print("📋 [0.5/5] Analyzing query...")
+            try:
+                from rag.query_rewriter import QueryRewriter
+                rewriter = QueryRewriter()
+                query_intent = rewriter.detect_intent(question)
+
+                print(f"   ✓ Detected intent: {query_intent.intent_type}")
+                print(f"   ✓ Is general query: {query_intent.is_general}")
+                print(f"   ✓ Key concepts: {', '.join(query_intent.key_concepts) if query_intent.key_concepts else 'None'}")
+
+                # Expand query for better retrieval
+                expanded_queries = rewriter.expand_query(question, max_queries=3)
+                print(f"   ✓ Expanded to {len(expanded_queries)} queries")
+                for i, eq in enumerate(expanded_queries[:3], 1):
+                    print(f"      {i}. {eq[:80]}...")
+
+            except Exception as e:
+                print(f"   ⚠️  Query analysis failed: {e}")
+                query_intent = None
+                expanded_queries = [question]
+
+            # Step 1: Multi-Query Retrieval
+            print("\n🔍 [1/5] Retrieving documents...")
             retrieval_start = time.time()
 
-            if hasattr(self.retriever, 'retrieve'):
-                # Hybrid retriever
-                results = self.retriever.retrieve(
-                    query=question,
-                    top_k=top_k * 2,  # Retrieve more for reranking
-                    use_query_expansion=True
-                )
-            else:
-                # Vector-only retriever
-                results = self.retriever.search(
-                    query=question,
-                    top_k=top_k * 2
-                )
+            # Retrieve with multiple query variations and merge results
+            all_results = []
+            for query_variant in expanded_queries:
+                if hasattr(self.retriever, 'retrieve'):
+                    # Hybrid retriever
+                    variant_results = self.retriever.retrieve(
+                        query=query_variant,
+                        top_k=top_k * 2,  # Retrieve more for reranking
+                        use_query_expansion=False  # Already expanded
+                    )
+                else:
+                    # Vector-only retriever
+                    variant_results = self.retriever.search(
+                        query=query_variant,
+                        top_k=top_k * 2
+                    )
+                all_results.extend(variant_results)
+
+            # Deduplicate by content hash
+            seen_content = set()
+            results = []
+            for r in all_results:
+                content_hash = hash(r.content[:200])  # Hash first 200 chars
+                if content_hash not in seen_content:
+                    seen_content.add(content_hash)
+                    results.append(r)
 
             retrieval_time = time.time() - retrieval_start
-            print(f"   ✓ Retrieved {len(results)} documents ({retrieval_time:.2f}s)")
+            print(f"   ✓ Retrieved {len(results)} unique documents ({retrieval_time:.2f}s)")
 
             # Step 2: Ranking
-            print("\n📊 [2/4] Ranking and filtering...")
+            print("\n📊 [2/5] Ranking and filtering...")
             ranking_start = time.time()
 
             results = self.ranker.process(
                 query=question,
                 results=results,
-                top_k=top_k
+                top_k=top_k * 2  # Get more for relevance filtering
             )
 
             ranking_time = time.time() - ranking_start
             print(f"   ✓ Ranked to {len(results)} documents ({ranking_time:.2f}s)")
 
+            # Step 2.5: Relevance Filtering
+            print("\n🎯 [2.5/5] Filtering by relevance...")
+            try:
+                from rag.relevance_filter import RelevanceFilter, check_retrieval_quality
+
+                relevance_filter = RelevanceFilter()
+
+                # Check retrieval quality
+                is_general = query_intent.is_general if query_intent else False
+                quality_check = check_retrieval_quality(results, is_general)
+
+                print(f"   ✓ Average score: {quality_check['avg_score']:.3f}")
+                print(f"   ✓ Above threshold: {quality_check['num_above_threshold']}/{quality_check['total_results']}")
+                print(f"   ✓ Quality acceptable: {quality_check['is_acceptable']}")
+
+                # Filter results
+                filtered_results = relevance_filter.filter_results(
+                    results, question, is_general
+                )
+
+                print(f"   ✓ Kept {len(filtered_results)} relevant documents")
+
+                # Check if we should use fallback (general knowledge)
+                use_fallback = (
+                    is_general and
+                    not quality_check['is_acceptable'] and
+                    quality_check.get('avg_score', 0) < 0.30
+                )
+
+                if use_fallback:
+                    print(f"   ⚠️  Low quality retrieval for general question - using fallback")
+
+                results = filtered_results
+
+            except Exception as e:
+                print(f"   ⚠️  Relevance filtering failed: {e}")
+                use_fallback = False
+                results = results[:top_k]  # Just truncate to top_k
+
             # Check for empty context
             if len(results) == 0:
                 print("\n⚠️  WARNING: No relevant documents found")
-                # Use new composer for empty response if available
-                if self.composer:
-                    empty_answer = self.composer.compose_empty_context_response(question)
+
+                # Use general knowledge fallback for general questions
+                if query_intent and query_intent.is_general and self.composer:
+                    print("   → Using general knowledge fallback")
+                    prompt = PromptTemplate.general_knowledge_fallback_template(question)
+
+                    # Generate using fallback template
+                    if self.generator:
+                        gen_result = self.generator.generate(prompt)
+                        empty_answer = gen_result.text
+                    else:
+                        empty_answer = self._empty_context_response(question)
                 else:
-                    empty_answer = self._empty_context_response(question)
+                    # Use standard empty response
+                    if self.composer:
+                        empty_answer = self.composer.compose_empty_context_response(question)
+                    else:
+                        empty_answer = self._empty_context_response(question)
 
                 return {
                     'answer': empty_answer,
                     'sources': [],
                     'num_sources': 0,
                     'success': True,
-                    'warning': 'no_context_found'
+                    'warning': 'no_context_found',
+                    'used_fallback': query_intent and query_intent.is_general
                 }
 
             # Step 3: Prompt Composition
-            print("\n✍️  [3/4] Composing prompt...")
+            print("\n✍️  [3/5] Composing prompt...")
 
-            # Detect query intent for template selection
-            template_style = "academic"  # default
-            if self.composer and hasattr(self.retriever, 'query_analyzer'):
-                from rag.retriever import QueryAnalyzer
-                analyzer = QueryAnalyzer()
-                query_intent = analyzer.analyze(question)
+            # Select template based on query intent and retrieval quality
+            template_style = "afel"  # Default to A.F.E.L. to prevent paper dumps
 
+            if query_intent:
                 # Map intent to template style
                 intent_to_template = {
-                    'definition': 'definition',
+                    'definition': 'afel',  # Use A.F.E.L. for definitions
                     'comparison': 'comparative',
                     'method': 'detailed',
                     'recent_work': 'detailed',
-                    'general': 'academic'
+                    'general': 'afel'  # Use A.F.E.L. for general questions
                 }
-                template_style = intent_to_template.get(query_intent.intent_type, 'academic')
-                print(f"   ✓ Detected query intent: {query_intent.intent_type} → using '{template_style}' template")
+                template_style = intent_to_template.get(query_intent.intent_type, 'afel')
+                print(f"   ✓ Query intent: {query_intent.intent_type} → using '{template_style}' template")
+
+                # Use fallback if low quality retrieval for general questions
+                if use_fallback:
+                    template_style = 'general_fallback'
+                    print(f"   ✓ Using general knowledge fallback (low quality retrieval)")
 
             # Use new composer if available
             if self.composer:

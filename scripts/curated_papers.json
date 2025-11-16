@@ -1,0 +1,166 @@
+{
+  "description": "Curated list of highly-cited AI papers with ArXiv IDs",
+  "last_updated": "2025-01-14",
+  "papers": [
+    {
+      "title": "Attention Is All You Need",
+      "authors": ["Vaswani et al."],
+      "year": 2017,
+      "arxiv_id": "1706.03762",
+      "category": "transformer",
+      "estimated_citations": 85000
+    },
+    {
+      "title": "BERT: Pre-training of Deep Bidirectional Transformers",
+      "authors": ["Devlin et al."],
+      "year": 2018,
+      "arxiv_id": "1810.04805",
+      "category": "nlp",
+      "estimated_citations": 72000
+    },
+    {
+      "title": "Deep Residual Learning for Image Recognition",
+      "authors": ["He et al."],
+      "year": 2015,
+      "arxiv_id": "1512.03385",
+      "category": "cv",
+      "estimated_citations": 128000
+    },
+    {
+      "title": "Adam: A Method for Stochastic Optimization",
+      "authors": ["Kingma, Ba"],
+      "year": 2014,
+      "arxiv_id": "1412.6980",
+      "category": "optimization",
+      "estimated_citations": 95000
+    },
+    {
+      "title": "Generative Adversarial Networks",
+      "authors": ["Goodfellow et al."],
+      "year": 2014,
+      "arxiv_id": "1406.2661",
+      "category": "generative",
+      "estimated_citations": 68000
+    },
+    {
+      "title": "ImageNet Classification with Deep CNNs (AlexNet)",
+      "authors": ["Krizhevsky et al."],
+      "year": 2012,
+      "arxiv_id": "1409.0473",
+      "category": "cv",
+      "estimated_citations": 120000
+    },
+    {
+      "title": "Batch Normalization",
+      "authors": ["Ioffe, Szegedy"],
+      "year": 2015,
+      "arxiv_id": "1502.03167",
+      "category": "training",
+      "estimated_citations": 55000
+    },
+    {
+      "title": "Dropout: A Simple Way to Prevent Overfitting",
+      "authors": ["Srivastava et al."],
+      "year": 2014,
+      "arxiv_id": "1207.0580",
+      "category": "regularization",
+      "estimated_citations": 48000
+    },
+    {
+      "title": "GPT-2: Language Models are Unsupervised Multitask Learners",
+      "authors": ["Radford et al."],
+      "year": 2019,
+      "arxiv_id": "1908.09203",
+      "category": "nlp",
+      "estimated_citations": 12000
+    },
+    {
+      "title": "GPT-3: Language Models are Few-Shot Learners",
+      "authors": ["Brown et al."],
+      "year": 2020,
+      "arxiv_id": "2005.14165",
+      "category": "nlp",
+      "estimated_citations": 28000
+    },
+    {
+      "title": "EfficientNet: Rethinking Model Scaling for CNNs",
+      "authors": ["Tan, Le"],
+      "year": 2019,
+      "arxiv_id": "1905.11946",
+      "category": "cv",
+      "estimated_citations": 15000
+    },
+    {
+      "title": "MobileNets: Efficient CNNs for Mobile Vision",
+      "authors": ["Howard et al."],
+      "year": 2017,
+      "arxiv_id": "1704.04861",
+      "category": "cv",
+      "estimated_citations": 22000
+    },
+    {
+      "title": "Vision Transformer (ViT)",
+      "authors": ["Dosovitskiy et al."],
+      "year": 2020,
+      "arxiv_id": "2010.11929",
+      "category": "cv",
+      "estimated_citations": 18000
+    },
+    {
+      "title": "CLIP: Connecting Text and Images",
+      "authors": ["Radford et al."],
+      "year": 2021,
+      "arxiv_id": "2103.00020",
+      "category": "multimodal",
+      "estimated_citations": 8500
+    },
+    {
+      "title": "Stable Diffusion",
+      "authors": ["Rombach et al."],
+      "year": 2021,
+      "arxiv_id": "2112.10752",
+      "category": "generative",
+      "estimated_citations": 4200
+    },
+    {
+      "title": "LLaMA: Open and Efficient Foundation Language Models",
+      "authors": ["Touvron et al."],
+      "year": 2023,
+      "arxiv_id": "2302.13971",
+      "category": "nlp",
+      "estimated_citations": 3800
+    },
+    {
+      "title": "Self-Attention with Relative Position",
+      "authors": ["Shaw et al."],
+      "year": 2018,
+      "arxiv_id": "1803.02155",
+      "category": "attention",
+      "estimated_citations": 2100
+    },
+    {
+      "title": "ELECTRA: Pre-training Text Encoders",
+      "authors": ["Clark et al."],
+      "year": 2020,
+      "arxiv_id": "2003.10555",
+      "category": "nlp",
+      "estimated_citations": 3500
+    },
+    {
+      "title": "T5: Text-to-Text Transfer Transformer",
+      "authors": ["Raffel et al."],
+      "year": 2019,
+      "arxiv_id": "1910.10683",
+      "category": "nlp",
+      "estimated_citations": 9200
+    },
+    {
+      "title": "RoBERTa: Robustly Optimized BERT",
+      "authors": ["Liu et al."],
+      "year": 2019,
+      "arxiv_id": "1907.11692",
+      "category": "nlp",
+      "estimated_citations": 14000
+    }
+  ]
+}

@@ -1,0 +1,608 @@
+{
+  "2012.13026v1": {
+    "arxiv_id": "2012.13026v1",
+    "title": "Rethink AI-based Power Grid Control: Diving Into Algorithm Design",
+    "authors": [
+      "Xiren Zhou",
+      "Siqi Wang",
+      "Ruisheng Diao",
+      "Desong Bian",
+      "Jiahui Duan",
+      "Di Shi"
+    ],
+    "year": 2020,
+    "abstract": "Recently, deep reinforcement learning (DRL)-based approach has shown promisein solving complex decision and control problems in power engineering domain.In this paper, we present an in-depth analysis of DRL-based voltage control fromaspects of algorithm selection, state space representation, and reward engineering.To resolve observed issues, we propose a novel imitation learning-based approachto directly map power grid operating points to effective actions without any interimreinforcement learning process. The performance results demonstrate that theproposed approach has strong generalization ability with much less training time.The agent trained by imitation learning is effective and robust to solve voltagecontrol problem and outperforms the former RL agents.",
+    "categories": [
+      "cs.AI"
+    ],
+    "url": "http://arxiv.org/abs/2012.13026v1"
+  },
+  "2012.13293v1": {
+    "arxiv_id": "2012.13293v1",
+    "title": "Fuzzy Commitments Offer Insufficient Protection to Biometric Templates Produced by Deep Learning",
+    "authors": [
+      "Danny Keller",
+      "Margarita Osadchy",
+      "Orr Dunkelman"
+    ],
+    "year": 2020,
+    "abstract": "In this work, we study the protection that fuzzy commitments offer when they are applied to facial images, processed by the state of the art deep learning facial recognition systems. We show that while these systems are capable of producing great accuracy, they produce templates of too little entropy. As a result, we present a reconstruction attack that takes a protected template, and reconstructs a facial image. The reconstructed facial images greatly resemble the original ones. In the simplest attack scenario, more than 78% of these reconstructed templates succeed in unlocking an account (when the system is configured to 0.1% FAR). Even in the \"hardest\" settings (in which we take a reconstructed image from one system and use it in a different system, with different feature extraction process) the reconstructed image offers 50 to 120 times higher success rates than the system's FAR.",
+    "categories": [
+      "cs.CR",
+      "cs.AI"
+    ],
+    "url": "http://arxiv.org/abs/2012.13293v1"
+  },
+  "2012.13315v1": {
+    "arxiv_id": "2012.13315v1",
+    "title": "Generalization in portfolio-based algorithm selection",
+    "authors": [
+      "Maria-Florina Balcan",
+      "Tuomas Sandholm",
+      "Ellen Vitercik"
+    ],
+    "year": 2020,
+    "abstract": "Portfolio-based algorithm selection has seen tremendous practical success over the past two decades. This algorithm configuration procedure works by first selecting a portfolio of diverse algorithm parameter settings, and then, on a given problem instance, using an algorithm selector to choose a parameter setting from the portfolio with strong predicted performance. Oftentimes, both the portfolio and the algorithm selector are chosen using a training set of typical problem instances from the application domain at hand. In this paper, we provide the first provable guarantees for portfolio-based algorithm selection. We analyze how large the training set should be to ensure that the resulting algorithm selector's average performance over the training set is close to its future (expected) performance. This involves analyzing three key reasons why these two quantities may diverge: 1) the learning-theoretic complexity of the algorithm selector, 2) the size of the portfolio, and 3) the learning-theoretic complexity of the algorithm's performance as a function of its parameters. We introduce an end-to-end learning-theoretic analysis of the portfolio construction and algorithm selection together. We prove that if the portfolio is large, overfitting is inevitable, even with an extremely simple algorithm selector. With experiments, we illustrate a tradeoff exposed by our theoretical analysis: as we increase the portfolio size, we can hope to include a well-suited parameter setting for every possible problem instance, but it becomes impossible to avoid overfitting.",
+    "categories": [
+      "cs.AI"
+    ],
+    "url": "http://arxiv.org/abs/2012.13315v1"
+  },
+  "2012.12634v1": {
+    "arxiv_id": "2012.12634v1",
+    "title": "Overview of FPGA deep learning acceleration based on convolutional neural network",
+    "authors": [
+      "Simin Liu"
+    ],
+    "year": 2020,
+    "abstract": "In recent years, deep learning has become more and more mature, and as a commonly used algorithm in deep learning, convolutional neural networks have been widely used in various visual tasks. In the past, research based on deep learning algorithms mainly relied on hardware such as GPUs and CPUs. However, with the increasing development of FPGAs, both field programmable logic gate arrays, it has become the main implementation hardware platform that combines various neural network deep learning algorithms This article is a review article, which mainly introduces the related theories and algorithms of convolution. It summarizes the application scenarios of several existing FPGA technologies based on convolutional neural networks, and mainly introduces the application of accelerators. At the same time, it summarizes some accelerators' under-utilization of logic resources or under-utilization of memory bandwidth, so that they can't get the best performance.",
+    "categories": [
+      "cs.AI"
+    ],
+    "url": "http://arxiv.org/abs/2012.12634v1"
+  },
+  "2012.11903v1": {
+    "arxiv_id": "2012.11903v1",
+    "title": "Modelling Human Routines: Conceptualising Social Practice Theory for Agent-Based Simulation",
+    "authors": [
+      "Rijk Mercuur",
+      "Virginia Dignum",
+      "Catholijn M. Jonker"
+    ],
+    "year": 2020,
+    "abstract": "Our routines play an important role in a wide range of social challenges such as climate change, disease outbreaks and coordinating staff and patients in a hospital. To use agent-based simulations (ABS) to understand the role of routines in social challenges we need an agent framework that integrates routines. This paper provides the domain-independent Social Practice Agent (SoPrA) framework that satisfies requirements from the literature to simulate our routines. By choosing the appropriate concepts from the literature on agent theory, social psychology and social practice theory we ensure SoPrA correctly depicts current evidence on routines. By creating a consistent, modular and parsimonious framework suitable for multiple domains we enhance the usability of SoPrA. SoPrA provides ABS researchers with a conceptual, formal and computational framework to simulate routines and gain new insights into social systems.",
+    "categories": [
+      "cs.MA",
+      "cs.AI"
+    ],
+    "url": "http://arxiv.org/abs/2012.11903v1"
+  },
+  "2012.13569v1": {
+    "arxiv_id": "2012.13569v1",
+    "title": "Dynamic-K Recommendation with Personalized Decision Boundary",
+    "authors": [
+      "Yan Gao",
+      "Jiafeng Guo",
+      "Yanyan Lan",
+      "Huaming Liao"
+    ],
+    "year": 2020,
+    "abstract": "In this paper, we investigate the recommendation task in the most common scenario with implicit feedback (e.g., clicks, purchases). State-of-the-art methods in this direction usually cast the problem as to learn a personalized ranking on a set of items (e.g., webpages, products). The top-N results are then provided to users as recommendations, where the N is usually a fixed number pre-defined by the system according to some heuristic criteria (e.g., page size, screen size). There is one major assumption underlying this fixed-number recommendation scheme, i.e., there are always sufficient relevant items to users' preferences. Unfortunately, this assumption may not always hold in real-world scenarios. In some applications, there might be very limited candidate items to recommend, and some users may have very high relevance requirement in recommendation. In this way, even the top-1 ranked item may not be relevant to a user's preference. Therefore, we argue that it is critical to provide a dynamic-K recommendation, where the K should be different with respect to the candidate item set and the target user. We formulate this dynamic-K recommendation task as a joint learning problem with both ranking and classification objectives. The ranking objective is the same as existing methods, i.e., to create a ranking list of items according to users' interests. The classification objective is unique in this work, which aims to learn a personalized decision boundary to differentiate the relevant items from irrelevant items. Based on these ideas, we extend two state-of-the-art ranking-based recommendation methods, i.e., BPRMF and HRM, to the corresponding dynamic-K versions, namely DK-BPRMF and DK-HRM. Our experimental results on two datasets show that the dynamic-K models are more effective than the original fixed-N recommendation methods.",
+    "categories": [
+      "cs.IR",
+      "cs.AI"
+    ],
+    "url": "http://arxiv.org/abs/2012.13569v1"
+  },
+  "2012.13779v1": {
+    "arxiv_id": "2012.13779v1",
+    "title": "Towards sample-efficient episodic control with DAC-ML",
+    "authors": [
+      "Ismael T. Freire",
+      "Adrián F. Amil",
+      "Vasiliki Vouloutsi",
+      "Paul F. M. J. Verschure"
+    ],
+    "year": 2020,
+    "abstract": "The sample-inefficiency problem in Artificial Intelligence refers to the inability of current Deep Reinforcement Learning models to optimize action policies within a small number of episodes. Recent studies have tried to overcome this limitation by adding memory systems and architectural biases to improve learning speed, such as in Episodic Reinforcement Learning. However, despite achieving incremental improvements, their performance is still not comparable to how humans learn behavioral policies. In this paper, we capitalize on the design principles of the Distributed Adaptive Control (DAC) theory of mind and brain to build a novel cognitive architecture (DAC-ML) that, by incorporating a hippocampus-inspired sequential memory system, can rapidly converge to effective action policies that maximize reward acquisition in a challenging foraging task.",
+    "categories": [
+      "cs.AI",
+      "q-bio.NC",
+      "stat.ML"
+    ],
+    "url": "http://arxiv.org/abs/2012.13779v1"
+  },
+  "1904.08010v1": {
+    "arxiv_id": "1904.08010v1",
+    "title": "How to define co-occurrence in different domains of study?",
+    "authors": [
+      "Mathieu Roche"
+    ],
+    "year": 2019,
+    "abstract": "This position paper presents a comparative study of co-occurrences. Some similarities and differences in the definition exist depending on the research domain (e.g. linguistics, NLP, computer science). This paper discusses these points, and deals with the methodological aspects in order to identify co-occurrences in a multidisciplinary paradigm.",
+    "categories": [
+      "cs.IR",
+      "cs.AI",
+      "cs.DB"
+    ],
+    "url": "http://arxiv.org/abs/1904.08010v1"
+  },
+  "1905.02810v1": {
+    "arxiv_id": "1905.02810v1",
+    "title": "Decision Making with Machine Learning and ROC Curves",
+    "authors": [
+      "Kai Feng",
+      "Han Hong",
+      "Ke Tang",
+      "Jingyuan Wang"
+    ],
+    "year": 2019,
+    "abstract": "The Receiver Operating Characteristic (ROC) curve is a representation of the statistical information discovered in binary classification problems and is a key concept in machine learning and data science. This paper studies the statistical properties of ROC curves and its implication on model selection. We analyze the implications of different models of incentive heterogeneity and information asymmetry on the relation between human decisions and the ROC curves. Our theoretical discussion is illustrated in the context of a large data set of pregnancy outcomes and doctor diagnosis from the Pre-Pregnancy Checkups of reproductive age couples in Henan Province provided by the Chinese Ministry of Health.",
+    "categories": [
+      "stat.ME",
+      "cs.AI",
+      "econ.GN",
+      "stat.ML"
+    ],
+    "url": "http://arxiv.org/abs/1905.02810v1"
+  },
+  "1905.03362v1": {
+    "arxiv_id": "1905.03362v1",
+    "title": "2-bit Model Compression of Deep Convolutional Neural Network on ASIC Engine for Image Retrieval",
+    "authors": [
+      "Bin Yang",
+      "Lin Yang",
+      "Xiaochun Li",
+      "Wenhan Zhang",
+      "Hua Zhou",
+      "Yequn Zhang",
+      "Yongxiong Ren",
+      "Yinbo Shi"
+    ],
+    "year": 2019,
+    "abstract": "Image retrieval utilizes image descriptors to retrieve the most similar images to a given query image. Convolutional neural network (CNN) is becoming the dominant approach to extract image descriptors for image retrieval. For low-power hardware implementation of image retrieval, the drawback of CNN-based feature descriptor is that it requires hundreds of megabytes of storage. To address this problem, this paper applies deep model quantization and compression to CNN in ASIC chip for image retrieval. It is demonstrated that the CNN-based features descriptor can be extracted using as few as 2-bit weights quantization to deliver a similar performance as floating-point model for image retrieval. In addition, to implement CNN in ASIC, especially for large scale images, the limited buffer size of chips should be considered. To retrieve large scale images, we propose an improved pooling strategy, region nested invariance pooling (RNIP), which uses cropped sub-images for CNN. Testing results on chip show that integrating RNIP with the proposed 2-bit CNN model compression approach is capable of retrieving large scale images.",
+    "categories": [
+      "cs.AI"
+    ],
+    "url": "http://arxiv.org/abs/1905.03362v1"
+  },
+  "1905.03427v1": {
+    "arxiv_id": "1905.03427v1",
+    "title": "Variable Neighborhood Search for the Bin Packing Problem with Compatible Categories",
+    "authors": [
+      "Luiz F. O. Moura Santos",
+      "Hugo T. Y. Yoshizaki",
+      "Claudio B. Cunha"
+    ],
+    "year": 2019,
+    "abstract": "Bin Packing with Conflicts (BPC) are problems in which items with compatibility constraints must be packed in the least number of bins, not exceeding the capacity of the bins and ensuring that non-conflicting items are packed in each bin. In this work, we introduce the Bin Packing Problem with Compatible Categories (BPCC), a variant of the BPC in which items belong to conflicting or compatible categories, in opposition to the item-by-item incompatibility found in previous literature. It is a common problem in the context of last mile distribution to nanostores located in densely populated areas. To efficiently solve real-life sized instances of the problem, we propose a Variable Neighborhood Search (VNS) metaheuristic algorithm. Computational experiments suggest that the algorithm yields good solutions in very short times while compared to linear integer programming running on a high-performance computing environment.",
+    "categories": [
+      "cs.DS",
+      "cs.AI",
+      "math.OC"
+    ],
+    "url": "http://arxiv.org/abs/1905.03427v1"
+  },
+  "1905.02941v1": {
+    "arxiv_id": "1905.02941v1",
+    "title": "Robust Federated Training via Collaborative Machine Teaching using Trusted Instances",
+    "authors": [
+      "Yufei Han",
+      "Xiangliang Zhang"
+    ],
+    "year": 2019,
+    "abstract": "Federated learning performs distributed model training using local data hosted by agents. It shares only model parameter updates for iterative aggregation at the server. Although it is privacy-preserving by design, federated learning is vulnerable to noise corruption of local agents, as demonstrated in the previous study on adversarial data poisoning threat against federated learning systems. Even a single noise-corrupted agent can bias the model training. In our work, we propose a collaborative and privacy-preserving machine teaching paradigm with multiple distributed teachers, to improve robustness of the federated training process against local data corruption. We assume that each local agent (teacher) have the resources to verify a small portions of trusted instances, which may not by itself be adequate for learning. In the proposed collaborative machine teaching method, these trusted instances guide the distributed agents to jointly select a compact while informative training subset from data hosted by their own. Simultaneously, the agents learn to add changes of limited magnitudes into the selected data instances, in order to improve the testing performances of the federally trained model despite of the training data corruption. Experiments on toy and real data demonstrate that our approach can identify training set bugs effectively and suggest appropriate changes to the labels. Our algorithm is a step toward trustworthy machine learning.",
+    "categories": [
+      "cs.LG",
+      "cs.AI",
+      "stat.ML"
+    ],
+    "url": "http://arxiv.org/abs/1905.02941v1"
+  },
+  "1905.02234v2": {
+    "arxiv_id": "1905.02234v2",
+    "title": "Image Matters: Scalable Detection of Offensive and Non-Compliant Content / Logo in Product Images",
+    "authors": [
+      "Shreyansh Gandhi",
+      "Samrat Kokkula",
+      "Abon Chaudhuri",
+      "Alessandro Magnani",
+      "Theban Stanley",
+      "Behzad Ahmadi",
+      "Venkatesh Kandaswamy",
+      "Omer Ovenc",
+      "Shie Mannor"
+    ],
+    "year": 2019,
+    "abstract": "In e-commerce, product content, especially product images have a significant influence on a customer's journey from product discovery to evaluation and finally, purchase decision. Since many e-commerce retailers sell items from other third-party marketplace sellers besides their own, the content published by both internal and external content creators needs to be monitored and enriched, wherever possible. Despite guidelines and warnings, product listings that contain offensive and non-compliant images continue to enter catalogs. Offensive and non-compliant content can include a wide range of objects, logos, and banners conveying violent, sexually explicit, racist, or promotional messages. Such images can severely damage the customer experience, lead to legal issues, and erode the company brand. In this paper, we present a computer vision driven offensive and non-compliant image detection system for extremely large image datasets. This paper delves into the unique challenges of applying deep learning to real-world product image data from retail world. We demonstrate how we resolve a number of technical challenges such as lack of training data, severe class imbalance, fine-grained class definitions etc. using a number of practical yet unique technical strategies. Our system combines state-of-the-art image classification and object detection techniques with budgeted crowdsourcing to develop a solution customized for a massive, diverse, and constantly evolving product catalog.",
+    "categories": [
+      "cs.CV",
+      "cs.AI",
+      "cs.LG"
+    ],
+    "url": "http://arxiv.org/abs/1905.02234v2"
+  },
+  "1904.12059v1": {
+    "arxiv_id": "1904.12059v1",
+    "title": "ARCHANGEL: Tamper-proofing Video Archives using Temporal Content Hashes on the Blockchain",
+    "authors": [
+      "Tu Bui",
+      "Daniel Cooper",
+      "John Collomosse",
+      "Mark Bell",
+      "Alex Green",
+      "John Sheridan",
+      "Jez Higgins",
+      "Arindra Das",
+      "Jared Keller",
+      "Olivier Thereaux",
+      "Alan Brown"
+    ],
+    "year": 2019,
+    "abstract": "We present ARCHANGEL; a novel distributed ledger based system for assuring the long-term integrity of digital video archives. First, we describe a novel deep network architecture for computing compact temporal content hashes (TCHs) from audio-visual streams with durations of minutes or hours. Our TCHs are sensitive to accidental or malicious content modification (tampering) but invariant to the codec used to encode the video. This is necessary due to the curatorial requirement for archives to format shift video over time to ensure future accessibility. Second, we describe how the TCHs (and the models used to derive them) are secured via a proof-of-authority blockchain distributed across multiple independent archives. We report on the efficacy of ARCHANGEL within the context of a trial deployment in which the national government archives of the United Kingdom, Estonia and Norway participated.",
+    "categories": [
+      "cs.CV",
+      "cs.AI",
+      "cs.CR",
+      "cs.DC"
+    ],
+    "url": "http://arxiv.org/abs/1904.12059v1"
+  },
+  "1904.13196v1": {
+    "arxiv_id": "1904.13196v1",
+    "title": "Semantic Referee: A Neural-Symbolic Framework for Enhancing Geospatial Semantic Segmentation",
+    "authors": [
+      "Marjan Alirezaie",
+      "Martin Längkvist",
+      "Michael Sioutis",
+      "Amy Loutfi"
+    ],
+    "year": 2019,
+    "abstract": "Understanding why machine learning algorithms may fail is usually the task of the human expert that uses domain knowledge and contextual information to discover systematic shortcomings in either the data or the algorithm. In this paper, we propose a semantic referee, which is able to extract qualitative features of the errors emerging from deep machine learning frameworks and suggest corrections. The semantic referee relies on ontological reasoning about spatial knowledge in order to characterize errors in terms of their spatial relations with the environment. Using semantics, the reasoner interacts with the learning algorithm as a supervisor. In this paper, the proposed method of the interaction between a neural network classifier and a semantic referee shows how to improve the performance of semantic segmentation for satellite imagery data.",
+    "categories": [
+      "cs.AI",
+      "cs.CV",
+      "cs.LG",
+      "cs.LO"
+    ],
+    "url": "http://arxiv.org/abs/1904.13196v1"
+  },
+  "1904.07601v3": {
+    "arxiv_id": "1904.07601v3",
+    "title": "Relation-Shape Convolutional Neural Network for Point Cloud Analysis",
+    "authors": [
+      "Yongcheng Liu",
+      "Bin Fan",
+      "Shiming Xiang",
+      "Chunhong Pan"
+    ],
+    "year": 2019,
+    "abstract": "Point cloud analysis is very challenging, as the shape implied in irregular points is difficult to capture. In this paper, we propose RS-CNN, namely, Relation-Shape Convolutional Neural Network, which extends regular grid CNN to irregular configuration for point cloud analysis. The key to RS-CNN is learning from relation, i.e., the geometric topology constraint among points. Specifically, the convolutional weight for local point set is forced to learn a high-level relation expression from predefined geometric priors, between a sampled point from this point set and the others. In this way, an inductive local representation with explicit reasoning about the spatial layout of points can be obtained, which leads to much shape awareness and robustness. With this convolution as a basic operator, RS-CNN, a hierarchical architecture can be developed to achieve contextual shape-aware learning for point cloud analysis. Extensive experiments on challenging benchmarks across three tasks verify RS-CNN achieves the state of the arts.",
+    "categories": [
+      "cs.CV",
+      "cs.AI",
+      "cs.CG",
+      "cs.GR",
+      "cs.RO"
+    ],
+    "url": "http://arxiv.org/abs/1904.07601v3"
+  },
+  "1904.08149v2": {
+    "arxiv_id": "1904.08149v2",
+    "title": "Bayesian policy selection using active inference",
+    "authors": [
+      "Ozan Çatal",
+      "Johannes Nauta",
+      "Tim Verbelen",
+      "Pieter Simoens",
+      "Bart Dhoedt"
+    ],
+    "year": 2019,
+    "abstract": "Learning to take actions based on observations is a core requirement for artificial agents to be able to be successful and robust at their task. Reinforcement Learning (RL) is a well-known technique for learning such policies. However, current RL algorithms often have to deal with reward shaping, have difficulties generalizing to other environments and are most often sample inefficient. In this paper, we explore active inference and the free energy principle, a normative theory from neuroscience that explains how self-organizing biological systems operate by maintaining a model of the world and casting action selection as an inference problem. We apply this concept to a typical problem known to the RL community, the mountain car problem, and show how active inference encompasses both RL and learning from demonstrations.",
+    "categories": [
+      "cs.LG",
+      "cs.AI",
+      "cs.NE"
+    ],
+    "url": "http://arxiv.org/abs/1904.08149v2"
+  },
+  "1904.08177v1": {
+    "arxiv_id": "1904.08177v1",
+    "title": "Downhole Track Detection via Multiscale Conditional Generative Adversarial Nets",
+    "authors": [
+      "Jia Li",
+      "Xing Wei",
+      "Guoqiang Yang",
+      "Xiao Sun",
+      "Changliang Li"
+    ],
+    "year": 2019,
+    "abstract": "Frequent mine disasters cause a large number of casualties and property losses. Autonomous driving is a fundamental measure for solving this problem, and track detection is one of the key technologies for computer vision to achieve downhole automatic driving. The track detection result based on the traditional convolutional neural network (CNN) algorithm lacks the detailed and unique description of the object and relies too much on visual postprocessing technology. Therefore, this paper proposes a track detection algorithm based on a multiscale conditional generative adversarial network (CGAN). The generator is decomposed into global and local parts using a multigranularity structure in the generator network. A multiscale shared convolution structure is adopted in the discriminator network to further supervise training the generator. Finally, the Monte Carlo search technique is introduced to search the intermediate state of the generator, and the result is sent to the discriminator for comparison. Compared with the existing work, our model achieved 82.43\\% pixel accuracy and an average intersection-over-union (IOU) of 0.6218, and the detection of the track reached 95.01\\% accuracy in the downhole roadway scene test set.",
+    "categories": [
+      "cs.CV",
+      "cs.AI"
+    ],
+    "url": "http://arxiv.org/abs/1904.08177v1"
+  },
+  "1904.12635v1": {
+    "arxiv_id": "1904.12635v1",
+    "title": "Exploration of Self-Propelling Droplets Using a Curiosity Driven Robotic Assistant",
+    "authors": [
+      "Jonathan Grizou",
+      "Laurie J. Points",
+      "Abhishek Sharma",
+      "Leroy Cronin"
+    ],
+    "year": 2019,
+    "abstract": "We describe a chemical robotic assistant equipped with a curiosity algorithm (CA) that can efficiently explore the state a complex chemical system can exhibit. The CA-robot is designed to explore formulations in an open-ended way with no explicit optimization target. By applying the CA-robot to the study of self-propelling multicomponent oil-in-water droplets, we are able to observe an order of magnitude more variety of droplet behaviours than possible with a random parameter search and given the same budget. We demonstrate that the CA-robot enabled the discovery of a sudden and highly specific response of droplets to slight temperature changes. Six modes of self-propelled droplets motion were identified and classified using a time-temperature phase diagram and probed using a variety of techniques including NMR. This work illustrates how target free search can significantly increase the rate of unpredictable observations leading to new discoveries with potential applications in formulation chemistry.",
+    "categories": [
+      "cond-mat.soft",
+      "cs.AI",
+      "cs.RO"
+    ],
+    "url": "http://arxiv.org/abs/1904.12635v1"
+  },
+  "1904.12901v1": {
+    "arxiv_id": "1904.12901v1",
+    "title": "Challenges of Real-World Reinforcement Learning",
+    "authors": [
+      "Gabriel Dulac-Arnold",
+      "Daniel Mankowitz",
+      "Todd Hester"
+    ],
+    "year": 2019,
+    "abstract": "Reinforcement learning (RL) has proven its worth in a series of artificial domains, and is beginning to show some successes in real-world scenarios. However, much of the research advances in RL are often hard to leverage in real-world systems due to a series of assumptions that are rarely satisfied in practice. We present a set of nine unique challenges that must be addressed to productionize RL to real world problems. For each of these challenges, we specify the exact meaning of the challenge, present some approaches from the literature, and specify some metrics for evaluating that challenge. An approach that addresses all nine challenges would be applicable to a large number of real world problems. We also present an example domain that has been modified to present these challenges as a testbed for practical RL research.",
+    "categories": [
+      "cs.LG",
+      "cs.AI",
+      "cs.RO",
+      "stat.ML"
+    ],
+    "url": "http://arxiv.org/abs/1904.12901v1"
+  },
+  "1904.13333v1": {
+    "arxiv_id": "1904.13333v1",
+    "title": "Coevo: a collaborative design platform with artificial agents",
+    "authors": [
+      "Gerard Serra",
+      "David Miralles"
+    ],
+    "year": 2019,
+    "abstract": "We present Coevo, an online platform that allows both humans and artificial agents to design shapes that solve different tasks. Our goal is to explore common shared design tools that can be used by humans and artificial agents in a context of creation. This approach can provide a better knowledge transfer and interaction with artificial agents since a common language of design is defined. In this paper, we outline the main components of this platform and discuss the definition of a human-centered language to enhance human-AI collaboration in co-creation scenarios.",
+    "categories": [
+      "cs.HC",
+      "cs.AI",
+      "cs.NE"
+    ],
+    "url": "http://arxiv.org/abs/1904.13333v1"
+  },
+  "1906.00805v1": {
+    "arxiv_id": "1906.00805v1",
+    "title": "GazeCorrection:Self-Guided Eye Manipulation in the wild using Self-Supervised Generative Adversarial Networks",
+    "authors": [
+      "Jichao Zhang",
+      "Meng Sun",
+      "Jingjing Chen",
+      "Hao Tang",
+      "Yan Yan",
+      "Xueying Qin",
+      "Nicu Sebe"
+    ],
+    "year": 2019,
+    "abstract": "Gaze correction aims to redirect the person's gaze into the camera by manipulating the eye region, and it can be considered as a specific image resynthesis problem. Gaze correction has a wide range of applications in real life, such as taking a picture with staring at the camera. In this paper, we propose a novel method that is based on the inpainting model to learn from the face image to fill in the missing eye regions with new contents representing corrected eye gaze. Moreover, our model does not require the training dataset labeled with the specific head pose and eye angle information, thus, the training data is easy to collect. To retain the identity information of the eye region in the original input, we propose a self-guided pretrained model to learn the angle-invariance feature. Experiments show our model achieves very compelling gaze-corrected results in the wild dataset which is collected from the website and will be introduced in details. Code is available at https://github.com/zhangqianhui/GazeCorrection.",
+    "categories": [
+      "cs.CV",
+      "cs.AI"
+    ],
+    "url": "http://arxiv.org/abs/1906.00805v1"
+  },
+  "1906.01039v1": {
+    "arxiv_id": "1906.01039v1",
+    "title": "Neural networks grown and self-organized by noise",
+    "authors": [
+      "Guruprasad Raghavan",
+      "Matt Thomson"
+    ],
+    "year": 2019,
+    "abstract": "Living neural networks emerge through a process of growth and self-organization that begins with a single cell and results in a brain, an organized and functional computational device. Artificial neural networks, however, rely on human-designed, hand-programmed architectures for their remarkable performance. Can we develop artificial computational devices that can grow and self-organize without human intervention? In this paper, we propose a biologically inspired developmental algorithm that can 'grow' a functional, layered neural network from a single initial cell. The algorithm organizes inter-layer connections to construct a convolutional pooling layer, a key constituent of convolutional neural networks (CNN's). Our approach is inspired by the mechanisms employed by the early visual system to wire the retina to the lateral geniculate nucleus (LGN), days before animals open their eyes. The key ingredients for robust self-organization are an emergent spontaneous spatiotemporal activity wave in the first layer and a local learning rule in the second layer that 'learns' the underlying activity pattern in the first layer. The algorithm is adaptable to a wide-range of input-layer geometries, robust to malfunctioning units in the first layer, and so can be used to successfully grow and self-organize pooling architectures of different pool-sizes and shapes. The algorithm provides a primitive procedure for constructing layered neural networks through growth and self-organization. Broadly, our work shows that biologically inspired developmental algorithms can be applied to autonomously grow functional 'brains' in-silico.",
+    "categories": [
+      "cs.NE",
+      "cs.AI",
+      "nlin.AO",
+      "q-bio.NC"
+    ],
+    "url": "http://arxiv.org/abs/1906.01039v1"
+  },
+  "1906.01119v1": {
+    "arxiv_id": "1906.01119v1",
+    "title": "Analysis and Improvement of Adversarial Training in DQN Agents With Adversarially-Guided Exploration (AGE)",
+    "authors": [
+      "Vahid Behzadan",
+      "William Hsu"
+    ],
+    "year": 2019,
+    "abstract": "This paper investigates the effectiveness of adversarial training in enhancing the robustness of Deep Q-Network (DQN) policies to state-space perturbations. We first present a formal analysis of adversarial training in DQN agents and its performance with respect to the proportion of adversarial perturbations to nominal observations used for training. Next, we consider the sample-inefficiency of current adversarial training techniques, and propose a novel Adversarially-Guided Exploration (AGE) mechanism based on a modified hybrid of the $ε$-greedy algorithm and Boltzmann exploration. We verify the feasibility of this exploration mechanism through experimental evaluation of its performance in comparison with the traditional decaying $ε$-greedy and parameter-space noise exploration algorithms.",
+    "categories": [
+      "cs.LG",
+      "cs.AI",
+      "cs.CR",
+      "stat.ML"
+    ],
+    "url": "http://arxiv.org/abs/1906.01119v1"
+  },
+  "1906.01121v1": {
+    "arxiv_id": "1906.01121v1",
+    "title": "Adversarial Exploitation of Policy Imitation",
+    "authors": [
+      "Vahid Behzadan",
+      "William Hsu"
+    ],
+    "year": 2019,
+    "abstract": "This paper investigates a class of attacks targeting the confidentiality aspect of security in Deep Reinforcement Learning (DRL) policies. Recent research have established the vulnerability of supervised machine learning models (e.g., classifiers) to model extraction attacks. Such attacks leverage the loosely-restricted ability of the attacker to iteratively query the model for labels, thereby allowing for the forging of a labeled dataset which can be used to train a replica of the original model. In this work, we demonstrate the feasibility of exploiting imitation learning techniques in launching model extraction attacks on DRL agents. Furthermore, we develop proof-of-concept attacks that leverage such techniques for black-box attacks against the integrity of DRL policies. We also present a discussion on potential solution concepts for mitigation techniques.",
+    "categories": [
+      "cs.LG",
+      "cs.AI",
+      "cs.CR",
+      "stat.ML"
+    ],
+    "url": "http://arxiv.org/abs/1906.01121v1"
+  },
+  "1906.01126v1": {
+    "arxiv_id": "1906.01126v1",
+    "title": "Sequential Triggers for Watermarking of Deep Reinforcement Learning Policies",
+    "authors": [
+      "Vahid Behzadan",
+      "William Hsu"
+    ],
+    "year": 2019,
+    "abstract": "This paper proposes a novel scheme for the watermarking of Deep Reinforcement Learning (DRL) policies. This scheme provides a mechanism for the integration of a unique identifier within the policy in the form of its response to a designated sequence of state transitions, while incurring minimal impact on the nominal performance of the policy. The applications of this watermarking scheme include detection of unauthorized replications of proprietary policies, as well as enabling the graceful interruption or termination of DRL activities by authorized entities. We demonstrate the feasibility of our proposal via experimental evaluation of watermarking a DQN policy trained in the Cartpole environment.",
+    "categories": [
+      "cs.LG",
+      "cs.AI",
+      "cs.CR",
+      "stat.ML"
+    ],
+    "url": "http://arxiv.org/abs/1906.01126v1"
+  },
+  "1906.01350v2": {
+    "arxiv_id": "1906.01350v2",
+    "title": "Rapidly-Exploring Quotient-Space Trees: Motion Planning using Sequential Simplifications",
+    "authors": [
+      "Andreas Orthey",
+      "Marc Toussaint"
+    ],
+    "year": 2019,
+    "abstract": "Motion planning problems can be simplified by admissible projections of the configuration space to sequences of lower-dimensional quotient-spaces, called sequential simplifications. To exploit sequential simplifications, we present the Quotient-space Rapidly-exploring Random Trees (QRRT) algorithm. QRRT takes as input a start and a goal configuration, and a sequence of quotient-spaces. The algorithm grows trees on the quotient-spaces both sequentially and simultaneously to guarantee a dense coverage. QRRT is shown to be (1) probabilistically complete, and (2) can reduce the runtime by at least one order of magnitude. However, we show in experiments that the runtime varies substantially between different quotient-space sequences. To find out why, we perform an additional experiment, showing that the more narrow an environment, the more a quotient-space sequence can reduce runtime.",
+    "categories": [
+      "cs.RO",
+      "cs.AI"
+    ],
+    "url": "http://arxiv.org/abs/1906.01350v2"
+  },
+  "1906.01374v1": {
+    "arxiv_id": "1906.01374v1",
+    "title": "Autonomous Reinforcement Learning of Multiple Interrelated Tasks",
+    "authors": [
+      "Vieri Giuliano Santucci",
+      "Gianluca Baldassarre",
+      "Emilio Cartoni"
+    ],
+    "year": 2019,
+    "abstract": "Autonomous multiple tasks learning is a fundamental capability to develop versatile artificial agents that can act in complex environments. In real-world scenarios, tasks may be interrelated (or \"hierarchical\") so that a robot has to first learn to achieve some of them to set the preconditions for learning other ones. Even though different strategies have been used in robotics to tackle the acquisition of interrelated tasks, in particular within the developmental robotics framework, autonomous learning in this kind of scenarios is still an open question. Building on previous research in the framework of intrinsically motivated open-ended learning, in this work we describe how this question can be addressed working on the level of task selection, in particular considering the multiple interrelated tasks scenario as an MDP where the system is trying to maximise its competence over all the tasks.",
+    "categories": [
+      "cs.LG",
+      "cs.AI",
+      "stat.ML"
+    ],
+    "url": "http://arxiv.org/abs/1906.01374v1"
+  },
+  "1906.01407v1": {
+    "arxiv_id": "1906.01407v1",
+    "title": "RL4health: Crowdsourcing Reinforcement Learning for Knee Replacement Pathway Optimization",
+    "authors": [
+      "Hao Lu",
+      "Mengdi Wang"
+    ],
+    "year": 2019,
+    "abstract": "Joint replacement is the most common inpatient surgical treatment in the US. We investigate the clinical pathway optimization for knee replacement, which is a sequential decision process from onset to recovery. Based on episodic claims from previous cases, we view the pathway optimization as an intelligence crowdsourcing problem and learn the optimal decision policy from data by imitating the best expert at every intermediate state. We develop a reinforcement learning-based pipeline that uses value iteration, state compression and aggregation learning, kernel representation and cross validation to predict the best treatment policy. It also provides forecast of the clinical pathway under the optimized policy. Empirical validation shows that the optimized policy reduces the overall cost by 7 percent and reduces the excessive cost premium by 33 percent.",
+    "categories": [
+      "cs.LG",
+      "cs.AI",
+      "stat.ML"
+    ],
+    "url": "http://arxiv.org/abs/1906.01407v1"
+  },
+  "1906.01432v1": {
+    "arxiv_id": "1906.01432v1",
+    "title": "Knowledge-augmented Column Networks: Guiding Deep Learning with Advice",
+    "authors": [
+      "Mayukh Das",
+      "Devendra Singh Dhami",
+      "Yang Yu",
+      "Gautam Kunapuli",
+      "Sriraam Natarajan"
+    ],
+    "year": 2019,
+    "abstract": "Recently, deep models have had considerable success in several tasks, especially with low-level representations. However, effective learning from sparse noisy samples is a major challenge in most deep models, especially in domains with structured representations. Inspired by the proven success of human guided machine learning, we propose Knowledge-augmented Column Networks, a relational deep learning framework that leverages human advice/knowledge to learn better models in presence of sparsity and systematic noise.",
+    "categories": [
+      "cs.LG",
+      "cs.AI",
+      "stat.ML"
+    ],
+    "url": "http://arxiv.org/abs/1906.01432v1"
+  },
+  "1906.01470v3": {
+    "arxiv_id": "1906.01470v3",
+    "title": "Options as responses: Grounding behavioural hierarchies in multi-agent RL",
+    "authors": [
+      "Alexander Sasha Vezhnevets",
+      "Yuhuai Wu",
+      "Remi Leblond",
+      "Joel Z. Leibo"
+    ],
+    "year": 2019,
+    "abstract": "This paper investigates generalisation in multi-agent games, where the generality of the agent can be evaluated by playing against opponents it hasn't seen during training. We propose two new games with concealed information and complex, non-transitive reward structure (think rock/paper/scissors). It turns out that most current deep reinforcement learning methods fail to efficiently explore the strategy space, thus learning policies that generalise poorly to unseen opponents. We then propose a novel hierarchical agent architecture, where the hierarchy is grounded in the game-theoretic structure of the game -- the top level chooses strategic responses to opponents, while the low level implements them into policy over primitive actions. This grounding facilitates credit assignment across the levels of hierarchy. Our experiments show that the proposed hierarchical agent is capable of generalisation to unseen opponents, while conventional baselines fail to generalise whatsoever.",
+    "categories": [
+      "cs.LG",
+      "cs.AI",
+      "cs.MA",
+      "cs.NE",
+      "stat.ML"
+    ],
+    "url": "http://arxiv.org/abs/1906.01470v3"
+  },
+  "1906.01504v1": {
+    "arxiv_id": "1906.01504v1",
+    "title": "Embedded hyper-parameter tuning by Simulated Annealing",
+    "authors": [
+      "Matteo Fischetti",
+      "Matteo Stringher"
+    ],
+    "year": 2019,
+    "abstract": "We propose a new metaheuristic training scheme that combines Stochastic Gradient Descent (SGD) and Discrete Optimization in an unconventional way. Our idea is to define a discrete neighborhood of the current SGD point containing a number of \"potentially good moves\" that exploit gradient information, and to search this neighborhood by using a classical metaheuristic scheme borrowed from Discrete Optimization.\n  In the present paper we investigate the use of a simple Simulated Annealing (SA) metaheuristic that accepts/rejects a candidate new solution in the neighborhood with a probability that depends both on the new solution quality and on a parameter (the temperature) which is modified over time to lower the probability of accepting worsening moves. We use this scheme as an automatic way to perform hyper-parameter tuning, hence the title of the paper. A distinctive feature of our scheme is that hyper-parameters are modified within a single SGD execution (and not in an external loop, as customary) and evaluated on the fly on the current minibatch, i.e., their tuning is fully embedded within the SGD algorithm.\n  The use of SA for training is not new, but previous proposals were mainly intended for non-differentiable objective functions for which SGD is not applied due to the lack of gradients. On the contrary, our SA method requires differentiability of (a proxy of) the loss function, and leverages on the availability of a gradient direction to define local moves that have a large probability to improve the current solution.\n  Computational results on image classification (CIFAR-10) are reported, showing that the proposed approach leads to an improvement of the final validation accuracy for modern Deep Neural Networks such as ResNet34 and VGG16.",
+    "categories": [
+      "cs.LG",
+      "cs.AI",
+      "cs.DM",
+      "math.OC",
+      "stat.ML"
+    ],
+    "url": "http://arxiv.org/abs/1906.01504v1"
+  },
+  "1906.01562v2": {
+    "arxiv_id": "1906.01562v2",
+    "title": "Privacy-preserving Crowd-guided AI Decision-making in Ethical Dilemmas",
+    "authors": [
+      "Teng Wang",
+      "Jun Zhao",
+      "Han Yu",
+      "Jinyan Liu",
+      "Xinyu Yang",
+      "Xuebin Ren",
+      "Shuyu Shi"
+    ],
+    "year": 2019,
+    "abstract": "With the rapid development of artificial intelligence (AI), ethical issues surrounding AI have attracted increasing attention. In particular, autonomous vehicles may face moral dilemmas in accident scenarios, such as staying the course resulting in hurting pedestrians or swerving leading to hurting passengers. To investigate such ethical dilemmas, recent studies have adopted preference aggregation, in which each voter expresses her/his preferences over decisions for the possible ethical dilemma scenarios, and a centralized system aggregates these preferences to obtain the winning decision. Although a useful methodology for building ethical AI systems, such an approach can potentially violate the privacy of voters since moral preferences are sensitive information and their disclosure can be exploited by malicious parties. In this paper, we report a first-of-its-kind privacy-preserving crowd-guided AI decision-making approach in ethical dilemmas. We adopt the notion of differential privacy to quantify privacy and consider four granularities of privacy protection by taking voter-/record-level privacy protection and centralized/distributed perturbation into account, resulting in four approaches VLCP, RLCP, VLDP, and RLDP. Moreover, we propose different algorithms to achieve these privacy protection granularities, while retaining the accuracy of the learned moral preference model. Specifically, VLCP and RLCP are implemented with the data aggregator setting a universal privacy parameter and perturbing the averaged moral preference to protect the privacy of voters' data. VLDP and RLDP are implemented in such a way that each voter perturbs her/his local moral preference with a personalized privacy parameter. Extensive experiments on both synthetic and real data demonstrate that the proposed approach can achieve high accuracy of preference aggregation while protecting individual voter's privacy.",
+    "categories": [
+      "cs.CR",
+      "cs.AI"
+    ],
+    "url": "http://arxiv.org/abs/1906.01562v2"
+  },
+  "2005.14621v1": {
+    "arxiv_id": "2005.14621v1",
+    "title": "Fair Classification via Unconstrained Optimization",
+    "authors": [
+      "Ibrahim Alabdulmohsin"
+    ],
+    "year": 2020,
+    "abstract": "Achieving the Bayes optimal binary classification rule subject to group fairness constraints is known to be reducible, in some cases, to learning a group-wise thresholding rule over the Bayes regressor. In this paper, we extend this result by proving that, in a broader setting, the Bayes optimal fair learning rule remains a group-wise thresholding rule over the Bayes regressor but with a (possible) randomization at the thresholds. This provides a stronger justification to the post-processing approach in fair classification, in which (1) a predictor is learned first, after which (2) its output is adjusted to remove bias. We show how the post-processing rule in this two-stage approach can be learned quite efficiently by solving an unconstrained optimization problem. The proposed algorithm can be applied to any black-box machine learning model, such as deep neural networks, random forests and support vector machines. In addition, it can accommodate many fairness criteria that have been previously proposed in the literature, such as equalized odds and statistical parity. We prove that the algorithm is Bayes consistent and motivate it, furthermore, via an impossibility result that quantifies the tradeoff between accuracy and fairness across multiple demographic groups. Finally, we conclude by validating the algorithm on the Adult benchmark dataset.",
+    "categories": [
+      "cs.LG",
+      "cs.AI",
+      "stat.AP",
+      "stat.ML"
+    ],
+    "url": "http://arxiv.org/abs/2005.14621v1"
+  }
+}

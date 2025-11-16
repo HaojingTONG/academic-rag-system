@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import ProcessingSteps from './ProcessingSteps'
+import { addToHistory, getQueryHistory, clearHistory, type QueryHistoryItem } from '../utils/queryHistory'
 
 const API_BASE_URL = import.meta.env.VITE_RAG_BASE_URL || 'http://localhost:8000'
 
@@ -26,10 +27,43 @@ export default function AskPanel() {
   const [showRawJSON, setShowRawJSON] = useState(false)
   const [backendStatus, setBackendStatus] = useState<'checking' | 'online' | 'offline'>('checking')
 
+  // New state for history and suggestions
+  const [queryHistory, setQueryHistory] = useState<QueryHistoryItem[]>([])
+  const [suggestions, setSuggestions] = useState<string[]>([])
+  const [showHistory, setShowHistory] = useState(false)
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false)
+
   // Check backend connection on mount
   useEffect(() => {
     checkBackendConnection()
+    loadHistoryAndSuggestions()
   }, [])
+
+  const loadHistoryAndSuggestions = async () => {
+    // Load history from localStorage
+    const history = getQueryHistory()
+    setQueryHistory(history)
+
+    // Load suggestions from API
+    if (backendStatus === 'online') {
+      loadSuggestions()
+    }
+  }
+
+  const loadSuggestions = async () => {
+    setLoadingSuggestions(true)
+    try {
+      const res = await fetch(`${API_BASE_URL}/papers/suggest/questions?limit=5`)
+      if (res.ok) {
+        const data = await res.json()
+        setSuggestions(data.suggestions || [])
+      }
+    } catch (err) {
+      console.error('Failed to load suggestions:', err)
+    } finally {
+      setLoadingSuggestions(false)
+    }
+  }
 
   const checkBackendConnection = async () => {
     try {
@@ -95,6 +129,14 @@ export default function AskPanel() {
       const data = await res.json()
       setResponse(data)
       setBackendStatus('online')
+
+      // Add to history
+      addToHistory({
+        question: query,
+        answer: data.answer,
+        num_sources: data.num_sources
+      })
+      setQueryHistory(getQueryHistory())
     } catch (err) {
       if (err instanceof Error) {
         if (err.name === 'AbortError') {
@@ -166,6 +208,69 @@ export default function AskPanel() {
             <p className="text-sm font-medium text-green-800">
               后端服务器已连接 - {API_BASE_URL}
             </p>
+          </div>
+        </div>
+      )}
+
+      {/* Query History & Suggestions */}
+      {!loading && !response && queryHistory.length > 0 && (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-gray-900">🕐 Recent Queries</h3>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setShowHistory(!showHistory)}
+                className="text-xs text-gray-600 hover:text-gray-900"
+              >
+                {showHistory ? 'Hide' : `Show ${queryHistory.length}`}
+              </button>
+              <button
+                onClick={() => {
+                  clearHistory()
+                  setQueryHistory([])
+                }}
+                className="text-xs text-red-600 hover:text-red-800"
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+
+          {showHistory && (
+            <div className="space-y-2">
+              {queryHistory.slice(0, 5).map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => setQuery(item.question)}
+                  className="w-full text-left px-3 py-2 bg-gray-50 hover:bg-blue-50 rounded-lg transition-colors text-sm text-gray-700"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="flex-1 truncate">{item.question}</span>
+                    <span className="text-xs text-gray-400 ml-2">
+                      {new Date(item.timestamp).toLocaleDateString()}
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Smart Suggestions */}
+      {!loading && !response && suggestions.length > 0 && (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h3 className="text-sm font-semibold text-gray-900 mb-3">💡 Suggested Questions</h3>
+          <div className="flex flex-wrap gap-2">
+            {suggestions.map((suggestion, idx) => (
+              <button
+                key={idx}
+                onClick={() => setQuery(suggestion)}
+                className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-sm rounded-full transition-colors"
+              >
+                {suggestion}
+              </button>
+            ))}
           </div>
         </div>
       )}

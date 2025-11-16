@@ -1,0 +1,32 @@
+{
+  "0090023afc66cd2741568599057f4e82b566137c": {
+    "paper_id": "0090023afc66cd2741568599057f4e82b566137c",
+    "title": "A Survey on Bias and Fairness in Machine Learning",
+    "authors": [
+      "Ninareh Mehrabi",
+      "Fred Morstatter",
+      "N. Saxena",
+      "Kristina Lerman",
+      "A. Galstyan"
+    ],
+    "year": 2019,
+    "citation_count": 4994,
+    "arxiv_id": "1908.09635",
+    "venue": "ACM Computing Surveys",
+    "url": "https://www.semanticscholar.org/paper/0090023afc66cd2741568599057f4e82b566137c",
+    "abstract": "With the widespread use of artificial intelligence (AI) systems and applications in our everyday lives, accounting for fairness has gained significant importance in designing and engineering of such systems. AI systems can be used in many sensitive environments to make important and life-changing decisions; thus, it is crucial to ensure that these decisions do not reflect discriminatory behavior toward certain groups or populations. More recently some work has been developed in traditional machine learning and deep learning that address such challenges in different subdomains. With the commercialization of these systems, researchers are becoming more aware of the biases that these applications can contain and are attempting to address them. In this survey, we investigated different real-world applications that have shown biases in various ways, and we listed different sources of biases that can affect AI applications. We then created a taxonomy for fairness definitions that machine learning researchers have defined to avoid the existing bias in AI systems. In addition to that, we examined different domains and subdomains in AI showing what researchers have observed with regard to unfair outcomes in the state-of-the-art methods and ways they have tried to address them. There are still many future directions and solutions that can be taken to mitigate the problem of bias in AI systems. We are hoping that this survey will motivate researchers to tackle these issues in the near future by observing existing work in their respective fields."
+  },
+  "4f789ee52aaeac38123af0f957f841d40db34f0b": {
+    "paper_id": "4f789ee52aaeac38123af0f957f841d40db34f0b",
+    "title": "Submodularity In Machine Learning and Artificial Intelligence",
+    "authors": [
+      "J. Bilmes"
+    ],
+    "year": 2022,
+    "citation_count": 65,
+    "arxiv_id": "2202.00132",
+    "venue": "arXiv.org",
+    "url": "https://www.semanticscholar.org/paper/4f789ee52aaeac38123af0f957f841d40db34f0b",
+    "abstract": "In this manuscript, we offer a gentle review of submodularity and supermodularity and their properties. We offer a plethora of submodular definitions; a full description of a number of example submodular functions and their generalizations; example discrete constraints; a discussion of basic algorithms for maximization, minimization, and other operations; a brief overview of continuous submodular extensions; and some historical applications. We then turn to how submodularity is useful in machine learning and artificial intelligence. This includes summarization, and we offer a complete account of the differences between and commonalities amongst sketching, coresets, extractive and abstractive summarization in NLP, data distillation and condensation, and data subset selection and feature selection. We discuss a variety of ways to produce a submodular function useful for machine learning, including heuristic hand-crafting, learning or approximately learning a submodular function or aspects thereof, and some advantages of the use of a submodular function as a coreset producer. We discuss submodular combinatorial information functions, and how submodularity is useful for clustering, data partitioning, parallel machine learning, active and semi-supervised learning, probabilistic modeling, and structured norms and loss functions.1"
+  }
+}

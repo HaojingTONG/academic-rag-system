@@ -284,7 +284,7 @@ class VectorStore:
 
     def __init__(self,
                  persist_directory: str = "vector_db",
-                 collection_name: str = "enhanced_ai_papers_v2",
+                 collection_name: str = "papers_bge-m3_1024_v1",
                  embedding_model: str = None,
                  embedding_config: 'EmbeddingConfig' = None):
         """
